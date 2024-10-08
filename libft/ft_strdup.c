@@ -6,7 +6,7 @@
 /*   By: rzvir <rzvir@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/08 18:07:56 by rzvir             #+#    #+#             */
-/*   Updated: 2024/10/08 18:18:41 by rzvir            ###   ########.fr       */
+/*   Updated: 2024/10/08 18:23:26 by rzvir            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,27 +28,30 @@ size_t	ft_strlen(const char *s)
 char	*strdup(const char *s)
 {
 	int		i;
-	char	*str;
+	char	*copy;
 	int		s_len;
 
 	i = 0;
 	s_len = ft_strlen(s);
-	str = (char *)malloc((s_len + 1) * sizeof(char));
-	if (str == NULL)
+	copy = (char *)malloc((s_len + 1) * sizeof(char));
+	if (copy == NULL)
 	{
 		return (NULL);
 	}
-	while (s[i] != '0')
+	while (s[i] != '\0')
 	{
-		str[i] = s[i];
+		copy[i] = s[i];
 		i++;
 	}
-	str[i] = '\0';
-	return (str);
+	copy[i] = '\0';
+	return (copy);
 }
 
 int	main(void)
 {
-	printf("%s\n", strdup("String!"));
+	char *ptr;
+
+	ptr = strdup("String!");
+	free(ptr);
 	return (0);
 }
