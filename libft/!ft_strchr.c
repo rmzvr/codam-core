@@ -1,35 +1,35 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strlen.c                                        :+:      :+:    :+:   */
+/*   ft_strchr.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: rzvir <rzvir@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/10/07 21:33:29 by rmzvr             #+#    #+#             */
-/*   Updated: 2024/10/08 12:39:04 by rzvir            ###   ########.fr       */
+/*   Created: 2024/10/08 10:29:22 by rzvir             #+#    #+#             */
+/*   Updated: 2024/10/08 10:43:06 by rzvir            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <unistd.h>
-#include <string.h>
 #include <stdio.h>
-#include <ctype.h>
+#include <string.h>
 
-size_t	ft_strlen(const char *s)
+char	*ft_strchr(const char *s, int c)
 {
-	size_t i;
+	char *p;
 
-	i = 0;
-	while (s[i] != '\0')
+	*p = s;
+	while (*p != '\0')
 	{
-		i++;
+		if (*p == c)
+			return (p);
+		p++;
 	}
-	return (i);
+	return (p);
 }
 
 int	main(void)
 {
-	printf("ft_strlen: %ld\n", ft_strlen("abc"));
-	printf("strlen: %ld\n", strlen("abc"));
+	printf("ft_strchr: %s", ft_strchr("str", 's'));
+	printf("strchr: %s", strchr("str", 's'));
 	return (0);
 }

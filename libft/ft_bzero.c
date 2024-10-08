@@ -1,35 +1,39 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strlen.c                                        :+:      :+:    :+:   */
+/*   ft_bzero.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: rzvir <rzvir@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/10/07 21:33:29 by rmzvr             #+#    #+#             */
-/*   Updated: 2024/10/08 12:39:04 by rzvir            ###   ########.fr       */
+/*   Created: 2024/10/08 10:44:59 by rzvir             #+#    #+#             */
+/*   Updated: 2024/10/08 12:22:29 by rzvir            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <unistd.h>
-#include <string.h>
+#include <strings.h>
 #include <stdio.h>
-#include <ctype.h>
 
-size_t	ft_strlen(const char *s)
+void	ft_bzero(void *s, size_t n)
 {
-	size_t i;
+	int	i;
+	char *str;
 
 	i = 0;
-	while (s[i] != '\0')
+	str = (char *) s;
+	while (i < n)
 	{
+		str[i] = 0;
 		i++;
 	}
-	return (i);
 }
 
 int	main(void)
 {
-	printf("ft_strlen: %ld\n", ft_strlen("abc"));
-	printf("strlen: %ld\n", strlen("abc"));
+	char ft_str[] = "Hello, World!";
+	char str[] = "Hello, World!";
+	ft_bzero(ft_str, 10 * sizeof(char));
+	printf("ft_str: %s\n", ft_str);
+	bzero(str, 10 * sizeof(char));
+	printf("str: %s\n", str);
 	return (0);
 }

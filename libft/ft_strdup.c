@@ -1,19 +1,17 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strlen.c                                        :+:      :+:    :+:   */
+/*   ft_strdup.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: rzvir <rzvir@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/10/07 21:33:29 by rmzvr             #+#    #+#             */
-/*   Updated: 2024/10/08 12:39:04 by rzvir            ###   ########.fr       */
+/*   Created: 2024/10/08 18:07:56 by rzvir             #+#    #+#             */
+/*   Updated: 2024/10/08 18:18:41 by rzvir            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <unistd.h>
-#include <string.h>
+#include <stdlib.h>
 #include <stdio.h>
-#include <ctype.h>
 
 size_t	ft_strlen(const char *s)
 {
@@ -27,9 +25,30 @@ size_t	ft_strlen(const char *s)
 	return (i);
 }
 
+char	*strdup(const char *s)
+{
+	int		i;
+	char	*str;
+	int		s_len;
+
+	i = 0;
+	s_len = ft_strlen(s);
+	str = (char *)malloc((s_len + 1) * sizeof(char));
+	if (str == NULL)
+	{
+		return (NULL);
+	}
+	while (s[i] != '0')
+	{
+		str[i] = s[i];
+		i++;
+	}
+	str[i] = '\0';
+	return (str);
+}
+
 int	main(void)
 {
-	printf("ft_strlen: %ld\n", ft_strlen("abc"));
-	printf("strlen: %ld\n", strlen("abc"));
+	printf("%s\n", strdup("String!"));
 	return (0);
 }
