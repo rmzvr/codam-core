@@ -1,35 +1,42 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strchr.c                                        :+:      :+:    :+:   */
+/*   ft_strrchr.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: rzvir <rzvir@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/08 10:29:22 by rzvir             #+#    #+#             */
-/*   Updated: 2024/10/08 10:43:06 by rzvir            ###   ########.fr       */
+/*   Updated: 2024/10/09 16:58:36 by rzvir            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <stdio.h>
-#include <string.h>
+#include "libft.h"
 
-char	*ft_strchr(const char *s, int c)
+char	*ft_strrchr(const char *s, int c)
 {
-	char *p;
+	size_t	s_len;
+	char	*p;
 
-	*p = s;
-	while (*p != '\0')
+	s_len = ft_strlen(s);
+	p = (char *)s + s_len;
+	if (*p == c)
+	{
+		return (p);
+	}
+	while (p != s)
 	{
 		if (*p == c)
+		{
 			return (p);
-		p++;
+		}
+		p--;
 	}
-	return (p);
+	return (NULL);
 }
 
-int	main(void)
+/* int	main(void)
 {
-	printf("ft_strchr: %s", ft_strchr("str", 's'));
-	printf("strchr: %s", strchr("str", 's'));
+	printf("ft_strrchr: %s\n", ft_strrchr("str", ' '));
+	printf("strrchr: %s\n", strrchr("str", ' '));
 	return (0);
-}
+} */

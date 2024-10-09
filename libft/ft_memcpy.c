@@ -6,12 +6,11 @@
 /*   By: rzvir <rzvir@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/08 10:44:59 by rzvir             #+#    #+#             */
-/*   Updated: 2024/10/08 14:35:44 by rzvir            ###   ########.fr       */
+/*   Updated: 2024/10/09 17:02:48 by rzvir            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <string.h>
-#include <stdio.h>
+#include "libft.h"
 
 void	*ft_memcpy(void *dest, const void *src, size_t n)
 {
@@ -30,17 +29,17 @@ void	*ft_memcpy(void *dest, const void *src, size_t n)
 	return (dest);
 }
 
-int	main(void)
+/* int	main(void)
 {
-	// // 1. Zero-length copy
-	// char	src[] = "source";
-	// char	dst[] = "destination";
-	// ft_memcpy(dst, src, 0); // Copy 0 bytes
-	// printf("1. Zero-length copy\n%s\n\n", dst);
+	// 1. Zero-length copy
+	char	src[] = "source";
+	char	dst[] = "destination";
+	ft_memcpy(dst, src, 0); // Copy 0 bytes
+	printf("1. Zero-length copy\n%s\n\n", dst);
 
 	// 2. Overlapping regions (src before dst)
 	char data[] = "HelloWorld";
-	memcpy(data + 2, data, 5); // Copy overlapping memory
+	memcpy(data + 2, data - 2, 5); // Copy overlapping memory
 	printf("2. Overlapping regions (src before dst)\n%s\n\n", data);
 	return (0);
-}
+} */

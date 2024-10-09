@@ -6,24 +6,11 @@
 /*   By: rzvir <rzvir@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/08 14:57:29 by rzvir             #+#    #+#             */
-/*   Updated: 2024/10/08 17:32:38 by rzvir            ###   ########.fr       */
+/*   Updated: 2024/10/09 17:02:07 by rzvir            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <string.h>
-#include <stdio.h>
-
-size_t	ft_strlen(const char *s)
-{
-	size_t i;
-
-	i = 0;
-	while (s[i] != '\0')
-	{
-		i++;
-	}
-	return (i);
-}
+#include "libft.h"
 
 size_t	ft_strlcat(char *dst, const char *src, size_t size)
 {
@@ -45,7 +32,7 @@ size_t	ft_strlcat(char *dst, const char *src, size_t size)
 	return (dst_len + src_len);
 }
 
-int main()
+/* int main()
 {
     char first[] = "This is a potent1a11y 1ong str1ng";
     char last[] = "a potentially long string";
@@ -61,4 +48,4 @@ int main()
         puts("String was fully copied");
 
     return(0);
-}
+} */

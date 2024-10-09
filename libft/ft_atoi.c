@@ -6,12 +6,11 @@
 /*   By: rzvir <rzvir@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/08 17:34:13 by rzvir             #+#    #+#             */
-/*   Updated: 2024/10/08 18:06:59 by rzvir            ###   ########.fr       */
+/*   Updated: 2024/10/09 17:05:14 by rzvir            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <stdlib.h>
-#include <stdio.h>
+#include "libft.h"
 
 static int	ft_isspace(int c)
 {
@@ -32,9 +31,9 @@ static int	ft_isminus(int c)
 	return (0);
 }
 
-static int	ft_isdigit(int c)
+static int	ft_issign(int c)
 {
-	if (c >= 48 && c <= 57)
+	if (ft_isminus(c) || c == '+')
 	{
 		return (1);
 	}
@@ -54,10 +53,13 @@ int	ft_atoi(const char *nptr)
 	{
 		i++;
 	}
-	if (ft_isminus(nptr[i]))
+	if (ft_issign(nptr[i]))
 	{
+		if (ft_isminus(nptr[i]))
+		{
+			sign = -1;
+		}
 		i++;
-		sign = -1;
 	}
 	while (ft_isdigit(nptr[i]))
 	{
@@ -67,7 +69,7 @@ int	ft_atoi(const char *nptr)
 	return (num * sign);
 }
 
-int	main(void)
+/* int	main(void)
 {
 	char	*str;
 
@@ -75,4 +77,4 @@ int	main(void)
 	printf("ft_atoi: %d\n", ft_atoi(str));
 	printf("atoi: %d\n", atoi(str));
 	return (0);
-}
+} */

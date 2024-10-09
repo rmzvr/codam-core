@@ -1,40 +1,37 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_bzero.c                                         :+:      :+:    :+:   */
+/*   ft_strncmp.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: rzvir <rzvir@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/10/08 10:44:59 by rzvir             #+#    #+#             */
-/*   Updated: 2024/10/09 17:01:24 by rzvir            ###   ########.fr       */
+/*   Created: 2024/10/09 14:28:26 by rzvir             #+#    #+#             */
+/*   Updated: 2024/10/09 17:00:48 by rzvir            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-void	ft_bzero(void *s, size_t n)
+int	ft_strncmp(const char *s1, const char *s2, size_t n)
 {
-	size_t	i;
-	char	*str;
+	const char	*p;
 
-	i = 0;
-	str = (char *) s;
-	while (i < n)
+	p = s1 + n;
+	while (s1 != p)
 	{
-		str[i] = 0;
-		i++;
+		if (*s1 != *s2)
+		{
+			return (*s1 - *s2);
+		}
+		s1++;
+		s2++;
 	}
+	return (0);
 }
 
-/* #include <stdio.h>
-
-int	main(void)
+/* int	main(void)
 {
-	char ft_str[] = "Hello, World!";
-	char str[] = "Hello, World!";
-	ft_bzero(ft_str, 10 * sizeof(char));
-	printf("ft_str: %s\n", ft_str);
-	bzero(str, 10 * sizeof(char));
-	printf("str: %s\n", str);
+	printf("ft_strncmp: %d\n", ft_strncmp("ABC", "A", 3));
+	printf("strncmp: %d\n", strncmp("ABC", "A", 3));
 	return (0);
 } */
