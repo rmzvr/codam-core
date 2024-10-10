@@ -6,7 +6,7 @@
 /*   By: rzvir <rzvir@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/08 14:57:29 by rzvir             #+#    #+#             */
-/*   Updated: 2024/10/09 17:11:54 by rzvir            ###   ########.fr       */
+/*   Updated: 2024/10/10 12:19:14 by rzvir            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ size_t	ft_strlcpy(char *dst, const char *src, size_t size)
 	{
 		return (src_len);
 	}
-	while (src[i] != '\0' && i < size - 1)
+	while (src[i] != '\0' && i < size - 1 && size != 0)
 	{
 		dst[i] = src[i];
 		i++;

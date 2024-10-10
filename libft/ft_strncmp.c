@@ -6,7 +6,7 @@
 /*   By: rzvir <rzvir@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/09 14:28:26 by rzvir             #+#    #+#             */
-/*   Updated: 2024/10/09 17:00:48 by rzvir            ###   ########.fr       */
+/*   Updated: 2024/10/10 10:46:13 by rzvir            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ int	ft_strncmp(const char *s1, const char *s2, size_t n)
 	{
 		if (*s1 != *s2)
 		{
-			return (*s1 - *s2);
+			return ((unsigned char)*s1 - (unsigned char)*s2);
 		}
 		s1++;
 		s2++;
@@ -31,7 +31,8 @@ int	ft_strncmp(const char *s1, const char *s2, size_t n)
 
 /* int	main(void)
 {
-	printf("ft_strncmp: %d\n", ft_strncmp("ABC", "A", 3));
-	printf("strncmp: %d\n", strncmp("ABC", "A", 3));
+	printf("ft_strncmp: %d\n", ft_strncmp("\200", "\0", 3));
+	printf("strncmp: %d\n", strncmp("\200", "\0", 3));
+	
 	return (0);
 } */

@@ -6,7 +6,7 @@
 /*   By: rzvir <rzvir@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/08 10:29:22 by rzvir             #+#    #+#             */
-/*   Updated: 2024/10/09 17:02:33 by rzvir            ###   ########.fr       */
+/*   Updated: 2024/10/10 11:51:43 by rzvir            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ void	*ft_memchr(const void *s, int c, size_t n)
 	last_p = p + n;
 	while (p != last_p)
 	{
-		if (*p == c)
+		if (*p == (unsigned char)c)
 			return (p);
 		p++;
 	}
@@ -30,7 +30,8 @@ void	*ft_memchr(const void *s, int c, size_t n)
 
 /* int	main(void)
 {
-	printf("ft_memchr: %s\n", (char *)ft_memchr("str", '\0', 4));
-	printf("memchr: %s\n", (char *)memchr("str", '\0', 4));
+	int tab[7] = {-49, 49, 1, -1, 0, -2, 2};
+
+	printf("%s", (char *)ft_memchr(tab, -1, 7));
 	return (0);
 } */

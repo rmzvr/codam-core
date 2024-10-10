@@ -1,38 +1,32 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strchr.c                                        :+:      :+:    :+:   */
+/*   ft_putnbr_fd.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: rzvir <rzvir@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/10/08 10:29:22 by rzvir             #+#    #+#             */
-/*   Updated: 2024/10/10 11:18:46 by rzvir            ###   ########.fr       */
+/*   Created: 2024/10/10 17:14:37 by rzvir             #+#    #+#             */
+/*   Updated: 2024/10/10 17:48:13 by rzvir            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-char	*ft_strchr(const char *s, int c)
+void	ft_putnbr_fd(int n, int fd)
 {
-	char	*p;
+	char	digit;
+	long	l;
 
-	p = (char *)s;
-	while (*p != '\0')
+	l = n;
+	if (l < 0)
 	{
-		if (*p == c)
-			return (p);
-		p++;
+		l = l * -1;
+		write(fd, "-", 1);
 	}
-	if (*p == c)
+	if (l > 9)
 	{
-		return (p);
+		ft_putnbr_fd(l / 10, fd);
 	}
-	return (NULL);
+	digit = l % 10 + '0';
+	write(fd, &digit, 1);
 }
-
-/* int	main(void)
-{
-	printf("ft_strchr: %s\n", ft_strchr("str", 't'));
-	printf("strchr: %s\n", strchr("str", 't'));
-	return (0);
-} */

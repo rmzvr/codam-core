@@ -6,7 +6,7 @@
 /*   By: rzvir <rzvir@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/09 17:15:53 by rzvir             #+#    #+#             */
-/*   Updated: 2024/10/09 17:51:34 by rzvir            ###   ########.fr       */
+/*   Updated: 2024/10/10 10:21:34 by rzvir            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,8 +32,8 @@ char	*ft_substr(char const *s, unsigned int start, size_t len)
 	return (p);
 }
 
-int	main(void)
+/* int	main(void)
 {
 	printf("%s", ft_substr("Hello", 4, 5));
 	return (0);
-}
+} */

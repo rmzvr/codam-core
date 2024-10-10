@@ -6,7 +6,7 @@
 /*   By: rzvir <rzvir@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/09 14:59:45 by rzvir             #+#    #+#             */
-/*   Updated: 2024/10/09 17:12:40 by rzvir            ###   ########.fr       */
+/*   Updated: 2024/10/10 11:16:56 by rzvir            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,9 +21,9 @@ char	*ft_strnstr(const char *big, const char *little, size_t len)
 	i = 0;
 	j = 0;
 	little_len = ft_strlen(little);
-	if (len == 0 || little_len == 0)
+	if (little_len == 0)
 		return ((char *)big);
-	while (big[i] != '\0' && i < len)
+	while (big[i] != '\0' && i < len && len > 0)
 	{
 		if (big[i] == little[j])
 		{

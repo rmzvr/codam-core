@@ -1,38 +1,39 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strchr.c                                        :+:      :+:    :+:   */
+/*   ft_striteri.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: rzvir <rzvir@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/10/08 10:29:22 by rzvir             #+#    #+#             */
-/*   Updated: 2024/10/10 11:18:46 by rzvir            ###   ########.fr       */
+/*   Created: 2024/10/10 17:49:09 by rzvir             #+#    #+#             */
+/*   Updated: 2024/10/10 18:15:53 by rzvir            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-char	*ft_strchr(const char *s, int c)
-{
-	char	*p;
+#include <stdlib.h>
+#include <unistd.h>
+#include <string.h>
 
-	p = (char *)s;
-	while (*p != '\0')
+void	ft_striteri(char *s, void (*f)(unsigned int, char*))
+{
+	int		i;
+	size_t	s_len;
+	char	*m;
+
+	i = 0;
+	s_len = ft_strlen(s);
+	m = (char *)malloc((s_len + 1) * sizeof(char));
+	if (m == NULL)
 	{
-		if (*p == c)
-			return (p);
-		p++;
+		return (NULL);
 	}
-	if (*p == c)
+	while (s[i] != '\0')
 	{
-		return (p);
+		m[i] = f(i, s[i]);
+		i++;
 	}
-	return (NULL);
+	m[i] = '\0';
+	return (m);
 }
-
-/* int	main(void)
-{
-	printf("ft_strchr: %s\n", ft_strchr("str", 't'));
-	printf("strchr: %s\n", strchr("str", 't'));
-	return (0);
-} */

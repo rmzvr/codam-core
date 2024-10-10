@@ -6,7 +6,7 @@
 /*   By: rzvir <rzvir@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/08 10:29:22 by rzvir             #+#    #+#             */
-/*   Updated: 2024/10/09 16:58:36 by rzvir            ###   ########.fr       */
+/*   Updated: 2024/10/10 11:18:06 by rzvir            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,10 +19,6 @@ char	*ft_strrchr(const char *s, int c)
 
 	s_len = ft_strlen(s);
 	p = (char *)s + s_len;
-	if (*p == c)
-	{
-		return (p);
-	}
 	while (p != s)
 	{
 		if (*p == c)
@@ -30,6 +26,10 @@ char	*ft_strrchr(const char *s, int c)
 			return (p);
 		}
 		p--;
+	}
+	if (*p == c)
+	{
+		return (p);
 	}
 	return (NULL);
 }

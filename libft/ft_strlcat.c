@@ -6,7 +6,7 @@
 /*   By: rzvir <rzvir@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/08 14:57:29 by rzvir             #+#    #+#             */
-/*   Updated: 2024/10/09 17:02:07 by rzvir            ###   ########.fr       */
+/*   Updated: 2024/10/10 12:31:57 by rzvir            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,10 @@ size_t	ft_strlcat(char *dst, const char *src, size_t size)
 	i = 0;
 	dst_len = ft_strlen(dst);
 	src_len = ft_strlen(src);
+	if (size <= dst_len)
+	{
+		return (size + src_len);
+	}
 	limit = size - dst_len - 1;
 	while (src[i] != '\0' && i < limit && 0 < limit)
 	{
@@ -34,18 +38,11 @@ size_t	ft_strlcat(char *dst, const char *src, size_t size)
 
 /* int main()
 {
-    char first[] = "This is a potent1a11y 1ong str1ng";
-    char last[] = "a potentially long string";
-    int r;
-
-    r = ft_strlcat(first,last,34);
-
-    puts(first);
-    printf("Value returned: %d\n",r);
-    if( r > 34 )
-        puts("String truncated");
-    else
-        puts("String was fully copied");
-
-    return(0);
+	char dest1[10] = "a";
+	char dest2[10] = "a";
+	ft_strlcat(dest1, "lorem ipsum dolor sit amet", 6);
+	strlcat(dest2, "lorem ipsum dolor sit amet", 6);
+	printf("%s\n", dest1);
+	printf("%s\n", dest2);
+	return(0);
 } */
