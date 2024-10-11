@@ -1,4 +1,5 @@
-./**/libft.a
-./**/libft.so
-./**/a.out
+libft.a
+libft.so
+a.out
+*.o
 libft-unit-test
