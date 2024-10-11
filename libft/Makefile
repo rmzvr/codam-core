@@ -19,7 +19,8 @@ so:
 clean:
 	rm -rf $(OBJS)
 
-fclean: clean all
+fclean: clean
+	rm -rf $(TARGET_EXEC)
 
 re: fclean all
 
