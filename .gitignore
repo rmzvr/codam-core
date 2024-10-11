@@ -1,5 +1,5 @@
-libft.a
-libft.so
-a.out
+*.a
+*.so
 *.o
+a.out
 libft-unit-test
