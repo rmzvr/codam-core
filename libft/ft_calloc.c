@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_calloc.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rmzvr <rmzvr@student.42.fr>                +#+  +:+       +#+        */
+/*   By: rzvir <rzvir@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/09 12:13:39 by rzvir             #+#    #+#             */
-/*   Updated: 2024/10/12 18:16:15 by rmzvr            ###   ########.fr       */
+/*   Updated: 2024/10/14 12:29:37 by rzvir            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ void	*ft_calloc(size_t nmemb, size_t size)
 
 	if (nmemb == 0 || size == 0)
 	{
-		return (malloc(1));
+		return (malloc(0));
 	}
 	full_length = nmemb * size;
 	arr = (char *)malloc((full_length) * sizeof(char));

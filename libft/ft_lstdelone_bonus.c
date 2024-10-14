@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_lstdelone.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rmzvr <rmzvr@student.42.fr>                +#+  +:+       +#+        */
+/*   By: rzvir <rzvir@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/13 16:08:34 by rmzvr             #+#    #+#             */
-/*   Updated: 2024/10/13 19:51:57 by rmzvr            ###   ########.fr       */
+/*   Updated: 2024/10/14 12:20:11 by rzvir            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,4 +17,5 @@ void	ft_lstdelone(t_list *lst, void (*del)(void*))
 	if (lst == NULL || del == NULL)
 		return ;
 	del(lst->content);
+	free(lst);
 }
