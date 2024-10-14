@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_split.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rzvir <rzvir@student.42.fr>                +#+  +:+       +#+        */
+/*   By: rmzvr <rmzvr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/11 16:32:25 by rzvir             #+#    #+#             */
-/*   Updated: 2024/10/11 19:03:20 by rzvir            ###   ########.fr       */
+/*   Updated: 2024/10/13 19:53:01 by rmzvr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,20 +86,9 @@ char	**ft_split(char const *s, char c)
 	char	**words;
 	int		words_count;
 
+	if (s == NULL)
+		return (NULL);
 	words_count = ft_words_count(s, c);
 	words = ft_alloc_words(s, c, words_count);
 	return (words);
 }
-
-/* int	main(void)
-{
-	char	**res;
-
-	res = ft_split("  String1   String22 String333 ", ' ');
-	while (*res != NULL)
-	{
-		printf("%s\n", *res);
-		res++;
-	}
-	return (0);
-} */

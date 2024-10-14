@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_strrchr.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rzvir <rzvir@student.42.fr>                +#+  +:+       +#+        */
+/*   By: rmzvr <rmzvr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/08 10:29:22 by rzvir             #+#    #+#             */
-/*   Updated: 2024/10/10 11:18:06 by rzvir            ###   ########.fr       */
+/*   Updated: 2024/10/13 19:52:36 by rmzvr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,10 +33,3 @@ char	*ft_strrchr(const char *s, int c)
 	}
 	return (NULL);
 }
-
-/* int	main(void)
-{
-	printf("ft_strrchr: %s\n", ft_strrchr("str", ' '));
-	printf("strrchr: %s\n", strrchr("str", ' '));
-	return (0);
-} */

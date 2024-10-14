@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_strjoin.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rzvir <rzvir@student.42.fr>                +#+  +:+       +#+        */
+/*   By: rmzvr <rmzvr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/09 17:51:27 by rzvir             #+#    #+#             */
-/*   Updated: 2024/10/10 13:32:30 by rzvir            ###   ########.fr       */
+/*   Updated: 2024/10/13 19:52:54 by rmzvr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,8 @@ char	*ft_strjoin(char const *s1, char const *s2)
 	size_t	s2_len;
 	size_t	joined_str_len;
 
+	if (s1 == NULL || s1 == NULL)
+		return (NULL);
 	i = 0;
 	s1_len = ft_strlen(s1);
 	s2_len = ft_strlen(s2);
@@ -38,9 +40,3 @@ char	*ft_strjoin(char const *s1, char const *s2)
 	joined_str[i] = '\0';
 	return (joined_str);
 }
-
-/* int	main(void)
-{
-	printf("%s", ft_strjoin("ABC", "DEF"));
-	return (0);
-} */

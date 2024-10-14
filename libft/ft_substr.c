@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_substr.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rzvir <rzvir@student.42.fr>                +#+  +:+       +#+        */
+/*   By: rmzvr <rmzvr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/09 17:15:53 by rzvir             #+#    #+#             */
-/*   Updated: 2024/10/10 10:21:34 by rzvir            ###   ########.fr       */
+/*   Updated: 2024/10/13 00:25:22 by rmzvr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,25 +15,27 @@
 char	*ft_substr(char const *s, unsigned int start, size_t len)
 {
 	size_t	i;
-	char	*p;
+	char	*substr;
 
-	i = 0;
-	p = (char *)malloc((len + 1) * sizeof(char));
-	if (p == NULL)
-	{
+	if (s == NULL)
 		return (NULL);
+	if (start >= ft_strlen(s))
+	{
+		substr = (char *)malloc(1);
+		if (substr == NULL)
+			return (NULL);
+		substr[0] = '\0';
+		return (substr);
 	}
+	i = 0;
+	substr = (char *)malloc((len + 1) * sizeof(char));
+	if (substr == NULL)
+		return (NULL);
 	while (i < len && s[start + i] != '\0')
 	{
-		p[i] = s[start + i];
+		substr[i] = s[start + i];
 		i++;
 	}
-	p[i] = '\0';
-	return (p);
+	substr[i] = '\0';
+	return (substr);
 }
-
-/* int	main(void)
-{
-	printf("%s", ft_substr("Hello", 4, 5));
-	return (0);
-} */

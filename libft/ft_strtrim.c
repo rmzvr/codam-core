@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_strtrim.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rzvir <rzvir@student.42.fr>                +#+  +:+       +#+        */
+/*   By: rmzvr <rmzvr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/10 13:33:26 by rzvir             #+#    #+#             */
-/*   Updated: 2024/10/10 17:13:23 by rzvir            ###   ########.fr       */
+/*   Updated: 2024/10/12 19:19:36 by rmzvr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,36 +28,38 @@ static int	ft_any(char c, char const *set)
 	return (0);
 }
 
+static int	ft_count_any(char const *s1, char const *set, int to_left)
+{
+	int	count;
+
+	count = 0;
+	while (ft_any(*s1, set))
+	{
+		count++;
+		if (to_left == 0)
+		{
+			s1++;
+		}
+		else
+		{
+			s1--;
+		}
+	}
+	return (count);
+}
+
 char	*ft_strtrim(char const *s1, char const *set)
 {
-	int		i;
 	int		start;
 	int		end;
 	int		s1_len;
 	char	*trimmed_str;
 
-	i = 0;
-	start = 0;
-	end = 0;
+	if (s1 == NULL || set == NULL)
+		return (NULL);
 	s1_len = ft_strlen(s1);
-	while (ft_any(s1[i], set))
-	{
-		start++;
-		i++;
-	}
-	i = s1_len - 1;
-	while (ft_any(s1[i], set))
-	{
-		end++;
-		i--;
-	}
+	start = ft_count_any(s1, set, 0);
+	end = ft_count_any(s1 + s1_len - 1, set, 1);
 	trimmed_str = ft_substr(s1, start, s1_len - start - end);
 	return (trimmed_str);
 }
-
-/* int    main(void)
-{
-	// ft_strtrim(" Hello ", " ");
-	printf("%s\n", ft_strtrim("lorem ipsum dolor sit amet", "te"));
-	return (0);
-} */

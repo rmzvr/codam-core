@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_itoa.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rzvir <rzvir@student.42.fr>                +#+  +:+       +#+        */
+/*   By: rmzvr <rmzvr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/11 13:06:08 by rzvir             #+#    #+#             */
-/*   Updated: 2024/10/11 18:26:12 by rzvir            ###   ########.fr       */
+/*   Updated: 2024/10/12 13:13:32 by rmzvr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,8 @@ char	*ft_itoa(int n)
 		long_num = long_num * -1;
 	}
 	digit_str = (char *)malloc((nbr_length + 1) * sizeof(char));
+	if (digit_str == NULL)
+		return (NULL);
 	digit_str[nbr_length] = '\0';
 	while (nbr_length > 0)
 	{
@@ -54,8 +56,6 @@ char	*ft_itoa(int n)
 		long_num = long_num / 10;
 	}
 	if (n < 0)
-	{
 		digit_str[0] = '-';
-	}
 	return (digit_str);
 }

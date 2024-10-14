@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_atoi.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rzvir <rzvir@student.42.fr>                +#+  +:+       +#+        */
+/*   By: rmzvr <rmzvr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/08 17:34:13 by rzvir             #+#    #+#             */
-/*   Updated: 2024/10/09 17:05:14 by rzvir            ###   ########.fr       */
+/*   Updated: 2024/10/12 18:10:55 by rmzvr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,13 +68,3 @@ int	ft_atoi(const char *nptr)
 	}
 	return (num * sign);
 }
-
-/* int	main(void)
-{
-	char	*str;
-
-	str = " \f\t -521521512.2n2b4";
-	printf("ft_atoi: %d\n", ft_atoi(str));
-	printf("atoi: %d\n", atoi(str));
-	return (0);
-} */
