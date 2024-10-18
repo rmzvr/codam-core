@@ -3,24 +3,19 @@
 /*                                                        :::      ::::::::   */
 /*   ft_printf_u.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rzvir <rzvir@student.42.fr>                +#+  +:+       +#+        */
+/*   By: rmzvr <rmzvr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/18 12:59:39 by rzvir             #+#    #+#             */
-/*   Updated: 2024/10/18 17:17:01 by rzvir            ###   ########.fr       */
+/*   Updated: 2024/10/18 20:56:33 by rmzvr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
 
-void	ft_printf_u(unsigned int	i)
+void	ft_printf_u(unsigned int i)
 {
 	char	digit;
 
-	if (i < 0)
-	{
-		i = i * -1;
-		write(1, "-", 1);
-	}
 	if (i > 9)
 	{
 		ft_printf_u(i / 10);
