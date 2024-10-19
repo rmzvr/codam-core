@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_printf.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rmzvr <rmzvr@student.42.fr>                +#+  +:+       +#+        */
+/*   By: rzvir <rzvir@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/18 12:59:39 by rzvir             #+#    #+#             */
-/*   Updated: 2024/10/18 22:02:11 by rmzvr            ###   ########.fr       */
+/*   Updated: 2024/10/19 16:42:42 by rzvir            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,39 +16,108 @@
 
 int	ft_printf(const char *format, ...)
 {
-    va_list args;
-    va_start(args, format);
-	
+	va_list args;
+	va_start(args, format);
+
 	while (*format)
 	{
-		printf("*format: %c\n", *format);
-		printf("va_arg: %s", va_arg(args, char *));
+		if (*format == '%')
+		{
+			format++;
+			if (*format == 'c')
+			{
+				unsigned char c = (unsigned char)va_arg(args, int);
+				// ft_putstr_fd("ft_printf %c: ", 1);
+				ft_printf_c(c);
+				// printf("printf %c", c);
+				// ft_putchar_fd('\n', 1);
+			}
+			// else if (*format == 's')
+			// {
+			// 	char *str = va_arg(args, char *);
+			// 	// ft_putstr_fd("ft_printf %s: ", 1);
+			// 	ft_printf_s(str);
+			// 	// printf("printf %s", str);
+			// 	// ft_putchar_fd('\n', 1);
+			// }
+			// else if (*format == 'p')
+			// {
+			// 	void *addr = va_arg(args, void *);
+			// 	// ft_putstr_fd("ft_printf %p: ", 1);
+			// 	ft_printf_p(addr);
+			// 	// printf("printf %p", addr);
+			// 	// ft_putchar_fd('\n', 1);
+			// }
+			// else if (*format == 'd' || *format == 'i')
+			// {
+			// 	int i = va_arg(args, int);
+			// 	// ft_putstr_fd("ft_printf %d || %i: ", 1);
+			// 	ft_printf_d(i);
+			// 	// printf("printf %d", i);
+			// 	// ft_putchar_fd('\n', 1);
+			// }
+			// else if (*format == 'u')
+			// {
+			// 	unsigned int u = va_arg(args, unsigned int);
+			// 	// ft_putstr_fd("ft_printf %u: ", 1);
+			// 	ft_printf_u(u);
+			// 	// printf("printf %u", u);
+			// 	// ft_putchar_fd('\n', 1);
+			// }
+			// else if (*format == 'x')
+			// {
+			// 	unsigned int x = va_arg(args, unsigned int);
+			// 	// ft_putstr_fd("ft_printf %x: ", 1);
+			// ft_printf_x(x);
+			// 	// printf("printf %x", x);
+			// 	// ft_putchar_fd('\n', 1);
+			// }
+			// else if (*format == 'X')
+			// {
+			// 	unsigned int upper_x = va_arg(args, unsigned int);
+			// 	// ft_putstr_fd("ft_printf %X: ", 1);
+			// 	ft_printf_upper_x(upper_x);
+			// 	// printf("printf %X", upper_x);
+			// 	// ft_putchar_fd('\n', 1);
+			// }
+			// else if (*format == '%')
+			// {
+			// 	// ft_putstr_fd("ft_printf %%: ", 1);
+			// 	ft_putchar_fd('%', 1);
+			// 	// printf("printf ");
+			// 	// ft_putchar_fd('\n', 1);
+			// }
+		}
+		else
+		{
+			ft_printf_c(*format);
+		}
 		format++;
-		// if (*format == '%')
-		// {
-		// 	format++;
-			
-            // if (*format == 'd') {
-            //     int i = va_arg(args, int);  // Get the next integer argument
-            //     printf("Integer: %d\n", i);
-            // } else if (*format == 'c') {
-            //     char c = (char) va_arg(args, int);  // Get the next char argument (promoted to int)
-            //     printf("Char: %c\n", c);
-            // }
-		// }
-		// va_arg(args, char *);
-		// format++;
 	}
 	va_end(args);
-	return (0);
+	return (1);
 }
 
-int	main(void)
+/* int	main(void)
 {
-	// unsigned int	num;
+	char *str;
 
-	// num = 4294967291;
-	ft_printf("%", "Aa");
-	// ft_printf_upper_x(num);
+	str = "Hello!";
+	// ft_printf("%c %s %p %d %u %x %X %%", 'c', "Aa", &str, 1, 4294967295, 195, 195);
+	ft_printf("%c", '0');
+	printf("\n");
+	printf("%c", '0');
+
+	// printf("\n");
+	// printf("\n");
+	// ft_printf(" %%%% ");
+	// printf("\n");
+	// printf(" %%%% ");
+
+	// printf("\n");
+	// printf("\n");
+	// ft_printf(" %% %% %% ");
+	// printf("\n");
+	// printf(" %% %% %% ");
 	return (0);
-}
+} */
