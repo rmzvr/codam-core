@@ -1,6 +1,6 @@
 NAME := libftprintf.a
-# LIBFT_DIR := ./libft
-# LIBFT_NAME   = $(LIBFT_DIR)/libft.a
+LIBFT_DIR := ./libft
+LIBFT_NAME   = $(LIBFT_DIR)/libft.a
 
 SOURCES := \
 	ft_printf.c \
@@ -10,10 +10,7 @@ SOURCES := \
 	ft_printf_d.c \
 	ft_printf_u.c \
 	ft_printf_x.c \
-	ft_printf_X.c \
-	ft_putchar_fd.c \
-	ft_putnbr_fd.c \
-	ft_putstr_fd.c
+	ft_printf_X.c
 
 OBJECTS := $(SOURCES:%.c=%.o)
 
@@ -24,25 +21,29 @@ FLAGS := -Wall -Wextra -Werror
 
 all: $(NAME)
 
-$(NAME): $(OBJECTS)
-	ar -rcs $@ $^
+$(NAME): $(OBJECTS) $(LIBFT_NAME)
+	make -C $(LIBFT_DIR)
+	ar -x $(LIBFT_NAME)
+	ar -rcs $@ $(OBJECTS) *.o
 
 #! DELETE BEFORE PUSH
-ft_printf: $(OBJECTS)
-	$(CC) -o $@ $^
+ft_printf: $(OBJECTS) $(LIBFT_NAME)
+	$(CC) -o $@ $^ -L $(LIBFT_DIR) -lft
 
-# $(LIBFT_NAME):
-# 	make -C $(LIBFT_DIR)
+$(LIBFT_NAME):
+	make -C $(LIBFT_DIR)
 
 %.o: %.c
 	$(CC) $(FLAGS) -c $< -o $@
 
 clean:
 	rm -rf $(OBJECTS)
-	# make -C $(LIBFT_DIR) clean
+	#! DELETE BEFORE PUSH
+	rm -rf *.o
+	make -C $(LIBFT_DIR) clean
 
 fclean: clean
 	rm -rf $(NAME)
-	# make -C $(LIBFT_DIR) fclean
+	make -C $(LIBFT_DIR) fclean
 
 re: fclean all
