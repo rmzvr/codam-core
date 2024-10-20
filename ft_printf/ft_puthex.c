@@ -1,39 +1,32 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_printf.c                                        :+:      :+:    :+:   */
+/*   ft_puthex.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: rzvir <rzvir@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/10/18 12:59:39 by rzvir             #+#    #+#             */
-/*   Updated: 2024/10/20 17:37:59 by rzvir            ###   ########.fr       */
+/*   Created: 2024/10/20 10:28:14 by rzvir             #+#    #+#             */
+/*   Updated: 2024/10/20 17:37:06 by rzvir            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
-#include <stdio.h>
 
-int	ft_printf(const char *format, ...)
+int	ft_puthex(unsigned long l, int to_upper)
 {
-	va_list	args;
-	int		char_count;
+	int		count;
+	char	*hex_base;
 
-	char_count = 0;
-	va_start(args, format);
-	while (*format != '\0')
+	if (to_upper > 0)
+		hex_base = "0123456789ABCDEF";
+	else
+		hex_base = "0123456789abcdef";
+	count = 0;
+	if (l >= 16)
 	{
-		if (*format == '%')
-		{
-			format++;
-			char_count = ft_handle_conv_specs(args, *format, char_count);
-		}
-		else
-		{
-			ft_putchar_fd(*format, 1);
-			char_count++;
-		}
-		format++;
+		count += ft_puthex(l / 16, to_upper);
 	}
-	va_end(args);
-	return (char_count);
+	ft_putchar_fd(hex_base[l % 16], 1);
+	count++;
+	return (count);
 }

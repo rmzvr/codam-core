@@ -1,39 +1,36 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_printf.c                                        :+:      :+:    :+:   */
+/*   ft_printf_p_spec.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: rzvir <rzvir@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/10/18 12:59:39 by rzvir             #+#    #+#             */
-/*   Updated: 2024/10/20 17:37:59 by rzvir            ###   ########.fr       */
+/*   Created: 2024/10/20 14:34:40 by rzvir             #+#    #+#             */
+/*   Updated: 2024/10/20 17:18:00 by rzvir            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
-#include <stdio.h>
 
-int	ft_printf(const char *format, ...)
+int	ft_printf_p_spec(va_list args, int char_count)
 {
-	va_list	args;
-	int		char_count;
+	unsigned long	addr;
+	char			*hex_prefix_str;
+	char			*null_pointer_str;
 
-	char_count = 0;
-	va_start(args, format);
-	while (*format != '\0')
+	hex_prefix_str = "0x";
+	null_pointer_str = "(nil)";
+	addr = va_arg(args, unsigned long);
+	if (addr == 0)
 	{
-		if (*format == '%')
-		{
-			format++;
-			char_count = ft_handle_conv_specs(args, *format, char_count);
-		}
-		else
-		{
-			ft_putchar_fd(*format, 1);
-			char_count++;
-		}
-		format++;
+		ft_putstr_fd(null_pointer_str, 1);
+		char_count += ft_strlen(null_pointer_str);
 	}
-	va_end(args);
+	else
+	{
+		ft_putstr_fd(hex_prefix_str, 1);
+		char_count += ft_strlen(hex_prefix_str);
+		char_count += ft_puthex(addr, 0);
+	}
 	return (char_count);
 }

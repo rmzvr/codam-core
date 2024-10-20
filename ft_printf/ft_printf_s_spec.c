@@ -1,39 +1,33 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_printf.c                                        :+:      :+:    :+:   */
+/*   ft_printf_s_spec.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: rzvir <rzvir@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/10/18 12:59:39 by rzvir             #+#    #+#             */
-/*   Updated: 2024/10/20 17:37:59 by rzvir            ###   ########.fr       */
+/*   Created: 2024/10/20 14:34:36 by rzvir             #+#    #+#             */
+/*   Updated: 2024/10/20 17:31:58 by rzvir            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
-#include <stdio.h>
 
-int	ft_printf(const char *format, ...)
+int	ft_printf_s_spec(va_list args, int char_count)
 {
-	va_list	args;
-	int		char_count;
+	char	*str;
+	char	*null_str;
 
-	char_count = 0;
-	va_start(args, format);
-	while (*format != '\0')
+	null_str = "(null)";
+	str = va_arg(args, char *);
+	if (str == NULL)
 	{
-		if (*format == '%')
-		{
-			format++;
-			char_count = ft_handle_conv_specs(args, *format, char_count);
-		}
-		else
-		{
-			ft_putchar_fd(*format, 1);
-			char_count++;
-		}
-		format++;
+		ft_putstr_fd(null_str, 1);
+		char_count += ft_strlen(null_str);
 	}
-	va_end(args);
+	else
+	{
+		char_count += ft_strlen(str);
+		ft_putstr_fd(str, 1);
+	}
 	return (char_count);
 }

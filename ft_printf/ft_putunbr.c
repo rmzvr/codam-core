@@ -1,30 +1,29 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_printf_X.c                                      :+:      :+:    :+:   */
+/*   ft_putunbr.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rmzvr <rmzvr@student.42.fr>                +#+  +:+       +#+        */
+/*   By: rzvir <rzvir@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/10/18 12:59:39 by rzvir             #+#    #+#             */
-/*   Updated: 2024/10/18 20:59:18 by rmzvr            ###   ########.fr       */
+/*   Created: 2024/10/20 16:35:29 by rzvir             #+#    #+#             */
+/*   Updated: 2024/10/20 17:37:06 by rzvir            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
 
-static void	ft_puthexbase(unsigned int i)
+int	ft_putunbr(unsigned int i)
 {
-	char	*base;
+	char	digit;
+	int		count;
 
-	base = "0123456789ABCDEF";
-	if (i >= 16)
+	count = 0;
+	if (i > 9)
 	{
-		ft_puthexbase(i / 16);
+		count += ft_putunbr(i / 10);
 	}
-	ft_putchar_fd(base[i % 16], 1);
-}
-
-void	ft_printf_upper_x(unsigned int i)
-{
-	ft_puthexbase(i);
+	digit = i % 10 + '0';
+	write(1, &digit, 1);
+	count++;
+	return (count);
 }

@@ -1,25 +1,23 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_printf_u.c                                      :+:      :+:    :+:   */
+/*   ft_printf_c_spec.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rmzvr <rmzvr@student.42.fr>                +#+  +:+       +#+        */
+/*   By: rzvir <rzvir@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/10/18 12:59:39 by rzvir             #+#    #+#             */
-/*   Updated: 2024/10/18 20:56:33 by rmzvr            ###   ########.fr       */
+/*   Created: 2024/10/20 14:34:36 by rzvir             #+#    #+#             */
+/*   Updated: 2024/10/20 17:37:06 by rzvir            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
 
-void	ft_printf_u(unsigned int i)
+int	ft_printf_c_spec(va_list args, int char_count)
 {
-	char	digit;
+	unsigned char	c;
 
-	if (i > 9)
-	{
-		ft_printf_u(i / 10);
-	}
-	digit = i % 10 + '0';
-	write(1, &digit, 1);
+	c = va_arg(args, int);
+	ft_putchar_fd(c, 1);
+	char_count++;
+	return (char_count);
 }

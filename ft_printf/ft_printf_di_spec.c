@@ -1,30 +1,23 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_printf_x.c                                      :+:      :+:    :+:   */
+/*   ft_printf_di_spec.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rmzvr <rmzvr@student.42.fr>                +#+  +:+       +#+        */
+/*   By: rzvir <rzvir@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/10/18 12:59:39 by rzvir             #+#    #+#             */
-/*   Updated: 2024/10/18 20:56:12 by rmzvr            ###   ########.fr       */
+/*   Created: 2024/10/20 14:34:36 by rzvir             #+#    #+#             */
+/*   Updated: 2024/10/20 17:37:06 by rzvir            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
 
-static void	ft_puthexbase(unsigned int i)
+int	ft_printf_di_spec(va_list args, int char_count)
 {
-	char	*base;
+	int	i;
 
-	base = "0123456789abcdef";
-	if (i >= 16)
-	{
-		ft_puthexbase(i / 16);
-	}
-	ft_putchar_fd(base[i % 16], 1);
-}
-
-void	ft_printf_x(unsigned int i)
-{
-	ft_puthexbase(i);
+	i = va_arg(args, int);
+	ft_putnbr_fd(i, 1);
+	char_count += ft_nbrlen(i);
+	return (char_count);
 }

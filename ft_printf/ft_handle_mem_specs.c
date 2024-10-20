@@ -1,39 +1,30 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_printf.c                                        :+:      :+:    :+:   */
+/*   ft_handle_mem_specs.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: rzvir <rzvir@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/10/18 12:59:39 by rzvir             #+#    #+#             */
-/*   Updated: 2024/10/20 17:37:59 by rzvir            ###   ########.fr       */
+/*   Created: 2024/10/20 14:34:51 by rzvir             #+#    #+#             */
+/*   Updated: 2024/10/20 17:10:28 by rzvir            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
-#include <stdio.h>
 
-int	ft_printf(const char *format, ...)
+int	ft_handle_mem_specs(char conv_spec, va_list args, int char_count)
 {
-	va_list	args;
-	int		char_count;
-
-	char_count = 0;
-	va_start(args, format);
-	while (*format != '\0')
+	if (conv_spec == 'p')
 	{
-		if (*format == '%')
-		{
-			format++;
-			char_count = ft_handle_conv_specs(args, *format, char_count);
-		}
-		else
-		{
-			ft_putchar_fd(*format, 1);
-			char_count++;
-		}
-		format++;
+		char_count = ft_printf_p_spec(args, char_count);
 	}
-	va_end(args);
+	else if (conv_spec == 'x')
+	{
+		char_count = ft_printf_x_spec(args, char_count);
+	}
+	else if (conv_spec == 'X')
+	{
+		char_count = ft_printf_ux_spec(args, char_count);
+	}
 	return (char_count);
 }

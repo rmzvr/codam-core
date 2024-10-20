@@ -1,18 +1,20 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_printf_s.c                                      :+:      :+:    :+:   */
+/*   ft_printf_percent_spec.c                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rmzvr <rmzvr@student.42.fr>                +#+  +:+       +#+        */
+/*   By: rzvir <rzvir@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/10/18 12:59:39 by rzvir             #+#    #+#             */
-/*   Updated: 2024/10/18 20:55:00 by rmzvr            ###   ########.fr       */
+/*   Created: 2024/10/20 14:34:36 by rzvir             #+#    #+#             */
+/*   Updated: 2024/10/20 17:37:06 by rzvir            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
 
-void	ft_printf_s(char *str)
+int	ft_printf_percent_spec(int char_count)
 {
-	ft_putstr_fd(str, 1);
+	ft_putchar_fd('%', 1);
+	char_count++;
+	return (char_count);
 }
