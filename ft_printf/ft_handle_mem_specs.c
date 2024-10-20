@@ -1,37 +1,30 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_printf_p.c                                      :+:      :+:    :+:   */
+/*   ft_handle_mem_specs.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: rzvir <rzvir@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/10/18 12:59:39 by rzvir             #+#    #+#             */
-/*   Updated: 2024/10/19 18:05:36 by rzvir            ###   ########.fr       */
+/*   Created: 2024/10/20 14:34:51 by rzvir             #+#    #+#             */
+/*   Updated: 2024/10/20 17:10:28 by rzvir            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
 
-static void	ft_puthexbase(unsigned long l)
+int	ft_handle_mem_specs(char conv_spec, va_list args, int char_count)
 {
-	char	*base;
-
-	base = "0123456789abcdef";
-	if (l >= 16)
+	if (conv_spec == 'p')
 	{
-		ft_puthexbase(l / 16);
+		char_count = ft_printf_p_spec(args, char_count);
 	}
-	else
+	else if (conv_spec == 'x')
 	{
-		ft_putstr_fd("0x", 1);
+		char_count = ft_printf_x_spec(args, char_count);
 	}
-	ft_putchar_fd(base[l % 16], 1);
-}
-
-void	ft_printf_p(void *addr)
-{
-	unsigned long	l;
-
-	l = (unsigned long)addr;
-	ft_puthexbase(l);
+	else if (conv_spec == 'X')
+	{
+		char_count = ft_printf_ux_spec(args, char_count);
+	}
+	return (char_count);
 }

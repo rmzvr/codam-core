@@ -1,39 +1,23 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_printf.c                                        :+:      :+:    :+:   */
+/*   ft_printf_di_spec.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: rzvir <rzvir@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/10/18 12:59:39 by rzvir             #+#    #+#             */
-/*   Updated: 2024/10/20 17:33:41 by rzvir            ###   ########.fr       */
+/*   Created: 2024/10/20 14:34:36 by rzvir             #+#    #+#             */
+/*   Updated: 2024/10/20 14:52:54 by rzvir            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
-#include <stdio.h>
 
-int	ft_printf(const char *format, ...)
+int	ft_printf_di_spec(va_list args, int char_count)
 {
-	va_list	args;
-	int		char_count;
+	int	i;
 
-	char_count = 0;
-	va_start(args, format);
-	while (*format != '\0')
-	{
-		if (*format == '%')
-		{
-			format++;
-			char_count = ft_handle_conv_specs(args, *format, char_count);
-		}
-		else
-		{
-			ft_putchar_fd(*format, 1);
-			char_count++;
-		}
-		format++;
-	}
-	va_end(args);
+	i = va_arg(args, int);
+	ft_putnbr_fd(i, 1);
+	char_count += ft_nbrlen(i);
 	return (char_count);
 }

@@ -1,25 +1,22 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_printf_u.c                                      :+:      :+:    :+:   */
+/*   ft_printf_ux_spec.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: rzvir <rzvir@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/10/18 12:59:39 by rzvir             #+#    #+#             */
-/*   Updated: 2024/10/19 18:05:48 by rzvir            ###   ########.fr       */
+/*   Created: 2024/10/20 14:36:47 by rzvir             #+#    #+#             */
+/*   Updated: 2024/10/20 17:18:00 by rzvir            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
 
-void	ft_printf_u(unsigned int i)
+int	ft_printf_ux_spec(va_list args, int char_count)
 {
-	char	digit;
+	unsigned int	i;
 
-	if (i > 9)
-	{
-		ft_printf_u(i / 10);
-	}
-	digit = i % 10 + '0';
-	write(1, &digit, 1);
+	i = va_arg(args, unsigned int);
+	char_count += ft_puthex(i, 1);
+	return (char_count);
 }

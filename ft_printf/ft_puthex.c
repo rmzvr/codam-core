@@ -1,18 +1,32 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_printf_c.c                                      :+:      :+:    :+:   */
+/*   ft_puthex.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: rzvir <rzvir@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/10/18 12:59:39 by rzvir             #+#    #+#             */
-/*   Updated: 2024/10/19 18:05:23 by rzvir            ###   ########.fr       */
+/*   Created: 2024/10/20 10:28:14 by rzvir             #+#    #+#             */
+/*   Updated: 2024/10/20 17:28:43 by rzvir            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
 
-void	ft_printf_c(char c)
+int	ft_puthex(unsigned long l, int to_upper)
 {
-	ft_putchar_fd(c, 1);
+	int		count;
+	char	*hex_base;
+
+	if (to_upper > 0)
+		hex_base = "0123456789ABCDEF";
+	else
+		hex_base = "0123456789abcdef";
+	count = 0;
+	if (l >= 16)
+	{
+		count += ft_puthex(l / 16, to_upper);
+	}
+	ft_putchar_fd(hex_base[l % 16], 1);
+	count++;
+	return (count);
 }

@@ -1,39 +1,29 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_printf.c                                        :+:      :+:    :+:   */
+/*   ft_putunbr.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: rzvir <rzvir@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/10/18 12:59:39 by rzvir             #+#    #+#             */
-/*   Updated: 2024/10/20 17:33:41 by rzvir            ###   ########.fr       */
+/*   Created: 2024/10/20 16:35:29 by rzvir             #+#    #+#             */
+/*   Updated: 2024/10/20 16:43:34 by rzvir            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
-#include <stdio.h>
 
-int	ft_printf(const char *format, ...)
+int	ft_putunbr(unsigned int i)
 {
-	va_list	args;
-	int		char_count;
+	char	digit;
+	int		count;
 
-	char_count = 0;
-	va_start(args, format);
-	while (*format != '\0')
+	count = 0;
+	if (i > 9)
 	{
-		if (*format == '%')
-		{
-			format++;
-			char_count = ft_handle_conv_specs(args, *format, char_count);
-		}
-		else
-		{
-			ft_putchar_fd(*format, 1);
-			char_count++;
-		}
-		format++;
+		count += ft_putunbr(i / 10);
 	}
-	va_end(args);
-	return (char_count);
+	digit = i % 10 + '0';
+	write(1, &digit, 1);
+	count++;
+	return (count);
 }

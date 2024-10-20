@@ -1,30 +1,30 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_printf_x.c                                      :+:      :+:    :+:   */
+/*   ft_handle_char_specs.c                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: rzvir <rzvir@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/10/18 12:59:39 by rzvir             #+#    #+#             */
-/*   Updated: 2024/10/19 18:05:52 by rzvir            ###   ########.fr       */
+/*   Created: 2024/10/20 14:35:00 by rzvir             #+#    #+#             */
+/*   Updated: 2024/10/20 14:49:09 by rzvir            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
 
-static void	ft_puthexbase(unsigned int i)
+int	ft_handle_char_specs(char conv_spec, va_list args, int char_count)
 {
-	char	*base;
-
-	base = "0123456789abcdef";
-	if (i >= 16)
+	if (conv_spec == 'c')
 	{
-		ft_puthexbase(i / 16);
+		char_count = ft_printf_c_spec(args, char_count);
 	}
-	ft_putchar_fd(base[i % 16], 1);
-}
-
-void	ft_printf_x(unsigned int i)
-{
-	ft_puthexbase(i);
+	else if (conv_spec == 's')
+	{
+		char_count = ft_printf_s_spec(args, char_count);
+	}
+	else if (conv_spec == '%')
+	{
+		char_count = ft_printf_percent_spec(char_count);
+	}
+	return (char_count);
 }
