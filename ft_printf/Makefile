@@ -29,15 +29,11 @@ FLAGS := -Wall -Wextra -Werror
 
 all: $(NAME)
 
-$(NAME): $(OBJECTS) $(LIBFT_NAME)
-#! DELETE BEFORE PUSH
+$(NAME): $(OBJECTS)
 	make -C $(LIBFT_DIR)
-	ar -x $(LIBFT_NAME)
-	ar -rcs $@ $(OBJECTS) *.o
-
-#! DELETE BEFORE PUSH
-ft_printf: $(OBJECTS) $(LIBFT_NAME)
-	$(CC) -o $@ $^ -L $(LIBFT_DIR) -lft
+	cp ./libft/libft.a .
+	mv libft.a $@
+	ar -rcs $@ $(OBJECTS)
 
 $(LIBFT_NAME):
 	make -C $(LIBFT_DIR)
@@ -47,8 +43,6 @@ $(LIBFT_NAME):
 
 clean:
 	rm -rf $(OBJECTS)
-	#! DELETE BEFORE PUSH
-	rm -rf *.o
 	make -C $(LIBFT_DIR) clean
 
 fclean: clean
