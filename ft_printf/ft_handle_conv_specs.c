@@ -6,25 +6,25 @@
 /*   By: rzvir <rzvir@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/20 14:34:56 by rzvir             #+#    #+#             */
-/*   Updated: 2024/10/20 14:34:57 by rzvir            ###   ########.fr       */
+/*   Updated: 2024/10/26 11:24:33 by rzvir            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
 
-int	ft_handle_conv_specs(va_list	args, char conv_spec, int char_count)
+int	ft_handle_conv_specs(va_list args, char conv_spec, int str_len)
 {
 	if (ft_strchr("cs%", conv_spec))
 	{
-		char_count = ft_handle_char_specs(conv_spec, args, char_count);
+		str_len = ft_handle_char_specs(args, conv_spec, str_len);
 	}
 	else if (ft_strchr("diu", conv_spec))
 	{
-		char_count = ft_handle_num_specs(conv_spec, args, char_count);
+		str_len = ft_handle_num_specs(args, conv_spec, str_len);
 	}
 	else if (ft_strchr("pxX", conv_spec))
 	{
-		char_count = ft_handle_mem_specs(conv_spec, args, char_count);
+		str_len = ft_handle_mem_specs(args, conv_spec, str_len);
 	}
-	return (char_count);
+	return (str_len);
 }
