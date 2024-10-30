@@ -20,8 +20,7 @@ all: $(NAME)
 
 $(NAME): $(OBJECTS)
 	make -C $(LIBFT_DIR)
-	cp ./libft/libft.a .
-	mv libft.a $@
+	mv ./libft/libft.a ./$@
 	ar -rcs $@ $(OBJECTS)
 
 $(LIBFT_NAME):
