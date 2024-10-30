@@ -6,39 +6,24 @@
 /*   By: rzvir <rzvir@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/20 14:34:51 by rzvir             #+#    #+#             */
-/*   Updated: 2024/10/26 11:35:05 by rzvir            ###   ########.fr       */
+/*   Updated: 2024/10/30 11:35:39 by rzvir            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
-
-static int	ft_puthex(unsigned long l, int to_upper)
-{
-	int		count;
-	char	*hex_base;
-
-	if (to_upper > 0)
-		hex_base = "0123456789ABCDEF";
-	else
-		hex_base = "0123456789abcdef";
-	count = 0;
-	if (l >= 16)
-	{
-		count += ft_puthex(l / 16, to_upper);
-	}
-	ft_putchar_fd(hex_base[l % 16], 1);
-	count++;
-	return (count);
-}
 
 static int	ft_print_p_spec(va_list args, int str_len)
 {
 	unsigned long	addr;
 	char			*hex_prefix_str;
 	char			*null_pointer_str;
+	char			*base;
+	size_t			base_len;
 
 	hex_prefix_str = "0x";
 	null_pointer_str = "(nil)";
+	base = "0123456789abcdef";
+	base_len = ft_strlen(base);
 	addr = va_arg(args, unsigned long);
 	if (addr == 0)
 	{
@@ -49,7 +34,7 @@ static int	ft_print_p_spec(va_list args, int str_len)
 	{
 		ft_putstr_fd(hex_prefix_str, 1);
 		str_len += ft_strlen(hex_prefix_str);
-		str_len += ft_puthex(addr, 0);
+		str_len += ft_put_unum(addr, base, base_len);
 	}
 	return (str_len);
 }
@@ -57,18 +42,26 @@ static int	ft_print_p_spec(va_list args, int str_len)
 static int	ft_print_x_spec(va_list args, int str_len)
 {
 	unsigned int	i;
+	char			*base;
+	size_t			base_len;
 
+	base = "0123456789abcdef";
+	base_len = ft_strlen(base);
 	i = va_arg(args, unsigned int);
-	str_len += ft_puthex(i, 0);
+	str_len += ft_put_unum(i, base, base_len);
 	return (str_len);
 }
 
 static int	ft_print_ux_spec(va_list args, int str_len)
 {
 	unsigned int	i;
+	char			*base;
+	size_t			base_len;
 
+	base = "0123456789ABCDEF";
+	base_len = ft_strlen(base);
 	i = va_arg(args, unsigned int);
-	str_len += ft_puthex(i, 1);
+	str_len += ft_put_unum(i, base, base_len);
 	return (str_len);
 }
 

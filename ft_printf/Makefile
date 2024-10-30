@@ -4,6 +4,7 @@ LIBFT_NAME   = $(LIBFT_DIR)/libft.a
 
 SOURCES := \
 	ft_printf.c \
+	ft_put_unum.c \
 	ft_handle_conv_specs.c \
 	ft_handle_char_specs.c \
 	ft_handle_num_specs.c \
