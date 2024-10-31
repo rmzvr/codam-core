@@ -6,13 +6,14 @@
 /*   By: rzvir <rzvir@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/30 12:19:41 by rzvir             #+#    #+#             */
-/*   Updated: 2024/10/30 18:14:33 by rzvir            ###   ########.fr       */
+/*   Updated: 2024/10/31 17:41:25 by rzvir            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
+#include <string.h>
 
-size_t	ft_strlen(const char *s)
+static size_t	ft_strlen(const char *s)
 {
 	size_t	i;
 
@@ -24,53 +25,16 @@ size_t	ft_strlen(const char *s)
 	return (i);
 }
 
-char	*ft_strdup(const char *s)
-{
-	int		i;
-	char	*copy;
-	int		s_len;
+// static void	*ft_write_to_line(char *line, char *buffer)
+// {
+// 	size_t	line_len;
 
-	i = 0;
-	s_len = ft_strlen(s);
-	copy = (char *)malloc((s_len + 1) * sizeof(char));
-	if (copy == NULL)
-	{
-		return (NULL);
-	}
-	while (s[i] != '\0')
-	{
-		copy[i] = s[i];
-		i++;
-	}
-	copy[i] = '\0';
-	return (copy);
-}
+// 	if (line == NULL)
+// 		return ;
+// 	line_len = ft_strlen(line);
+// }
 
-char	*ft_strrchr(const char *s, int c)
-{
-	size_t			s_len;
-	unsigned char	*str;
-	unsigned char	chr;
-
-	s_len = ft_strlen(s);
-	chr = (unsigned char) c;
-	str = (unsigned char *) s + s_len;
-	while (str != (unsigned char *)s)
-	{
-		if (*str == chr)
-		{
-			return ((char *)str);
-		}
-		str--;
-	}
-	if (*str == chr)
-	{
-		return ((char *)str);
-	}
-	return (NULL);
-}
-
-char	*ft_strjoin(char const *s1, char const *s2)
+char	*ft_strjoin(char *s1, char *s2)
 {
 	char	*joined_str;
 	size_t	i;
@@ -96,63 +60,80 @@ char	*ft_strjoin(char const *s1, char const *s2)
 		i++;
 	}
 	joined_str[i] = '\0';
+	free(s1);
 	return (joined_str);
 }
 
-size_t	ft_strlcat(char *dst, const char *src, size_t size)
+int	ft_count_char_after_new_line(char *str)
 {
-	size_t	i;
-	size_t	limit;
-	size_t	dst_len;
-	size_t	src_len;
+	int	i;
+	int	count;
 
 	i = 0;
-	src_len = ft_strlen(src);
-	if (dst == NULL && size == 0)
-		return (size + src_len);
-	dst_len = ft_strlen(dst);
-	if (size <= dst_len)
+	count = 0;
+	while (str[i] != '\n' && str[i] != '\0')
 	{
-		return (size + src_len);
-	}
-	limit = size - dst_len - 1;
-	while (src[i] != '\0' && i < limit && 0 < limit)
-	{
-		dst[dst_len + i] = src[i];
 		i++;
 	}
-	dst[dst_len + i] = '\0';
-	return (dst_len + src_len);
+	if (str[i] == '\0')
+		return (count);
+	i++;
+	while (str[i] != '\0')
+	{
+		i++;
+		count++;
+	}
+	return (count);
+}
+
+void free_stash(char **stash) {
+    if (*stash != NULL) {
+        free(*stash);
+        *stash = NULL;
+    }
 }
 
 char	*get_next_line(int fd)
 {
-	int			bytes_read;
-	static char	buffer[3];
-	char		*line;
-	char		*save_new_line;
+	char		buffer[BUFFER_SIZE];
+	static ssize_t		bytes_read;
+	char		*line = NULL;
+	static char	*stash;
+	int			chars_after_new_line;
 
-	line = ft_strdup("");
+	if (stash == NULL)
+	{
+		stash = strndup("", 1);
+	}
 	bytes_read = read(fd, buffer, sizeof(buffer));
+    if (bytes_read == 0) {
+        free(stash);
+        stash = NULL;
+        return (NULL);
+    }
 	while (bytes_read != 0)
 	{
-		line = ft_strjoin(line, buffer);
-		save_new_line = ft_strrchr(buffer, '\n');
-		if (save_new_line != NULL)
+		stash = ft_strjoin(stash, buffer);
+		if (strrchr(stash, '\n'))
 		{
-			save_new_line = save_new_line + 1;
-			size_t len = ft_strlen(save_new_line);
-			write(1, line, ft_strlen(line));
-			return (NULL);
+			chars_after_new_line = ft_count_char_after_new_line(buffer);
+			line = strndup(stash, ft_strlen(stash) - chars_after_new_line);
+			return (line);
 		}
 		bytes_read = read(fd, buffer, sizeof(buffer));
 	}
-	return (NULL);
+	free(line);
+	return (line);
 }
 
 int	main(void)
 {
-	int	fd = open("test.txt", O_RDWR);
-	get_next_line(fd);
+	int	fd;
+	char	*p;
+
+	fd = open("test.txt", O_RDWR);
+	p = get_next_line(fd);
+	free(p);
+	close(fd);
 	return (0);
 }
