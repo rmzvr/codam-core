@@ -6,14 +6,14 @@
 /*   By: rzvir <rzvir@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/30 12:19:41 by rzvir             #+#    #+#             */
-/*   Updated: 2024/11/06 18:09:00 by rzvir            ###   ########.fr       */
+/*   Updated: 2024/11/06 18:09:33 by rzvir            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 #include <string.h>
 
-size_t	ft_strlen(const char *s)
+static size_t	ft_strlen(const char *s)
 {
 	size_t	i;
 
@@ -24,6 +24,15 @@ size_t	ft_strlen(const char *s)
 	}
 	return (i);
 }
+
+// static void	*ft_write_to_line(char *line, char *buffer)
+// {
+// 	size_t	line_len;
+
+// 	if (line == NULL)
+// 		return ;
+// 	line_len = ft_strlen(line);
+// }
 
 char	*ft_strjoin(char *s1, char *s2)
 {
@@ -55,27 +64,7 @@ char	*ft_strjoin(char *s1, char *s2)
 	return (joined_str);
 }
 
-char	*ft_strchr(const char *s, int c)
-{
-	unsigned char	chr;
-	unsigned char	*str;
-
-	chr = (unsigned char) c;
-	str = (unsigned char *) s;
-	while (*str != '\0')
-	{
-		if (*str == chr)
-			return ((char *)str);
-		str++;
-	}
-	if (chr == '\0')
-	{
-		return ((char *)str);
-	}
-	return (NULL);
-}
-
-int	ft_count_char_before(char *str)
+int	ft_count_char_after_new_line(char *str)
 {
 	int	i;
 	int	count;
@@ -97,82 +86,54 @@ int	ft_count_char_before(char *str)
 	return (count);
 }
 
-size_t	ft_strlcpy(char *dst, const char *src, size_t size)
-{
-	size_t	i;
-	size_t	src_len;
-
-	i = 0;
-	src_len = ft_strlen(src);
-	if (size == 0)
-	{
-		return (src_len);
-	}
-	while (src[i] != '\0' && i < size - 1 && size != 0)
-	{
-		dst[i] = src[i];
-		i++;
-	}
-	dst[i] = '\0';
-	return (src_len);
+void free_stash(char **stash) {
+    if (*stash != NULL) {
+        free(*stash);
+        *stash = NULL;
+    }
 }
 
 char	*get_next_line(int fd)
 {
-	int			bytes_read;
 	char		buffer[BUFFER_SIZE];
-	char		*line;
+	static ssize_t		bytes_read;
+	char		*line = NULL;
 	static char	*stash;
-	int			chars_before_count;
+	int			chars_after_new_line;
 
 	if (stash == NULL)
 	{
 		stash = strndup("", 1);
 	}
 	bytes_read = read(fd, buffer, sizeof(buffer));
-	if (ft_strlen(stash) != 0 && ft_strlen(stash) <= BUFFER_SIZE && bytes_read == 0)
+    if (bytes_read == 0) {
+        free(stash);
+        stash = NULL;
+        return (NULL);
+    }
+	while (bytes_read != 0)
 	{
-		line = strndup(stash, ft_strlen(stash));
-		if (!line)
-				return (NULL);
-		stash = strndup("", 1);
-		if (!stash)
-				return (NULL);
-		return (line);
-	}
-	while (bytes_read != 0 || ft_strlen(stash) != 0)
-	{
-		if (bytes_read != 0)
+		stash = ft_strjoin(stash, buffer);
+		if (strrchr(stash, '\n'))
 		{
-			ft_strlcpy(buffer, buffer, bytes_read + 1);
-		}
-		if (bytes_read != 0)
-		{
-			stash = ft_strjoin(stash, buffer);
-			if (!stash)
-				return (NULL);
-		}
-		if (strchr(stash, '\n') || bytes_read == 0)
-		{
-			chars_before_count = ft_count_char_before(buffer);
-			line = strndup(stash, ft_strlen(stash) - chars_before_count);
-			if (bytes_read != 0)
-				stash = ft_strchr(stash, '\n') + 1;
+			chars_after_new_line = ft_count_char_after_new_line(buffer);
+			line = strndup(stash, ft_strlen(stash) - chars_after_new_line);
 			return (line);
 		}
 		bytes_read = read(fd, buffer, sizeof(buffer));
 	}
-	return (NULL);
+	free(line);
+	return (line);
 }
 
 int	main(void)
 {
-	int	fd = open("test.txt", O_RDWR);
-	char *r = get_next_line(fd);
-	char *r1 = get_next_line(fd);
-	printf("%s", r);
-	printf("%s", r1);
-	free(r);
-	free(r1);
+	int	fd;
+	char	*p;
+
+	fd = open("test.txt", O_RDWR);
+	p = get_next_line(fd);
+	free(p);
+	close(fd);
 	return (0);
 }
