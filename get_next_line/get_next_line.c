@@ -6,7 +6,7 @@
 /*   By: rzvir <rzvir@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/30 12:19:41 by rzvir             #+#    #+#             */
-/*   Updated: 2024/10/31 17:41:25 by rzvir            ###   ########.fr       */
+/*   Updated: 2024/11/01 11:28:30 by rzvir            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,15 +24,6 @@ static size_t	ft_strlen(const char *s)
 	}
 	return (i);
 }
-
-// static void	*ft_write_to_line(char *line, char *buffer)
-// {
-// 	size_t	line_len;
-
-// 	if (line == NULL)
-// 		return ;
-// 	line_len = ft_strlen(line);
-// }
 
 char	*ft_strjoin(char *s1, char *s2)
 {
@@ -86,13 +77,6 @@ int	ft_count_char_after_new_line(char *str)
 	return (count);
 }
 
-void free_stash(char **stash) {
-    if (*stash != NULL) {
-        free(*stash);
-        *stash = NULL;
-    }
-}
-
 char	*get_next_line(int fd)
 {
 	char		buffer[BUFFER_SIZE];
@@ -106,15 +90,10 @@ char	*get_next_line(int fd)
 		stash = strndup("", 1);
 	}
 	bytes_read = read(fd, buffer, sizeof(buffer));
-    if (bytes_read == 0) {
-        free(stash);
-        stash = NULL;
-        return (NULL);
-    }
 	while (bytes_read != 0)
 	{
 		stash = ft_strjoin(stash, buffer);
-		if (strrchr(stash, '\n'))
+		if (strchr(stash, '\n'))
 		{
 			chars_after_new_line = ft_count_char_after_new_line(buffer);
 			line = strndup(stash, ft_strlen(stash) - chars_after_new_line);
@@ -122,18 +101,28 @@ char	*get_next_line(int fd)
 		}
 		bytes_read = read(fd, buffer, sizeof(buffer));
 	}
-	free(line);
-	return (line);
+	free(stash);
+	stash = NULL;
+	return (NULL);
+
 }
 
-int	main(void)
-{
-	int	fd;
+int main(void) {
+	int		fd;
 	char	*p;
 
 	fd = open("test.txt", O_RDWR);
 	p = get_next_line(fd);
-	free(p);
-	close(fd);
+	if (p != NULL)
+	{
+		printf("%s", p);
+		free(p);
+	}
+	while (p != NULL)
+	{
+		p = get_next_line(fd);
+		printf("%s", p);
+		free(p);
+	}
 	return (0);
 }
