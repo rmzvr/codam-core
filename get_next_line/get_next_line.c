@@ -6,7 +6,7 @@
 /*   By: rzvir <rzvir@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/30 12:19:41 by rzvir             #+#    #+#             */
-/*   Updated: 2024/11/06 18:09:57 by rzvir            ###   ########.fr       */
+/*   Updated: 2024/11/06 18:10:24 by rzvir            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,23 +111,19 @@ char	*ft_strchr(const char *s, int c)
 	return (NULL);
 }
 
-static int	ft_count_char_after_new_line(char *str)
+static int	ft_get_len_after_nl(char *str)
 {
-	int	i;
 	int	count;
 
-	i = 0;
 	count = 0;
-	while (str[i] != '\n' && str[i] != '\0')
-	{
-		i++;
-	}
-	if (str[i] == '\0')
+	while (*str != '\n' && *str != '\0')
+		str++;
+	if (*str == '\0')
 		return (count);
-	i++;
-	while (str[i] != '\0')
+	str++;
+	while (*str != '\0')
 	{
-		i++;
+		str++;
 		count++;
 	}
 	return (count);
@@ -169,24 +165,24 @@ static char	*ft_trim_stash(char *stash)
 // 	*stash = NULL;
 // }
 
-// static char	*ft_put_line(char **buffer, char **stash)
-// {
-// 	char		*line;
-// 	int			chars_after_new_line;
+static char	*ft_put_line(char **buffer, char **stash)
+{
+	char		*line;
+	int			chars_after_new_line;
 
-// 	chars_after_new_line = ft_count_char_after_new_line(*stash);
-// 	line = ft_strndup(*stash, ft_strlen(*stash) - chars_after_new_line);
-// 	if (line == NULL)
-// 	{
-// 		free(*buffer);
-// 		free(*stash);
-// 		*stash = NULL;
-// 		return (NULL);
-// 	}
-// 	*stash = ft_trim_stash(*stash);
-// 	free(*buffer);
-// 	return (line);
-// }
+	chars_after_new_line = ft_get_len_after_nl(*stash);
+	line = ft_strndup(*stash, ft_strlen(*stash) - chars_after_new_line);
+	if (line == NULL)
+	{
+		free(*buffer);
+		free(*stash);
+		*stash = NULL;
+		return (NULL);
+	}
+	*stash = ft_trim_stash(*stash);
+	free(*buffer);
+	return (line);
+}
 
 // static int	ft_is_stash_or_buffer_invalid(char **buffer, char **stash)
 // {
@@ -208,102 +204,68 @@ static char	*ft_trim_stash(char *stash)
 // 	return (0);
 // }
 
+static char	*ft_join_stash(ssize_t bytes_read, char **stash, char **buffer)
+{
+	if (bytes_read > 0)
+	{
+		(*buffer)[bytes_read] = '\0';
+		*stash = ft_strjoin(*stash, *buffer);
+		if (*stash == NULL)
+		{
+			free(*buffer);
+			return (NULL);
+		}
+	}
+	return (*stash);
+}
+
 char	*get_next_line(int fd)
 {
 	ssize_t		bytes_read;
 	char		*buffer;
-	char		*line;
 	static char	*stash;
-	int			chars_after_new_line;
+	int			done;
 
 	if (stash == NULL)
 	{
 		stash = ft_strndup("", 0);
-
 		if (stash == NULL)
-		{
 			return (NULL);
-		}
 	}
-
 	buffer = malloc(BUFFER_SIZE + 1);
-
 	if (buffer == NULL)
 	{
 		free(stash);
 		stash = NULL;
-
 		return (NULL);
 	}
-
+	done = 0;
 	bytes_read = read(fd, buffer, BUFFER_SIZE);
-	while (bytes_read > 0)
+	while (!done)
 	{
-		//! Null-terminating buffer to cut garbage
-		buffer[bytes_read] = '\0';
-		stash = ft_strjoin(stash, buffer);
+		stash = ft_join_stash(bytes_read, &stash, &buffer);
 		if (stash == NULL)
-		{
-			free(buffer);
-
 			return (NULL);
-		}
-
-		if (ft_strchr(buffer, '\n'))
-		{
-			chars_after_new_line = ft_count_char_after_new_line(stash);
-			line = ft_strndup(stash, ft_strlen(stash) - chars_after_new_line);
-
-			if (line == NULL)
-			{
-				free(buffer);
-				free(stash);
-				stash = NULL;
-
-				return (NULL);
-			}
-
-			stash = ft_trim_stash(stash);
-			free(buffer);
-
-			return (line);
-		}
-		bytes_read = read(fd, buffer, BUFFER_SIZE);
-	}
-
-	//! Enter in case fully read file, but not empty stash
-	if (bytes_read == 0 && ft_strlen(stash) > 0)
-	{
-		chars_after_new_line = ft_count_char_after_new_line(stash);
-		line = ft_strndup(stash, ft_strlen(stash) - chars_after_new_line);
-
-		if (line == NULL)
-		{
-			free(buffer);
-			free(stash);
-			stash = NULL;
-
-			return (NULL);
-		}
-
-		stash = ft_trim_stash(stash);
-		free(buffer);
-
-		return (line);
+		if ((bytes_read > 0 && ft_strchr(buffer, '\n'))
+			|| (bytes_read == 0 && ft_strlen(stash) > 0))
+			return (ft_put_line(&buffer, &stash));
+		if (bytes_read > 0)
+			bytes_read = read(fd, buffer, BUFFER_SIZE);
+		else
+			done = 1;
 	}
 	free(buffer);
 	free(stash);
 	stash = NULL;
-
 	return (NULL);
 }
 
-int	main(void)
+/* int	main(void)
 {
 	int		fd;
 	char	*p;
 
-	fd = open("test.txt", O_WRONLY);
+	fd = open("test.txt", O_RDONLY);
 	p = get_next_line(fd);
 	while (p != NULL)
 	{
@@ -313,4 +275,4 @@ int	main(void)
 	}
 	printf("%s", p);
 	return (0);
-}
+} */
