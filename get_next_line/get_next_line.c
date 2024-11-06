@@ -6,7 +6,7 @@
 /*   By: rzvir <rzvir@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/30 12:19:41 by rzvir             #+#    #+#             */
-/*   Updated: 2024/10/30 18:14:33 by rzvir            ###   ########.fr       */
+/*   Updated: 2024/11/06 18:04:01 by rzvir            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -150,9 +150,33 @@ char	*get_next_line(int fd)
 	return (NULL);
 }
 
-int	main(void)
-{
-	int	fd = open("test.txt", O_RDWR);
-	get_next_line(fd);
-	return (0);
-}
+// int	ft_run(void)
+// {
+// 	int		fd;
+// 	char	*p;
+
+// 	fd = open("test.txt", O_RDONLY);
+// 	p = get_next_line(fd);
+// 	while (p != NULL)
+// 	{
+// 		printf("%s", p);
+// 		free(p);
+// 		p = get_next_line(fd);
+// 	}
+// 	printf("%s", p);
+// 	return (0);
+// }
+
+// int	main(void)
+// {
+// 	clock_t	s_time;
+// 	clock_t	e_time;
+// 	double	t_taken;
+
+// 	s_time = clock();
+// 	ft_run();
+// 	e_time = clock();
+// 	t_taken = ((double)(e_time - s_time) / CLOCKS_PER_SEC) * 1000.0;
+// 	printf("\nExecution time: %.3f ms\n", t_taken);
+// 	return (0);
+// }
