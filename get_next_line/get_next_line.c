@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rmzvr <rmzvr@student.42.fr>                +#+  +:+       +#+        */
+/*   By: rzvir <rzvir@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/30 12:19:41 by rzvir             #+#    #+#             */
-/*   Updated: 2024/11/05 21:52:01 by rmzvr            ###   ########.fr       */
+/*   Updated: 2024/11/06 10:47:00 by rzvir            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -125,37 +125,33 @@ char	*get_next_line(int fd)
 	return (NULL);
 }
 
-int	ft_run(void)
-{
-	int		fd;
-	char	*p;
+// int	ft_run(void)
+// {
+// 	int		fd;
+// 	char	*p;
 
-	fd = open("test.txt", O_RDONLY);
-	p = get_next_line(fd);
-	while (p != NULL)
-	{
-		printf("%s", p);
-		free(p);
-		p = get_next_line(fd);
-	}
-	printf("%s", p);
-	return (0);
-}
+// 	fd = open("test.txt", O_RDONLY);
+// 	p = get_next_line(fd);
+// 	while (p != NULL)
+// 	{
+// 		printf("%s", p);
+// 		free(p);
+// 		p = get_next_line(fd);
+// 	}
+// 	printf("%s", p);
+// 	return (0);
+// }
 
-// int main() {
-//     // Start time
-//     clock_t start_time = clock();
+// int	main(void)
+// {
+// 	clock_t	s_time;
+// 	clock_t	e_time;
+// 	double	t_taken;
 
-//     // Code to measure
+// 	s_time = clock();
 // 	ft_run();
-
-//     // End time
-//     clock_t end_time = clock();
-
-//     // Calculate the elapsed time in milliseconds
-//     double time_taken = ((double)(end_time - start_time) / CLOCKS_PER_SEC) * 1000.0;
-
-//     printf("\nExecution time: %.3f ms\n", time_taken);
-
-//     return 0;
+// 	e_time = clock();
+// 	t_taken = ((double)(e_time - s_time) / CLOCKS_PER_SEC) * 1000.0;
+// 	printf("\nExecution time: %.3f ms\n", t_taken);
+// 	return (0);
 // }

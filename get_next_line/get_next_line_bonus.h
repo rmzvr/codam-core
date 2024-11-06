@@ -1,17 +1,17 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line.h                                    :+:      :+:    :+:   */
+/*   get_next_line_bonus.h                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: rzvir <rzvir@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/10/30 12:21:05 by rzvir             #+#    #+#             */
-/*   Updated: 2024/11/06 17:32:22 by rzvir            ###   ########.fr       */
+/*   Created: 2024/11/06 10:50:17 by rzvir             #+#    #+#             */
+/*   Updated: 2024/11/06 17:53:56 by rzvir            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef GET_NEXT_LINE_H
-# define GET_NEXT_LINE_H
+#ifndef GET_NEXT_LINE_BONUS_H
+# define GET_NEXT_LINE_BONUS_H
 
 # ifndef BUFFER_SIZE
 #  define BUFFER_SIZE 10
@@ -28,11 +28,18 @@
 //! time
 # include <time.h>
 
-char	*get_next_line(int fd);
-char	*ft_strjoin(char *s1, char *s2);
-size_t	ft_strlen(const char *s);
-char	*ft_strchr(const char *s, int c);
-char	*ft_strndup(const char *src, size_t n);
-size_t	ft_strlcpy(char *dst, const char *src, size_t size);
+// # include "get_next_line.h"
+
+typedef struct s_file
+{
+	int				fd;
+	char			*stash;
+	struct s_file	*next;
+}	t_file;
+
+// t_file	*ft_file_create(int fd);
+// t_file	*ft_file_find(t_file *lst, int fd);
+// void	ft_file_remove(t_file **lst, int fd);
+// void	ft_file_append_end(t_file **lst, t_file *new);
 
 #endif
