@@ -6,7 +6,7 @@
 /*   By: rzvir <rzvir@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/06 10:50:17 by rzvir             #+#    #+#             */
-/*   Updated: 2024/11/06 17:53:56 by rzvir            ###   ########.fr       */
+/*   Updated: 2024/11/07 17:28:30 by rzvir            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,21 +14,11 @@
 # define GET_NEXT_LINE_BONUS_H
 
 # ifndef BUFFER_SIZE
-#  define BUFFER_SIZE 10
+#  define BUFFER_SIZE 42
 # endif
 
-// read
 # include <unistd.h>
-// malloc
 # include <stdlib.h>
-//! open
-# include <fcntl.h>
-//! printf
-# include <stdio.h>
-//! time
-# include <time.h>
-
-// # include "get_next_line.h"
 
 typedef struct s_file
 {
@@ -37,9 +27,26 @@ typedef struct s_file
 	struct s_file	*next;
 }	t_file;
 
-// t_file	*ft_file_create(int fd);
-// t_file	*ft_file_find(t_file *lst, int fd);
-// void	ft_file_remove(t_file **lst, int fd);
-// void	ft_file_append_end(t_file **lst, t_file *new);
+typedef struct s_store
+{
+	char	*buffer;
+	t_file	*curr_file;
+	ssize_t	bytes_read;
+}	t_store;
+
+typedef struct s_join
+{
+	char	*str;
+	size_t	index;
+	size_t	full_len;
+	size_t	stash_len;
+}	t_join;
+
+char	*get_next_line(int fd);
+size_t	ft_strlen(const char *s);
+char	*ft_strchr(const char *s, int c);
+char	*ft_strndup(const char *src, size_t n);
+t_file	*ft_file_create(int fd);
+void	ft_file_remove(t_file **lst, int fd);
 
 #endif
