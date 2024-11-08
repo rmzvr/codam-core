@@ -6,7 +6,7 @@
 /*   By: rzvir <rzvir@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/06 10:50:19 by rzvir             #+#    #+#             */
-/*   Updated: 2024/11/07 17:15:08 by rzvir            ###   ########.fr       */
+/*   Updated: 2024/11/08 12:24:28 by rzvir            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,41 +60,46 @@ char	*ft_strchr(const char *s, int c)
 	return (NULL);
 }
 
-t_file	*ft_file_create(int fd)
+t_file	*ft_create_file(int fd)
 {
-	t_file	*list_item;
+	t_file	*file;
 
-	list_item = malloc(sizeof(t_file));
-	if (list_item == NULL)
+	file = malloc(sizeof(t_file));
+	if (file == NULL)
 		return (NULL);
-	list_item->fd = fd;
-	list_item->stash = NULL;
-	list_item->next = NULL;
-	return (list_item);
+	file->fd = fd;
+	file->next = NULL;
+	file->stash = ft_strndup("", 0);
+	if (file->stash == NULL)
+	{
+		free(file);
+		return (NULL);
+	}
+	return (file);
 }
 
-void	ft_file_remove(t_file **lst, int fd)
+void	ft_remove_file(t_file **list, int fd)
 {
 	t_file	*curr;
-	t_file	*lst_to_delete;
+	t_file	*file_to_delete;
 
-	if (lst == NULL || *lst == NULL)
+	if (list == NULL || *list == NULL)
 		return ;
-	curr = *lst;
-	if ((*lst)->fd == fd)
+	curr = *list;
+	if ((*list)->fd == fd)
 	{
-		lst_to_delete = *lst;
-		*lst = (*lst)->next;
-		free(lst_to_delete);
+		file_to_delete = *list;
+		*list = (*list)->next;
+		free(file_to_delete);
 		return ;
 	}
 	while (curr->next != NULL)
 	{
 		if (curr->next->fd == fd)
 		{
-			lst_to_delete = curr->next;
+			file_to_delete = curr->next;
 			curr->next = curr->next->next;
-			free(lst_to_delete);
+			free(file_to_delete);
 			return ;
 		}
 		curr = curr->next;

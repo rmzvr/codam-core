@@ -6,7 +6,7 @@
 /*   By: rzvir <rzvir@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/06 10:50:15 by rzvir             #+#    #+#             */
-/*   Updated: 2024/11/07 17:21:32 by rzvir            ###   ########.fr       */
+/*   Updated: 2024/11/08 12:23:44 by rzvir            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,18 +14,21 @@
 
 static void	ft_free(t_file **file, t_store *store, int fd, int remove_file)
 {
-	free(store->buffer);
-	free(store->curr_file->stash);
-	store->curr_file->stash = NULL;
+	if (store->buffer != NULL)
+		free(store->buffer);
+	if (store->curr_file->stash != NULL)
+	{
+		free(store->curr_file->stash);
+		store->curr_file->stash = NULL;
+	}
 	if (remove_file > 0)
-		ft_file_remove(file, fd);
+		ft_remove_file(file, fd);
 }
 
 static int	ft_join_stash(t_file **file, t_store *store, int fd)
 {
 	t_join	join;
 
-	store->buffer[store->bytes_read] = '\0';
 	if (store->curr_file->stash == NULL || store->buffer == NULL)
 		return (1);
 	join.index = 0;
@@ -74,14 +77,14 @@ static char	*ft_put_line(t_file **file, t_store *store, int fd)
 	return (line);
 }
 
-static void	ft_init(t_file **file, t_store *store, int fd)
+static void	ft_file_init(t_file **file, t_store *store, int fd)
 {
 	t_file	*curr;
 
 	curr = *file;
 	if (*file == NULL)
 	{
-		store->curr_file = ft_file_create(fd);
+		store->curr_file = ft_create_file(fd);
 		*file = store->curr_file;
 		return ;
 	}
@@ -96,7 +99,7 @@ static void	ft_init(t_file **file, t_store *store, int fd)
 			break ;
 		curr = curr->next;
 	}
-	store->curr_file = ft_file_create(fd);
+	store->curr_file = ft_create_file(fd);
 	curr->next = store->curr_file;
 }
 
@@ -105,19 +108,16 @@ char	*get_next_line(int fd)
 	static t_file	*file;
 	t_store			store;
 
-	ft_init(&file, &store, fd);
+	ft_file_init(&file, &store, fd);
 	if (store.curr_file == NULL)
-		return (ft_file_remove(&file, fd), NULL);
-	if (store.curr_file->stash == NULL)
-	{
-		store.curr_file->stash = ft_strndup("", 0);
-		if (store.curr_file->stash == NULL)
-			return (ft_file_remove(&file, fd), NULL);
-	}
+		return (ft_remove_file(&file, fd), NULL);
 	store.buffer = malloc(BUFFER_SIZE + 1);
+	if (store.buffer == NULL)
+		return (ft_free(&file, &store, fd, 1), NULL);
 	store.bytes_read = read(fd, store.buffer, BUFFER_SIZE);
 	while (store.bytes_read > 0)
 	{
+		store.buffer[store.bytes_read] = '\0';
 		if (ft_join_stash(&file, &store, fd))
 			return (NULL);
 		if (ft_strchr(store.curr_file->stash, '\n'))
