@@ -1,7 +1,16 @@
 NAME := fractol
 
 SOURCES := \
-	main.c \
+	fractol.c \
+	cleanup.c \
+	pixel_put.c \
+	calculate_color.c \
+	scale_down_range.c \
+	shape_checking.c \
+	handle_controls.c \
+	render_mandelbrot_fractal.c \
+	render_julia_fractal.c \
+	# render_fractol_with_exterior_distance_estimation_coloring.c \
 
 OBJECTS := $(SOURCES:%.c=%.o)
 
