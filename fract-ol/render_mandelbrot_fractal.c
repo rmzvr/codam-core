@@ -6,59 +6,76 @@
 /*   By: rzvir <rzvir@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/02 17:13:24 by rzvir             #+#    #+#             */
-/*   Updated: 2024/12/03 14:36:17 by rzvir            ###   ########.fr       */
+/*   Updated: 2024/12/06 17:24:29 by rzvir            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "fractol.h"
+#include "libft/libft.h"
 
-void	calculate_complex_number(t_mlx *mlx)
+static void	reinit_set_values(t_set *set)
 {
-	mlx->mandelbrot.z.im = (mlx->mandelbrot.z.re + mlx->mandelbrot.z.re) * mlx->mandelbrot.z.im + mlx->mandelbrot.c.im;
-	mlx->mandelbrot.z.re = mlx->mandelbrot.z_temp.re - mlx->mandelbrot.z_temp.im + mlx->mandelbrot.c.re;
-	mlx->mandelbrot.z_temp.re = mlx->mandelbrot.z.re * mlx->mandelbrot.z.re;
-	mlx->mandelbrot.z_temp.im = mlx->mandelbrot.z.im * mlx->mandelbrot.z.im;
+	set->z.re = 0;
+	set->z.im = 0;
+	set->z_temp.re = 0;
+	set->z_temp.im = 0;
+}
+
+static void	get_pixel_color(int x, int y, t_mlx *mlx, t_set *set)
+{
+	int	iteration;
+
+	iteration = 0;
+	while (iteration < mlx->max_iterations)
+	{
+		set->z.im = (set->z.re + set->z.re) * set->z.im + set->c.im;
+		set->z.re = set->z_temp.re - set->z_temp.im + set->c.re;
+		set->z_temp.re = set->z.re * set->z.re;
+		set->z_temp.im = set->z.im * set->z.im;
+		if (set->z_temp.re + set->z_temp.im > 4.0)
+		{
+			pixel_put(&mlx->img, x, y, get_selected_color(iteration, mlx));
+			break ;
+		}
+		iteration++;
+	}
+	if (iteration == mlx->max_iterations)
+		pixel_put(&mlx->img, x, y, COLOR_BLACK);
+}
+
+int	is_within_shape(int x, int y, t_mlx *mlx)
+{
+	if (is_within_bulb(mlx->curr_set.c.re, mlx->curr_set.c.im)
+		|| is_within_cardioid(mlx->curr_set.c.re, mlx->curr_set.c.im))
+	{
+		pixel_put(&mlx->img, x, y, COLOR_BLACK);
+		return (1);
+	}
+	return (0);
 }
 
 void	render_mandelbrot_fractal(t_mlx *mlx)
 {
 	int		x;
 	int		y;
-	int		iteration;
 
 	y = 0;
-	while (y < WINDOW_HEIGHT)
+	while (y < mlx->wh)
 	{
 		x = 0;
-		mlx->mandelbrot.c.im = (scale_down_range(y, mlx->mandelbrot.im_min, mlx->mandelbrot.im_max, 0, WINDOW_HEIGHT - 1)) + mlx->shift.vertical;
-		while (x < WINDOW_WIDTH)
+		mlx->curr_set.c.im = scale_down_num(y, mlx->curr_set.im_min,
+				mlx->curr_set.im_max, mlx->wh - 1) + mlx->shift.vertical;
+		while (x < mlx->ww)
 		{
-			iteration = 0;
-			mlx->mandelbrot.z.re = 0;
-			mlx->mandelbrot.z.im = 0;
-			mlx->mandelbrot.z_temp.re = 0;
-			mlx->mandelbrot.z_temp.im = 0;
-			mlx->mandelbrot.c.re = (scale_down_range(x, mlx->mandelbrot.re_min, mlx->mandelbrot.re_max, 0, WINDOW_WIDTH - 1)) + mlx->shift.horizontal;
-			// printf("x: %d, y: %d, c.re: %f, c.im: %f\n", x, y, mlx->mandelbrot.c.re,  mlx->mandelbrot.c.im);
-			if (is_within_bulb(mlx->mandelbrot.c.re, mlx->mandelbrot.c.im)
-				|| is_within_cardioid(mlx->mandelbrot.c.re, mlx->mandelbrot.c.im))
+			reinit_set_values(&mlx->curr_set);
+			mlx->curr_set.c.re = scale_down_num(x, mlx->curr_set.re_min,
+					mlx->curr_set.re_max, mlx->ww - 1) + mlx->shift.horizontal;
+			if (is_within_shape(x, y, mlx))
 			{
-				pixel_put(&mlx->img, x, y, COLOR_BLACK);
 				x++;
 				continue ;
 			}
-			while (iteration < MAX_ITERATIONS)
-			{
-				calculate_complex_number(mlx);
-				if (mlx->mandelbrot.z_temp.re + mlx->mandelbrot.z_temp.im > 4.0)
-				{
-					pixel_put(&mlx->img, x, y, calculate_smooth_color(iteration));
-					break ;
-				}
-				iteration++;
-			}
-			if (iteration == MAX_ITERATIONS)
-				pixel_put(&mlx->img, x, y, COLOR_BLACK);
+			get_pixel_color(x, y, mlx, &mlx->curr_set);
 			x++;
 		}
 		y++;
