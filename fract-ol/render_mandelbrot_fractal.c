@@ -6,12 +6,11 @@
 /*   By: rzvir <rzvir@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/02 17:13:24 by rzvir             #+#    #+#             */
-/*   Updated: 2024/12/06 17:24:29 by rzvir            ###   ########.fr       */
+/*   Updated: 2024/12/09 10:45:22 by rzvir            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "fractol.h"
-#include "libft/libft.h"
 
 static void	reinit_set_values(t_set *set)
 {
@@ -43,17 +42,6 @@ static void	get_pixel_color(int x, int y, t_mlx *mlx, t_set *set)
 		pixel_put(&mlx->img, x, y, COLOR_BLACK);
 }
 
-int	is_within_shape(int x, int y, t_mlx *mlx)
-{
-	if (is_within_bulb(mlx->curr_set.c.re, mlx->curr_set.c.im)
-		|| is_within_cardioid(mlx->curr_set.c.re, mlx->curr_set.c.im))
-	{
-		pixel_put(&mlx->img, x, y, COLOR_BLACK);
-		return (1);
-	}
-	return (0);
-}
-
 void	render_mandelbrot_fractal(t_mlx *mlx)
 {
 	int		x;
@@ -63,13 +51,13 @@ void	render_mandelbrot_fractal(t_mlx *mlx)
 	while (y < mlx->wh)
 	{
 		x = 0;
-		mlx->curr_set.c.im = scale_down_num(y, mlx->curr_set.im_min,
-				mlx->curr_set.im_max, mlx->wh - 1) + mlx->shift.vertical;
+		mlx->curr_set.c.im = scale_n(y, mlx->curr_set.im_min,
+				mlx->curr_set.im_max, mlx->wh - 1);
 		while (x < mlx->ww)
 		{
 			reinit_set_values(&mlx->curr_set);
-			mlx->curr_set.c.re = scale_down_num(x, mlx->curr_set.re_min,
-					mlx->curr_set.re_max, mlx->ww - 1) + mlx->shift.horizontal;
+			mlx->curr_set.c.re = scale_n(x, mlx->curr_set.re_min,
+					mlx->curr_set.re_max, mlx->ww - 1);
 			if (is_within_shape(x, y, mlx))
 			{
 				x++;
