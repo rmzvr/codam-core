@@ -1,5 +1,8 @@
 NAME := libft.a
 
+PRINTF_DIR := ./ft_printf
+PRINTF_NAME   = $(PRINTF_DIR)/libftprintf.a
+
 SOURCES := \
 	ft_isalnum.c \
 	ft_isalpha.c \
@@ -34,9 +37,7 @@ SOURCES := \
 	ft_strmapi.c \
 	ft_striteri.c \
 	ft_itoa.c \
-	ft_split.c
-
-BONUS_SOURCES := \
+	ft_split.c \
 	ft_lstnew_bonus.c \
 	ft_lstadd_front_bonus.c \
 	ft_lstsize_bonus.c \
@@ -48,28 +49,31 @@ BONUS_SOURCES := \
 	ft_lstmap_bonus.c
 
 OBJECTS := $(SOURCES:%.c=%.o)
-BONUS_OBJECTS := $(BONUS_SOURCES:%.c=%.o)
 
 CC := cc
 FLAGS := -Wall -Wextra -Werror
 
-.PHONY: all bonus clean fclean re
-
 all: $(NAME)
 
 $(NAME): $(OBJECTS)
+	make -C $(PRINTF_DIR)
+	mv $(PRINTF_NAME) ./$@
 	ar -rcs $(NAME) $^
 
-bonus: $(OBJECTS) $(BONUS_OBJECTS)
-	ar -rcs $(NAME) $^
+$(PRINTF_NAME):
+	make -C $(PRINTF_DIR)
 
 %.o: %.c
 	$(CC) $(FLAGS) -c $< -o $@
 
 clean:
-	rm -rf $(OBJECTS) $(BONUS_OBJECTS)
+	rm -rf $(OBJECTS)
+	make -C $(PRINTF_DIR) clean
 
 fclean: clean
 	rm -rf $(NAME)
+	make -C $(PRINTF_DIR) fclean
 
 re: fclean all
+
+.PHONY: all clean fclean re

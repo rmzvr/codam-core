@@ -6,13 +6,13 @@
 /*   By: rzvir <rzvir@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/02 12:02:04 by rzvir             #+#    #+#             */
-/*   Updated: 2024/12/08 13:35:26 by rzvir            ###   ########.fr       */
+/*   Updated: 2024/12/09 17:02:47 by rzvir            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "fractol.h"
 
-static int	get_smooth_color(int iteration, int max_iterations)
+static int	get_smooth_color(int iteration)
 {
 	double	t;
 	int		red;
@@ -20,7 +20,7 @@ static int	get_smooth_color(int iteration, int max_iterations)
 	int		blue;
 	int		color;
 
-	t = (double)iteration / (double)max_iterations;
+	t = (double)iteration / (double)MAX_ITERATIONS;
 	red = 9 * (1 - t) * (t * t * t) * 255;
 	green = 15 * ((1 - t) * (1 - t)) * (t * t) * 255;
 	blue = 8.5 * ((1 - t) * (1 - t) * (1 - t)) * t * 255;
@@ -28,23 +28,23 @@ static int	get_smooth_color(int iteration, int max_iterations)
 	return (color);
 }
 
-static int	get_psychedelic_color(int iteration, int max_iterations)
+static int	get_psychedelic_color(int iteration)
 {
 	double	t;
 	int		color;
 
-	t = (double)iteration / (double)max_iterations;
+	t = (double)iteration / (double)MAX_ITERATIONS;
 	color = (int)(t * 16777216);
 	return (color);
 }
 
-int	get_selected_color(int i, t_mlx *mlx)
+int	get_selected_color(int i)
 {
 	int	color;
 
-	if (ft_strncmp(mlx->palette, "smooth", ft_strlen(mlx->palette)) == 0)
-		color = get_smooth_color(i, mlx->max_iterations);
+	if (ft_strncmp(PALETTE, "smooth", ft_strlen(PALETTE)) == 0)
+		color = get_smooth_color(i);
 	else
-		color = get_psychedelic_color(i, mlx->max_iterations);
+		color = get_psychedelic_color(i);
 	return (color);
 }

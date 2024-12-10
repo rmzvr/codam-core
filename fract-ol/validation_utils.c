@@ -1,16 +1,29 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_atof.c                                          :+:      :+:    :+:   */
+/*   validation_utils.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: rzvir <rzvir@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/12/09 11:42:39 by rzvir             #+#    #+#             */
-/*   Updated: 2024/12/09 12:54:24 by rzvir            ###   ########.fr       */
+/*   Created: 2024/12/08 12:26:01 by rzvir             #+#    #+#             */
+/*   Updated: 2024/12/10 11:07:12 by rzvir            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "fractol.h"
+
+static void	free_split(char **split)
+{
+	int	i;
+
+	i = 0;
+	while (split[i] != NULL)
+	{
+		free(split[i]);
+		i++;
+	}
+	free(split);
+}
 
 static double	power_of_ten(size_t len)
 {
@@ -48,24 +61,21 @@ static int	is_valid_part(char *str)
 
 int	is_valid_double(char *str)
 {
-	char	**splitted_arg;
+	char	**splitted_str;
 
 	if (!str || *str == '\0')
 		return (0);
 	if (*str == '+' || *str == '-')
 		str++;
-	splitted_arg = ft_split(str, '.');
-	if (splitted_arg[2] != NULL)
+	splitted_str = ft_split(str, '.');
+	if (!is_valid_part(splitted_str[0])
+		|| !is_valid_part(splitted_str[1])
+		|| splitted_str[2] != NULL)
 	{
-		free(splitted_arg);
+		free_split(splitted_str);
 		return (0);
 	}
-	if (!is_valid_part(splitted_arg[0]) || !is_valid_part(splitted_arg[1]))
-	{
-		free(splitted_arg);
-		return (0);
-	}
-	free(splitted_arg);
+	free_split(splitted_str);
 	return (1);
 }
 
@@ -84,5 +94,6 @@ double	ft_atof(char *str)
 	fract_p = ft_atoi(splitted_str[1]) / power_of_ten(fract_p_len);
 	if (int_p < 0.0)
 		sign = -1;
+	free_split(splitted_str);
 	return (int_p + fract_p * sign);
 }

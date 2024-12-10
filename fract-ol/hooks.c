@@ -6,7 +6,7 @@
 /*   By: rzvir <rzvir@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/02 17:09:17 by rzvir             #+#    #+#             */
-/*   Updated: 2024/12/09 13:01:04 by rzvir            ###   ########.fr       */
+/*   Updated: 2024/12/09 17:15:15 by rzvir            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ static int	handle_keyboard(int keysym, t_mlx *mlx)
 		shift_horizontal_view(&mlx->curr_set, "left");
 	else if (keysym == XK_Right)
 		shift_horizontal_view(&mlx->curr_set, "right");
-	render_selected_fractal(mlx->ww / 2, mlx->wh / 2, mlx);
+	render_selected_fractal(WW / 2, WH / 2, mlx);
 	return (0);
 }
 
@@ -45,10 +45,10 @@ static int	handle_mouse(int button, int x, int y, t_mlx *mlx)
 	}
 	if (button == 4 || button == 5)
 	{
-		scale_factor = 1.0 / mlx->scale_factor;
+		scale_factor = 1.0 / SCALE_FACTOR;
 		if (button == 5)
 		{
-			scale_factor = mlx->scale_factor;
+			scale_factor = SCALE_FACTOR;
 		}
 		scale_view(x, y, scale_factor, mlx);
 		render_selected_fractal(x, y, mlx);
