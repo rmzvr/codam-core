@@ -6,12 +6,93 @@
 /*   By: rzvir <rzvir@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/13 13:57:35 by rzvir             #+#    #+#             */
-/*   Updated: 2024/12/17 18:10:52 by rzvir            ###   ########.fr       */
+/*   Updated: 2024/12/19 11:47:31 by rzvir            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 #include "get_next_line/get_next_line.h"
+#include <errno.h>
+
+char **format_argv(char *arg)
+{
+	char	**splitted_arg;
+	char	*command_name;
+	char	**command_argv;
+
+	char	*position_of_first_double_quote;
+	char	*position_of_last_double_quote;
+
+	char	*position_of_first_single_quote;
+	char	*position_of_last_single_quote;
+
+	char	*string_in_double_quotes;
+	char	*string_in_single_quotes;
+
+	char	*trimmed_string;
+
+	splitted_arg = ft_split(arg, ' ');
+
+	if (splitted_arg == NULL)
+		exit(1);
+
+	command_name = splitted_arg[0];
+
+	if (splitted_arg[1] != NULL)
+	{
+		position_of_first_double_quote = ft_strchr(arg, '"');
+		position_of_last_double_quote = ft_strrchr(arg, '"');
+
+		position_of_first_single_quote = ft_strchr(arg, '\'');
+		position_of_last_single_quote = ft_strrchr(arg, '\'');
+
+		string_in_double_quotes = ft_substr(position_of_first_double_quote, 0, position_of_last_double_quote - position_of_first_double_quote + 1);
+
+		string_in_single_quotes = ft_substr(position_of_first_single_quote, 0, position_of_last_single_quote - position_of_first_single_quote + 1);
+
+		if (position_of_first_double_quote != NULL && position_of_first_single_quote != NULL)
+		{
+			//! '""'
+			if (position_of_first_double_quote > position_of_first_single_quote)
+			{
+				if (position_of_first_single_quote != NULL)
+				{
+					trimmed_string = ft_strtrim(string_in_single_quotes, "'");
+					char *arg[] = { command_name, trimmed_string, NULL };
+					return (arg);
+				}
+			}
+			//! "''"
+			else if (position_of_first_double_quote < position_of_first_single_quote)
+			{
+				if (position_of_first_double_quote != NULL)
+				{
+					trimmed_string = ft_strtrim(string_in_double_quotes, "\"");
+					char *arg[] = { command_name, ft_strtrim(string_in_double_quotes, "\""), NULL };
+					return (arg);
+				}
+			}
+		}
+		else
+		{
+			//! ""
+			if (position_of_first_double_quote != NULL)
+			{
+				trimmed_string = ft_strtrim(string_in_double_quotes, "\"");
+				char *arg[] = { command_name, trimmed_string, NULL };
+				return (arg);
+			}
+			//! ''
+			else if (position_of_first_single_quote != NULL)
+			{
+				trimmed_string = ft_strtrim(string_in_single_quotes, "'");
+				char *arg[] = { command_name, trimmed_string, NULL };
+				return (arg);
+			}
+		}
+	}
+	return (splitted_arg);
+}
 
 int main(int argc, char *argv[], char *env[])
 {
@@ -26,6 +107,9 @@ int main(int argc, char *argv[], char *env[])
 
 	if (argc < 5)
 		exit(EXIT_FAILURE);
+
+	infile = argv[1];
+	outfile = argv[4];
 
 	command1 = ft_split(argv[2], ' ');
 	command2 = ft_split(argv[3], ' ');
@@ -44,7 +128,7 @@ int main(int argc, char *argv[], char *env[])
 	j = 0;
 	command1_path_counter = 0;
 	command2_path_counter = 0;
-	// printf("Current environment variables:\n");
+
 	while (env[i] != NULL)
 	{
 		int	isPathVar = ft_strncmp(ft_split(env[i], '=')[0], "PATH", ft_strlen("PATH")) == 0;
@@ -76,76 +160,39 @@ int main(int argc, char *argv[], char *env[])
 		i++;
 	}
 
-	if (command1_path_counter >= 1 && command2_path_counter >= 1)
-	{
-		// printf("VALID COMMANDS\n");
-		// exit(EXIT_SUCCESS);
-	}
-	else
-	{
-		printf("command not found\n");
-		exit(EXIT_FAILURE);
-	}
-
-	infile = argv[1];
-	outfile = argv[4];
+	command1 = format_argv(argv[2]);
+	command2 = format_argv(argv[3]);
 
 	if (pipe(fd) == -1)
 	{
-		printf("\nError: Could not create a pipe!\n");
+		perror("\nError: Could not create a pipe!\n");
 		exit(EXIT_FAILURE);
 	}
-
-/* 	//! PROCESS FOR CHECK PROGRAMS PATH
-	int child_check_path_pid = fork();
-
-	if (child_check_path_pid == -1)
-	{
-		printf("\nError: Could not fork child_check_path_pid!\n");
-		exit(-1);
-	}
-
-	if (child_check_path_pid == 0)
-	{
-		char	*command_type = ft_strjoin("type ", argv[2]);
-		int		command_status_fd = open("command_status", O_CREAT | O_TRUNC | O_WRONLY, 0666);
-		dup2(command_status_fd, STDERR_FILENO);
-		dup2(command_status_fd, STDOUT_FILENO);
-		close(command_status_fd);
-		close(fd[0]);
-		close(fd[1]);
-		char *args[] = {"/bin/bash", "-c", command_type, NULL};
-		execvpe("/bin/bash", args, env);
-	}
-	//! */
-
-	// printf("%s\n", command1_full_path);
-	// printf("%s\n", command2_full_path);
-
-	//! PROCESS FOR PROGRAM 1
 
 	int	child_run_program1_pid = fork();
 
 	if (child_run_program1_pid == -1)
 	{
-		printf("\nError: Could not fork child_run_program1_pid!\n");
-		exit(-1);
+		perror("\nError: Could not fork child_run_program1_pid!\n");
+		exit(EXIT_FAILURE);
 	}
 
 	if (child_run_program1_pid == 0)
 	{
+		//! HANDLE IF COMMAND HAS FULL PATH
+		if (ft_strchr(command1[0], '/') != NULL)
+			command1_full_path = command1[0];
 		infile_fd = open(infile, O_RDONLY);
 		if (infile_fd == -1)
-		{
 			exit(EXIT_FAILURE);
-		}
 		dup2(infile_fd, STDIN_FILENO);
 		dup2(fd[1], STDOUT_FILENO);
 		close(infile_fd);
 		close(fd[0]);
 		close(fd[1]);
 		execve(command1_full_path, command1, env);
-		exit(EXIT_FAILURE);
+		perror("command not found\n");
+		exit(255);
 	}
 
 	int child_run_program2_pid = fork();
@@ -158,50 +205,21 @@ int main(int argc, char *argv[], char *env[])
 
 	if (child_run_program2_pid == 0)
 	{
+		//! HANDLE IF COMMAND HAS FULL PATH
+		if (ft_strchr(command2[0], '/') != NULL)
+			command2_full_path = command2[0];
+		close(fd[1]);
 		outfile_fd = open(outfile, O_CREAT | O_TRUNC | O_WRONLY, 0666);
 		if (outfile_fd == -1)
-		{
 			exit(EXIT_FAILURE);
-		}
 		dup2(fd[0], STDIN_FILENO);
 		dup2(outfile_fd, STDOUT_FILENO);
 		close(outfile_fd);
 		close(fd[0]);
-		close(fd[1]);
 		execve(command2_full_path, command2, env);
+		perror("command not found\n");
+		exit(127);
 	}
-
-	// waitpid(child_run_program2_pid, &status, 0);
-	// if (access("command_status", F_OK) == -1)
-	// {
-	// 	printf("NOT EXIST\n");
-	// }
-	// else
-	// {
-	// 	int		command_status_fd = open("command_status", O_RDWR);
-	// 	char *str = get_next_line(command_status_fd);
-	// 	close(command_status_fd);
-	// 	if (ft_strncmp(ft_split(str, ' ')[1], "is", ft_strlen("is")) == 0)
-	// 	{
-	// 		const char	*path = ft_strtrim(ft_split(str, ' ')[2], "\n");
-	// 		outfile_fd = open(outfile, O_CREAT | O_TRUNC | O_WRONLY, 0666);
-	// 		dup2(fd[0], STDIN_FILENO);
-	// 		dup2(outfile_fd, STDOUT_FILENO);
-	// 		close(outfile_fd);
-	// 		close(fd[0]);
-	// 		close(fd[1]);
-	// 		// printf("%s\n", cmd[2]);
-	// 		execve(path, command2, env);
-	// 		// printf("FAIL EXECVE\n");
-	// 		// exit(EXIT_FAILURE);
-	// 	}
-	// 	else
-	// 	{
-	// 		// printf("EXIT\n");
-	// 		unlink("command_status");
-	// 		exit(EXIT_FAILURE);
-	// 	}
-	// }
 
 	close(fd[0]);
 	close(fd[1]);
