@@ -12,8 +12,9 @@ OBJECTS := $(SOURCES:%.c=%.o)
 
 all: $(NAME)
 
+#! REMOVE -w
 $(NAME): $(LIBFT_NAME) $(MLX_LINUX_NAME) $(OBJECTS)
-	$(CC) $(OBJECTS) $(LIBFT_NAME) -o $@
+	$(CC) -w $(OBJECTS) $(LIBFT_NAME) -o $@
 
 $(LIBFT_NAME):
 	make -C $(LIBFT_DIR)

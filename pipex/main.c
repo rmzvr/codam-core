@@ -6,7 +6,7 @@
 /*   By: rzvir <rzvir@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/13 13:57:35 by rzvir             #+#    #+#             */
-/*   Updated: 2024/12/19 11:47:31 by rzvir            ###   ########.fr       */
+/*   Updated: 2024/12/19 15:25:59 by rzvir            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,138 +94,192 @@ char **format_argv(char *arg)
 	return (splitted_arg);
 }
 
+void	check_cmd1(char *cmd)
+{
+	char	*trimmed_cmd;
+	char	*splitted_cmd;
+
+	//! CHECK FOR NULL
+	if (cmd == NULL)
+	{
+		printf("cmd == NULL\n");
+	}
+	//! CHECK FOR EMPTY CMD
+	if (cmd[0] == '\0')
+	{
+		printf("cmd empty\n");
+	}
+	trimmed_cmd = ft_strtrim(cmd, " ");
+	//! HANDLE IF STRTRIM FAIL
+	if (trimmed_cmd == NULL)
+	{
+		exit(EXIT_FAILURE);
+	}
+	//! CHECK FOR EMPTY CMD
+	if (ft_strlen(trimmed_cmd) == 0)
+	{
+		printf("\n\ntrimmed cmd empty:");
+	}
+	//! CHECK IF CMD HAS AT LEAST ONE ARGUMENT
+	if (ft_strchr(cmd, ' ') == NULL)
+	{
+		printf("\n\ncmd doesn't have arguments:");
+	}
+	//! CMD HAS PAIR OF SINGLE/DOUBLE QUOTES IN ARGUMENT
+	if (ft_strchr(trimmed_cmd, '"') && ft_strchr(trimmed_cmd, '\''))
+	{
+		printf("\n\ncmd with pair of single and double quotes:");
+	}
+	else
+	{
+		//! CMD'S ARGUMENT WRAPPED ONLY IN SINGLE QUOTES
+		if (ft_strchr(trimmed_cmd, '\''))
+		{
+			printf("\n\ncmd with single quotes:");
+		}
+		//! CMD'S ARGUMENT WRAPPED ONLY IN DOUBLE QUOTES
+		if (ft_strchr(trimmed_cmd, '"'))
+		{
+			printf("\n\ncmd with double quotes:");
+			trimmed_cmd = ft_strtrim(cmd, "\"");
+		}
+	}
+	printf("\n%s\n\n", trimmed_cmd);
+}
+
 int main(int argc, char *argv[], char *env[])
 {
-	int	fd[2];
-	int	infile_fd;
-	int	outfile_fd;
-	char	*infile;
-	char	*outfile;
-	char	**command1;
-	char	**command2;
-	int status;
-
 	if (argc < 5)
 		exit(EXIT_FAILURE);
 
-	infile = argv[1];
-	outfile = argv[4];
+	check_cmd1(argv[2]);
+	// int	fd[2];
+	// int	infile_fd;
+	// int	outfile_fd;
+	// char	*infile;
+	// char	*outfile;
+	// char	**command1;
+	// char	**command2;
+	// int status;
 
-	command1 = ft_split(argv[2], ' ');
-	command2 = ft_split(argv[3], ' ');
+	// infile = argv[1];
+	// outfile = argv[4];
 
-	int		i;
-	int		j;
-	int		command1_path_counter;
-	char	*command1_full_path;
-	int		command2_path_counter;
-	char	*command2_full_path;
+	// command1 = ft_split(argv[2], ' ');
+	// command2 = ft_split(argv[3], ' ');
 
-	command1_full_path = "";
-	command2_full_path = "";
+	// int		i;
+	// int		j;
+	// int		command1_path_counter;
+	// char	*command1_full_path;
+	// int		command2_path_counter;
+	// char	*command2_full_path;
 
-	i = 0;
-	j = 0;
-	command1_path_counter = 0;
-	command2_path_counter = 0;
+	// command1_full_path = "";
+	// command2_full_path = "";
 
-	while (env[i] != NULL)
-	{
-		int	isPathVar = ft_strncmp(ft_split(env[i], '=')[0], "PATH", ft_strlen("PATH")) == 0;
-		if (isPathVar)
-		{
-			char **paths = ft_split(ft_split(env[i], '=')[1], ':');
-			while (paths[j] != NULL)
-			{
-				char *pathWithSlash = ft_strjoin(paths[j], "/");
-				char *fullPathCommand1 = ft_strjoin(pathWithSlash, command1[0]);
-				char *fullPathCommand2 = ft_strjoin(pathWithSlash, command2[0]);
-				if (access(fullPathCommand1, F_OK | X_OK) == 0)
-				{
-					if (ft_strlen(command1_full_path) == 0)
-						command1_full_path = fullPathCommand1;
-					command1_path_counter++;
-				}
-				if (access(fullPathCommand2, F_OK | X_OK) == 0)
-				{
-					if (ft_strlen(command2_full_path) == 0)
-						command2_full_path = fullPathCommand2;
-					command2_path_counter++;
-				}
-				if (command1_path_counter >= 1 && command2_path_counter >= 1)
-					break ;
-				j++;
-			}
-		}
-		i++;
-	}
+	// i = 0;
+	// j = 0;
+	// command1_path_counter = 0;
+	// command2_path_counter = 0;
 
-	command1 = format_argv(argv[2]);
-	command2 = format_argv(argv[3]);
+	// while (env[i] != NULL)
+	// {
+	// 	int	isPathVar = ft_strncmp(ft_split(env[i], '=')[0], "PATH", ft_strlen("PATH")) == 0;
+	// 	if (isPathVar)
+	// 	{
+	// 		char **paths = ft_split(ft_split(env[i], '=')[1], ':');
+	// 		while (paths[j] != NULL)
+	// 		{
+	// 			char *pathWithSlash = ft_strjoin(paths[j], "/");
+	// 			char *fullPathCommand1 = ft_strjoin(pathWithSlash, command1[0]);
+	// 			char *fullPathCommand2 = ft_strjoin(pathWithSlash, command2[0]);
+	// 			if (access(fullPathCommand1, F_OK | X_OK) == 0)
+	// 			{
+	// 				if (ft_strlen(command1_full_path) == 0)
+	// 					command1_full_path = fullPathCommand1;
+	// 				command1_path_counter++;
+	// 			}
+	// 			if (access(fullPathCommand2, F_OK | X_OK) == 0)
+	// 			{
+	// 				if (ft_strlen(command2_full_path) == 0)
+	// 					command2_full_path = fullPathCommand2;
+	// 				command2_path_counter++;
+	// 			}
+	// 			if (command1_path_counter >= 1 && command2_path_counter >= 1)
+	// 				break ;
+	// 			j++;
+	// 		}
+	// 	}
+	// 	i++;
+	// }
 
-	if (pipe(fd) == -1)
-	{
-		perror("\nError: Could not create a pipe!\n");
-		exit(EXIT_FAILURE);
-	}
+	// command1 = format_argv(argv[2]);
+	// command2 = format_argv(argv[3]);
 
-	int	child_run_program1_pid = fork();
+	// if (pipe(fd) == -1)
+	// {
+	// 	perror("\nError: Could not create a pipe!\n");
+	// 	exit(EXIT_FAILURE);
+	// }
 
-	if (child_run_program1_pid == -1)
-	{
-		perror("\nError: Could not fork child_run_program1_pid!\n");
-		exit(EXIT_FAILURE);
-	}
+	// int	child_run_program1_pid = fork();
 
-	if (child_run_program1_pid == 0)
-	{
-		//! HANDLE IF COMMAND HAS FULL PATH
-		if (ft_strchr(command1[0], '/') != NULL)
-			command1_full_path = command1[0];
-		infile_fd = open(infile, O_RDONLY);
-		if (infile_fd == -1)
-			exit(EXIT_FAILURE);
-		dup2(infile_fd, STDIN_FILENO);
-		dup2(fd[1], STDOUT_FILENO);
-		close(infile_fd);
-		close(fd[0]);
-		close(fd[1]);
-		execve(command1_full_path, command1, env);
-		perror("command not found\n");
-		exit(255);
-	}
+	// if (child_run_program1_pid == -1)
+	// {
+	// 	perror("\nError: Could not fork child_run_program1_pid!\n");
+	// 	exit(EXIT_FAILURE);
+	// }
 
-	int child_run_program2_pid = fork();
+	// if (child_run_program1_pid == 0)
+	// {
+	// 	//! HANDLE IF COMMAND HAS FULL PATH
+	// 	if (ft_strchr(command1[0], '/') != NULL)
+	// 		command1_full_path = command1[0];
+	// 	infile_fd = open(infile, O_RDONLY);
+	// 	if (infile_fd == -1)
+	// 		exit(EXIT_FAILURE);
+	// 	dup2(infile_fd, STDIN_FILENO);
+	// 	dup2(fd[1], STDOUT_FILENO);
+	// 	close(infile_fd);
+	// 	close(fd[0]);
+	// 	close(fd[1]);
+	// 	execve(command1_full_path, command1, env);
+	// 	perror("command not found\n");
+	// 	exit(255);
+	// }
 
-	if (child_run_program2_pid == -1)
-	{
-		printf("\nError: Could not fork child_run_program2_pid!\n");
-		exit(-1);
-	}
+	// int child_run_program2_pid = fork();
 
-	if (child_run_program2_pid == 0)
-	{
-		//! HANDLE IF COMMAND HAS FULL PATH
-		if (ft_strchr(command2[0], '/') != NULL)
-			command2_full_path = command2[0];
-		close(fd[1]);
-		outfile_fd = open(outfile, O_CREAT | O_TRUNC | O_WRONLY, 0666);
-		if (outfile_fd == -1)
-			exit(EXIT_FAILURE);
-		dup2(fd[0], STDIN_FILENO);
-		dup2(outfile_fd, STDOUT_FILENO);
-		close(outfile_fd);
-		close(fd[0]);
-		execve(command2_full_path, command2, env);
-		perror("command not found\n");
-		exit(127);
-	}
+	// if (child_run_program2_pid == -1)
+	// {
+	// 	printf("\nError: Could not fork child_run_program2_pid!\n");
+	// 	exit(-1);
+	// }
 
-	close(fd[0]);
-	close(fd[1]);
+	// if (child_run_program2_pid == 0)
+	// {
+	// 	//! HANDLE IF COMMAND HAS FULL PATH
+	// 	if (ft_strchr(command2[0], '/') != NULL)
+	// 		command2_full_path = command2[0];
+	// 	close(fd[1]);
+	// 	outfile_fd = open(outfile, O_CREAT | O_TRUNC | O_WRONLY, 0666);
+	// 	if (outfile_fd == -1)
+	// 		exit(EXIT_FAILURE);
+	// 	dup2(fd[0], STDIN_FILENO);
+	// 	dup2(outfile_fd, STDOUT_FILENO);
+	// 	close(outfile_fd);
+	// 	close(fd[0]);
+	// 	execve(command2_full_path, command2, env);
+	// 	perror("command not found\n");
+	// 	exit(127);
+	// }
 
-	waitpid(child_run_program1_pid, &status, 0);
-	waitpid(child_run_program2_pid, &status, 0);
+	// close(fd[0]);
+	// close(fd[1]);
 
-	exit(WEXITSTATUS(status));
+	// waitpid(child_run_program1_pid, &status, 0);
+	// waitpid(child_run_program2_pid, &status, 0);
+
+	// exit(WEXITSTATUS(status));
 }
