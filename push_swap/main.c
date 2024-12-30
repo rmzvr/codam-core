@@ -6,7 +6,7 @@
 /*   By: rzvir <rzvir@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/30 10:33:37 by rzvir             #+#    #+#             */
-/*   Updated: 2024/12/30 17:58:06 by rzvir            ###   ########.fr       */
+/*   Updated: 2024/12/30 18:22:19 by rzvir            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,37 +101,83 @@ void	dl(void *c)
 	c = NULL;
 }
 
-// void	ft_lstrotate(t_list **lst)
-// {
-// 	t_list	*curr_node;
-// 	t_list	*next_node;
+t_list	*ft_lst_prev_last(t_list *lst)
+{
+	if (lst == NULL)
+	{
+		return (lst);
+	}
+	while (lst->next->next != NULL)
+	{
+		lst = lst->next;
+	}
+	return (lst);
+}
 
-// 	if (lst == NULL || *lst == NULL)
-// 		return ;
-// 	curr_node = *lst;
-// 	next_node = ft_lstlast(curr_node);
-// 	next_node->next = curr_node->next;
-// 	ft_lstadd_front(lst, next_node);
-// 	// ft_printf("%d\n", *(int *)(*lst)->next->next->next->next->next->next->content);
-// 	// next_node = ft_lstlast(*lst);
-// 	// ft_lstdelone(next_node, dl);
-// }
+void	ft_lstrotate(t_list **lst)
+{
+	t_list	*curr_node;
+	t_list	*next_node;
+	t_list	*prev_next_node;
+
+	if (lst == NULL || *lst == NULL)
+		return ;
+	curr_node = *lst;
+	next_node = ft_lstlast(curr_node);
+	prev_next_node = ft_lst_prev_last(curr_node);
+	ft_lstadd_front(lst, next_node);
+	prev_next_node->next = NULL;
+}
+
+void	ft_lstrotate_rev(t_list **lst)
+{
+	t_list	*curr_node;
+
+	if (lst == NULL || *lst == NULL)
+		return ;
+	curr_node = *lst;
+	ft_lstadd_back(lst, curr_node);
+	*lst = curr_node->next;
+	curr_node->next = NULL;
+}
 
 void	rotate(char *operation, t_list **stack_a, t_list **stack_b)
 {
 	if (ft_strncmp(operation, "ra", 2) == 0)
 	{
-		// if (ft_lstsize(*stack_a) < 2)
-		// 	return ;
 		ft_lstrotate(stack_a);
 		ft_printf("ra\n");
 	}
 	else if (ft_strncmp(operation, "rb", 2) == 0)
 	{
-		// if (ft_lstsize(*stack_a) < 2)
-		// 	return ;
 		ft_lstrotate(stack_b);
-		ft_printf("ra\n");
+		ft_printf("rb\n");
+	}
+	else if (ft_strncmp(operation, "rr", 2) == 0)
+	{
+		ft_lstrotate(stack_a);
+		ft_lstrotate(stack_b);
+		ft_printf("rr\n");
+	}
+}
+
+void	rotate_rev(char *operation, t_list **stack_a, t_list **stack_b)
+{
+	if (ft_strncmp(operation, "rra", 2) == 0)
+	{
+		ft_lstrotate_rev(stack_a);
+		ft_printf("rra\n");
+	}
+	else if (ft_strncmp(operation, "rrb", 2) == 0)
+	{
+		ft_lstrotate_rev(stack_b);
+		ft_printf("rrb\n");
+	}
+	else if (ft_strncmp(operation, "rrr", 2) == 0)
+	{
+		ft_lstrotate_rev(stack_a);
+		ft_lstrotate_rev(stack_b);
+		ft_printf("rrr\n");
 	}
 }
 
@@ -225,7 +271,13 @@ int	main(int argc, char **argv)
 	ft_printf("====================\nstack_b before\n====================\n");
 	ft_lstiter(stack_b, pr);
 	ft_printf("====================\n");
-	rotate("ra", &stack_a, &stack_b);
+	rotate_rev("rra", &stack_a, &stack_b);
+	rotate_rev("rra", &stack_a, &stack_b);
+	rotate_rev("rra", &stack_a, &stack_b);
+	rotate_rev("rra", &stack_a, &stack_b);
+	rotate_rev("rra", &stack_a, &stack_b);
+	// rotate_rev("rra", &stack_a, &stack_b);
+	// rotate_rev("rra", &stack_a, &stack_b);
 	// push("pb", &stack_a, &stack_b);
 	// push("pb", &stack_a, &stack_b);
 	// swap("ss", &stack_a, &stack_b);
