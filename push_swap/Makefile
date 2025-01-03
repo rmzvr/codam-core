@@ -5,6 +5,12 @@ NAME := push_swap
 
 SOURCES := \
 	main.c \
+	swap.c \
+	push.c \
+	rotate.c \
+	utils.c \
+	validation.c \
+	init.c \
 
 OBJECTS := $(SOURCES:.c=.o)
 

@@ -1,16 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_atoi.c                                          :+:      :+:    :+:   */
+/*   validation.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: rzvir <rzvir@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/10/08 17:34:13 by rzvir             #+#    #+#             */
-/*   Updated: 2025/01/03 11:55:03 by rzvir            ###   ########.fr       */
+/*   Created: 2025/01/02 14:31:28 by rzvir             #+#    #+#             */
+/*   Updated: 2025/01/03 12:13:30 by rzvir            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "push_swap.h"
+#include <stdio.h>
+#include <limits.h>
 
 static int	ft_isspace(int c)
 {
@@ -40,10 +42,10 @@ static int	ft_issign(int c)
 	return (0);
 }
 
-int	ft_atoi(const char *nptr)
+static long long	ft_atoll(const char *nptr)
 {
 	int	i;
-	int	num;
+	long long	num;
 	int	sign;
 
 	i = 0;
@@ -67,4 +69,64 @@ int	ft_atoi(const char *nptr)
 		i++;
 	}
 	return (num * sign);
+}
+
+int	is_all_digits(char **argv)
+{
+	int	i;
+	int	j;
+
+	i = 1;
+
+	while (argv[i] != NULL)
+	{
+		if (ft_atoll(argv[i]) < INT_MIN || ft_atoll(argv[i]) > INT_MAX)
+			return (0);
+		j = 0;
+		if ((argv[i][j] == '+' || argv[i][j] == '-'))
+			j++;
+		if (argv[i][j] == '\0')
+			return (0);
+		while (argv[i][j] != '\0')
+		{
+			if (!ft_isdigit(argv[i][j]))
+				return (0);
+			j++;
+		}
+		i++;
+	}
+	return (1);
+}
+
+int	has_duplication(char **argv)
+{
+	int	i;
+	int	j;
+
+	i = 1;
+	while (argv[i] != NULL)
+	{
+		j = 1;
+		while (argv[j] != NULL)
+		{
+			if (i != j && ft_atoi(argv[i]) == ft_atoi(argv[j]))
+			{
+				return (1);
+			}
+			j++;
+		}
+		i++;
+	}
+	return (0);
+}
+
+void	validate_arguments(char **argv)
+{
+	char	**arguments;
+
+	arguments = argv;
+	if (ft_split(argv[1], ' ')[1] != NULL)
+		arguments = ft_split(argv[1], ' ');
+	if (!is_all_digits(arguments) || has_duplication(arguments))
+		show_error_and_exit();
 }
