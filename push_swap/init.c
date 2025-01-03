@@ -6,7 +6,7 @@
 /*   By: rzvir <rzvir@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/02 14:32:54 by rzvir             #+#    #+#             */
-/*   Updated: 2025/01/02 14:33:07 by rzvir            ###   ########.fr       */
+/*   Updated: 2025/01/03 12:26:00 by rzvir            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ void	init_stack(t_list **stack, char **argv)
 	t_list	*arg;
 	int		*value;
 
-	i = 1;
+	i = 0;
 	while (argv[i] != NULL)
 	{
 		value = malloc(sizeof(int));

@@ -6,7 +6,7 @@
 /*   By: rzvir <rzvir@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/02 14:31:28 by rzvir             #+#    #+#             */
-/*   Updated: 2025/01/03 12:13:30 by rzvir            ###   ########.fr       */
+/*   Updated: 2025/01/03 12:23:31 by rzvir            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -122,11 +122,6 @@ int	has_duplication(char **argv)
 
 void	validate_arguments(char **argv)
 {
-	char	**arguments;
-
-	arguments = argv;
-	if (ft_split(argv[1], ' ')[1] != NULL)
-		arguments = ft_split(argv[1], ' ');
-	if (!is_all_digits(arguments) || has_duplication(arguments))
+	if (!is_all_digits(argv) || has_duplication(argv))
 		show_error_and_exit();
 }
