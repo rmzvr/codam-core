@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   swap.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rmzvr <rmzvr@student.42.fr>                +#+  +:+       +#+        */
+/*   By: rzvir <rzvir@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/02 14:22:30 by rzvir             #+#    #+#             */
-/*   Updated: 2025/01/03 15:02:38 by rmzvr            ###   ########.fr       */
+/*   Updated: 2025/01/04 15:04:48 by rzvir            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,23 +39,15 @@ void	swap(char *operation, t_list **stack_a, t_list **stack_b)
 	{
 		if (ft_lstsize(*stack_b) < 2)
 			return ;
-		ft_printf("====================\noperation: sb\n");
-		ft_printf("====================\nstack_a before operation\n====================\n");
-		ft_lstiter(*stack_a, pr);
-		ft_printf("====================\nstack_b before operation\n====================\n");
-		ft_lstiter(*stack_b, pr);
+		ft_printf("sb\n");
 		ft_lstswap(stack_b);
-		ft_printf("====================\nstack_a after operation\n====================\n");
-		ft_lstiter(*stack_a, pr);
-		ft_printf("====================\nstack_b after operation\n====================\n");
-		ft_lstiter(*stack_b, pr);
 	}
 	else if (ft_strncmp(operation, "ss", 2) == 0)
 	{
+		ft_printf("ss\n");
 		if (ft_lstsize(*stack_a) >= 2)
 			ft_lstswap(stack_a);
 		if (ft_lstsize(*stack_b) >= 2)
 			ft_lstswap(stack_b);
-		ft_printf("ss\n");
 	}
 }

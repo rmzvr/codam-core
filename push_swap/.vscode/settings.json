@@ -1,8 +1,0 @@
-{
-	"files.associations": {
-		"*.css": "tailwindcss",
-		"ft_printf.h": "c",
-		"stdarg.h": "c",
-		"push_swap.h": "c"
-	}
-}

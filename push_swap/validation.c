@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   validation.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rmzvr <rmzvr@student.42.fr>                +#+  +:+       +#+        */
+/*   By: rzvir <rzvir@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/02 14:31:28 by rzvir             #+#    #+#             */
-/*   Updated: 2025/01/03 14:46:52 by rmzvr            ###   ########.fr       */
+/*   Updated: 2025/01/04 14:51:40 by rzvir            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,10 +103,10 @@ int	has_duplication(char **argv)
 	int	i;
 	int	j;
 
-	i = 1;
+	i = 0;
 	while (argv[i] != NULL)
 	{
-		j = 1;
+		j = 0;
 		while (argv[j] != NULL)
 		{
 			if (i != j && ft_atoi(argv[i]) == ft_atoi(argv[j]))
