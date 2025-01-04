@@ -3,36 +3,74 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rzvir <rzvir@student.42.fr>                +#+  +:+       +#+        */
+/*   By: rmzvr <rmzvr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/30 10:33:37 by rzvir             #+#    #+#             */
-/*   Updated: 2025/01/03 12:26:35 by rzvir            ###   ########.fr       */
+/*   Updated: 2025/01/03 15:44:40 by rmzvr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "push_swap.h"
 
+t_list	*find_smallest(t_list *stack)
+{
+	t_list *curr;
+	t_list *smallest;
+
+	curr = stack;
+	smallest = curr;
+	while (curr != NULL)
+	{
+		if (curr->next != NULL && *(int *)(curr->content) > *(int *)(curr->next->content))
+			smallest = curr->next;
+		curr = curr->next;
+	}
+	return (smallest);
+}
+
+t_list	*find_biggest(t_list *stack)
+{
+	t_list *curr;
+	t_list *biggest;
+
+	curr = stack;
+	biggest = curr;
+	while (curr != NULL)
+	{
+		if (curr->next != NULL && *(int *)(curr->content) < *(int *)(curr->next->content))
+			biggest = curr->next;
+		curr = curr->next;
+	}
+	return (biggest);
+}
+
 void	sort(t_list **stack_a, t_list **stack_b)
 {
-	(void) stack_a;
-	(void) stack_b;
-	// int		i;
+	t_list *first;
+	t_list *second;
+	t_list *smallest;
+	t_list *biggest;
 
-	// i = 0;
+	int first_content;
+	int second_content;
 
-	ft_lstiter(*stack_a, pr);
-	// while (ft_lstsize(*stack_a) != 0 && i < 4)
-	// {
-	// 	ft_printf("\n====================\ntemp: %d\n====================\n", *(int *)((*stack_a)->content));
-	// 	// while (ft_lstsize(*stack_b) > 0 && *(int *)((*stack_b)->content) < *(int *)((*stack_a)->content))
-	// 	// {
-	// 	// 	push("pa", stack_a, stack_b);
-	// 	// }
-	// 	// push("pb", stack_a, stack_b);
-	// 	i++;
-	// }
-	// ft_printf("\n\n\ni = %d\n\n\n", i);
+	first = (*stack_a);
+	second = (*stack_a)->next;
+	first_content = *(int *)first->content;
+	second_content = *(int *)second->content;
+	if (ft_lstsize(*stack_a) == 2)
+	{
+		if (first_content > second_content)
+			swap("sa", stack_a, stack_b);
+	}
+	else if (ft_lstsize(*stack_a) == 3)
+	{
+		biggest = find_biggest(*stack_a);
+		ft_printf("%d\n", *(int *)(biggest->content));
+		find_smallest
+	}
 }
+// 123 321 213 312 132 231
 
 int	main(int argc, char **argv)
 {
@@ -40,10 +78,10 @@ int	main(int argc, char **argv)
 	t_list	*stack_a;
 	t_list	*stack_b;
 
+	arguments = argv + 1;
 	if (argc == 1)
 		exit(EXIT_FAILURE);
-	arguments = argv;
-	if (ft_split(argv[1], ' ')[1] != NULL)
+	else if (argc == 2)
 		arguments = ft_split(argv[1], ' ');
 	validate_arguments(arguments);
 	stack_a = NULL;
