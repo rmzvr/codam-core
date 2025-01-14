@@ -6,7 +6,7 @@
 /*   By: rzvir <rzvir@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/30 10:33:37 by rzvir             #+#    #+#             */
-/*   Updated: 2025/01/14 15:23:14 by rzvir            ###   ########.fr       */
+/*   Updated: 2025/01/14 15:30:24 by rzvir            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -292,7 +292,7 @@ void	sort2(t_list **stack_a, t_list **stack_b)
 					rotate("ra", stack_a, stack_b);
 				else
 				{
-					// printf("a operation: \n");
+					printf("a operation: \n");
 					push("pb", stack_a, stack_b);
 				}
 				counter++;
@@ -301,7 +301,7 @@ void	sort2(t_list **stack_a, t_list **stack_b)
 			{
 				while (*stack_a != NULL)
 				{
-					// printf("a operation while: \n");
+					printf("a operation while: \n");
 					push("pb", stack_a, stack_b);
 				}
 			}
@@ -327,12 +327,13 @@ void	sort2(t_list **stack_a, t_list **stack_b)
 				while (*stack_b != NULL)
 					push("pa", stack_a, stack_b);
 			}
-
-
-			while (ft_lstsize(*stack_a) != 1)
+			else
 			{
-				// printf("b operation while: \n");
-				push("pb", stack_a, stack_b);
+				while (*stack_a != NULL)
+				{
+					printf("b operation while: \n");
+					push("pb", stack_a, stack_b);
+				}
 			}
 			shift++;
 			biggest >>= 1;
