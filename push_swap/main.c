@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rmzvr <rmzvr@student.42.fr>                +#+  +:+       +#+        */
+/*   By: rzvir <rzvir@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/30 10:33:37 by rzvir             #+#    #+#             */
-/*   Updated: 2025/01/13 17:22:35 by rmzvr            ###   ########.fr       */
+/*   Updated: 2025/01/14 15:23:14 by rzvir            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -171,7 +171,7 @@ void	sort(t_list **stack_a, t_list **stack_b)
 // 	t_list	*smallest;
 // 	t_list	*curr;
 // 	int		i;
-// 	int		is_sorted;
+// 	int		is_sorted_des;
 
 // 	i = 0;
 // 	stack_size = ft_lstsize(*stack_a);
@@ -231,6 +231,39 @@ int	get_value(t_list *stack)
 	return (*(int *)stack->content);
 }
 
+int	is_sorted_des(t_list *stack)
+{
+	while (stack->next != NULL)
+	{
+		if (get_value(stack) < get_value(stack->next))
+			return (0);
+		stack = stack->next;
+	}
+	return (1);
+}
+
+int	is_sorted_asc(t_list *stack)
+{
+	while (stack->next != NULL)
+	{
+		if (get_value(stack) > get_value(stack->next))
+			return (0);
+		stack = stack->next;
+	}
+	return (1);
+}
+
+int	is_contains_all_same_bit(t_list *stack, int shift)
+{
+	while (stack->next != NULL)
+	{
+		if ((get_value(stack) >> shift & 1) != (get_value(stack->next) >> shift & 1))
+			return (0);
+		stack = stack->next;
+	}
+	return (1);
+}
+
 void	sort2(t_list **stack_a, t_list **stack_b)
 {
 	int		mask;
@@ -251,25 +284,35 @@ void	sort2(t_list **stack_a, t_list **stack_b)
 		counter = 0;
 		if (*stack_a != NULL)
 		{
-			while (counter < len)
+			while (is_contains_all_same_bit(*stack_a, shift) == 0)
 			{
 				curr = *stack_a;
 				value = get_value(curr) >> shift;
 				if (value & mask)
 					rotate("ra", stack_a, stack_b);
 				else
+				{
+					// printf("a operation: \n");
 					push("pb", stack_a, stack_b);
+				}
 				counter++;
 			}
-			while (*stack_a != NULL)
-				push("pb", stack_a, stack_b);
+			if (is_contains_all_same_bit(*stack_a, shift) == 0 && ft_lstsize(*stack_a) != 1)
+			{
+				while (*stack_a != NULL)
+				{
+					// printf("a operation while: \n");
+					push("pb", stack_a, stack_b);
+				}
+			}
 			shift++;
 			biggest >>= 1;
+			// printf("shift a: %d\n", shift);
 		}
 		counter = 0;
 		if (*stack_b != NULL)
 		{
-			while (counter < len)
+			while (is_contains_all_same_bit(*stack_b, shift) == 0)
 			{
 				curr = *stack_b;
 				value = get_value(curr) >> shift;
@@ -279,12 +322,22 @@ void	sort2(t_list **stack_a, t_list **stack_b)
 					rotate("rb", stack_a, stack_b);
 				counter++;
 			}
-			while (*stack_b != NULL)
-				push("pa", stack_a, stack_b);
+			if (is_sorted_des(*stack_b))
+			{
+				while (*stack_b != NULL)
+					push("pa", stack_a, stack_b);
+			}
+
+
+			while (ft_lstsize(*stack_a) != 1)
+			{
+				// printf("b operation while: \n");
+				push("pb", stack_a, stack_b);
+			}
 			shift++;
 			biggest >>= 1;
+			// printf("shift b: %d\n", shift);
 		}
-		// printf("\n");
 	}
 }
 
@@ -310,11 +363,11 @@ int	main(int argc, char **argv)
 	init_stack(&stack_a, arguments);
 	// ft_lstiter(stack_a, pr);
 	sort2(&stack_a, &stack_b);
+	// printf("%d", is_contains_all_same_bit(stack_a, 2));
 	ft_lstiter(stack_a, pr);
-	// printBinary(-31);
-	// ft_lstclear(&stack_a, dl);
-	// ft_lstclear(&stack_b, dl);
-	// stack_a = NULL;
-	// stack_b = NULL;
+	ft_lstclear(&stack_a, dl);
+	ft_lstclear(&stack_b, dl);
+	stack_a = NULL;
+	stack_b = NULL;
 	return (0);
 }
