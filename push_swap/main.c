@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rzvir <rzvir@student.42.fr>                +#+  +:+       +#+        */
+/*   By: rmzvr <rmzvr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/30 10:33:37 by rzvir             #+#    #+#             */
-/*   Updated: 2025/01/04 16:44:38 by rzvir            ###   ########.fr       */
+/*   Updated: 2025/01/13 17:22:35 by rmzvr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -164,11 +164,136 @@ void	sort(t_list **stack_a, t_list **stack_b)
 		sort_five(stack_a, stack_b);
 }
 
+// void	sort1(t_list **stack_a, t_list **stack_b)
+// {
+// 	int		stack_size;
+// 	int		init_stack_size;
+// 	t_list	*smallest;
+// 	t_list	*curr;
+// 	int		i;
+// 	int		is_sorted;
+
+// 	i = 0;
+// 	stack_size = ft_lstsize(*stack_a);
+// 	init_stack_size = stack_size;
+// 	while (stack_size != 3)
+// 	{
+// 		curr = *stack_a;
+// 		if (*(int *)(*stack_a)->content > *(int *)(*stack_a)->next->content)
+// 		{
+// 			swap("sa", stack_a, stack_b);
+// 		}
+// 		smallest = find_smallest(*stack_a);
+// 		while (*(int *)(smallest->content) != *(int *)(curr->content))
+// 		{
+// 			if (find_position(*stack_a, *(int *)smallest->content) <= init_stack_size / 2)
+// 			{
+// 				rotate("ra", stack_a, stack_b);
+// 				// ft_lstiter(*stack_a, pr);
+// 				// ft_printf("\n");
+// 			}
+// 			else
+// 			{
+// 				rotate_rev("rra", stack_a, stack_b);
+// 				// ft_lstiter(*stack_a, pr);
+// 				// ft_printf("\n");
+// 			}
+// 			curr = *stack_a;
+// 		}
+// 		push("pb", stack_a, stack_b);
+// 		// ft_lstiter(*stack_a, pr);
+// 		// ft_printf("\n");
+// 		stack_size = ft_lstsize(*stack_a);
+// 	}
+// 	sort_three(stack_a, stack_b);
+// 	while (i < init_stack_size - 3)
+// 	{
+// 		push("pa", stack_a, stack_b);
+// 		// ft_lstiter(*stack_a, pr);
+// 		// ft_printf("\n");
+// 		i++;
+// 	}
+// 	// ft_lstiter(*stack_a, pr);
+// 	// ft_lstiter(*stack_a, pr);
+// }
+
+#include <stdio.h>
+
+void printBinary(int n) {
+    for (int i = 31; i >= 0; i--) {
+        printf("%d", (n >> i) & 1);
+    }
+    printf("\n");
+}
+
+int	get_value(t_list *stack)
+{
+	return (*(int *)stack->content);
+}
+
+void	sort2(t_list **stack_a, t_list **stack_b)
+{
+	int		mask;
+	int		value;
+	t_list	*curr;
+	int		biggest;
+	int		shift;
+	int		counter;
+	int		len;
+
+	mask = 1;
+	shift = 0;
+	curr = *stack_a;
+	len = ft_lstsize(*stack_a);
+	biggest = get_value(find_biggest(*stack_a));
+	while (biggest != 0)
+	{
+		counter = 0;
+		if (*stack_a != NULL)
+		{
+			while (counter < len)
+			{
+				curr = *stack_a;
+				value = get_value(curr) >> shift;
+				if (value & mask)
+					rotate("ra", stack_a, stack_b);
+				else
+					push("pb", stack_a, stack_b);
+				counter++;
+			}
+			while (*stack_a != NULL)
+				push("pb", stack_a, stack_b);
+			shift++;
+			biggest >>= 1;
+		}
+		counter = 0;
+		if (*stack_b != NULL)
+		{
+			while (counter < len)
+			{
+				curr = *stack_b;
+				value = get_value(curr) >> shift;
+				if (value & mask)
+					push("pa", stack_a, stack_b);
+				else
+					rotate("rb", stack_a, stack_b);
+				counter++;
+			}
+			while (*stack_b != NULL)
+				push("pa", stack_a, stack_b);
+			shift++;
+			biggest >>= 1;
+		}
+		// printf("\n");
+	}
+}
+
 int	main(int argc, char **argv)
 {
 	char	**arguments;
 	t_list	*stack_a;
 	t_list	*stack_b;
+	(void)	stack_b;
 
 	arguments = argv + 1;
 	if (argc == 1)
@@ -183,10 +308,13 @@ int	main(int argc, char **argv)
 	stack_a = NULL;
 	stack_b = NULL;
 	init_stack(&stack_a, arguments);
-	sort(&stack_a, &stack_b);
-	ft_lstclear(&stack_a, dl);
-	ft_lstclear(&stack_b, dl);
-	stack_a = NULL;
-	stack_b = NULL;
+	// ft_lstiter(stack_a, pr);
+	sort2(&stack_a, &stack_b);
+	ft_lstiter(stack_a, pr);
+	// printBinary(-31);
+	// ft_lstclear(&stack_a, dl);
+	// ft_lstclear(&stack_b, dl);
+	// stack_a = NULL;
+	// stack_b = NULL;
 	return (0);
 }
