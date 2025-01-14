@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rzvir <rzvir@student.42.fr>                +#+  +:+       +#+        */
+/*   By: rmzvr <rmzvr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/30 10:33:37 by rzvir             #+#    #+#             */
-/*   Updated: 2025/01/14 15:30:24 by rzvir            ###   ########.fr       */
+/*   Updated: 2025/01/14 16:42:03 by rmzvr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -271,48 +271,28 @@ void	sort2(t_list **stack_a, t_list **stack_b)
 	t_list	*curr;
 	int		biggest;
 	int		shift;
-	int		counter;
-	int		len;
 
 	mask = 1;
 	shift = 0;
 	curr = *stack_a;
-	len = ft_lstsize(*stack_a);
 	biggest = get_value(find_biggest(*stack_a));
 	while (biggest != 0)
 	{
-		counter = 0;
 		if (*stack_a != NULL)
 		{
-			while (is_contains_all_same_bit(*stack_a, shift) == 0)
+			while (!is_contains_all_same_bit(*stack_a, shift))
 			{
 				curr = *stack_a;
 				value = get_value(curr) >> shift;
 				if (value & mask)
 					rotate("ra", stack_a, stack_b);
 				else
-				{
-					printf("a operation: \n");
 					push("pb", stack_a, stack_b);
-				}
-				counter++;
 			}
-			if (is_contains_all_same_bit(*stack_a, shift) == 0 && ft_lstsize(*stack_a) != 1)
-			{
-				while (*stack_a != NULL)
-				{
-					printf("a operation while: \n");
-					push("pb", stack_a, stack_b);
-				}
-			}
-			shift++;
-			biggest >>= 1;
-			// printf("shift a: %d\n", shift);
 		}
-		counter = 0;
 		if (*stack_b != NULL)
 		{
-			while (is_contains_all_same_bit(*stack_b, shift) == 0)
+			while (!is_contains_all_same_bit(*stack_b, shift))
 			{
 				curr = *stack_b;
 				value = get_value(curr) >> shift;
@@ -320,25 +300,10 @@ void	sort2(t_list **stack_a, t_list **stack_b)
 					push("pa", stack_a, stack_b);
 				else
 					rotate("rb", stack_a, stack_b);
-				counter++;
 			}
-			if (is_sorted_des(*stack_b))
-			{
-				while (*stack_b != NULL)
-					push("pa", stack_a, stack_b);
-			}
-			else
-			{
-				while (*stack_a != NULL)
-				{
-					printf("b operation while: \n");
-					push("pb", stack_a, stack_b);
-				}
-			}
-			shift++;
-			biggest >>= 1;
-			// printf("shift b: %d\n", shift);
 		}
+		shift++;
+		biggest >>= 1;
 	}
 }
 
@@ -365,7 +330,7 @@ int	main(int argc, char **argv)
 	// ft_lstiter(stack_a, pr);
 	sort2(&stack_a, &stack_b);
 	// printf("%d", is_contains_all_same_bit(stack_a, 2));
-	ft_lstiter(stack_a, pr);
+	// ft_lstiter(stack_a, pr);
 	ft_lstclear(&stack_a, dl);
 	ft_lstclear(&stack_b, dl);
 	stack_a = NULL;
