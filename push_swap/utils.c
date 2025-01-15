@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rmzvr <rmzvr@student.42.fr>                +#+  +:+       +#+        */
+/*   By: rzvir <rzvir@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/02 14:29:41 by rzvir             #+#    #+#             */
-/*   Updated: 2025/01/08 19:52:10 by rmzvr            ###   ########.fr       */
+/*   Updated: 2025/01/15 11:57:11 by rzvir            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,10 @@
 
 void	pr(void *c)
 {
-	ft_printf("%d ", *(int *)c);
+	t_content	*content;
+
+	content = c;
+	ft_printf("%d ", content->value);
 }
 
 void	dl(void *c)
