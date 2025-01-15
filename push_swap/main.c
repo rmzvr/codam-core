@@ -6,7 +6,7 @@
 /*   By: rmzvr <rmzvr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/30 10:33:37 by rzvir             #+#    #+#             */
-/*   Updated: 2025/01/14 16:42:03 by rmzvr            ###   ########.fr       */
+/*   Updated: 2025/01/14 17:53:31 by rmzvr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -271,16 +271,22 @@ void	sort2(t_list **stack_a, t_list **stack_b)
 	t_list	*curr;
 	int		biggest;
 	int		shift;
+	int		counter;
+	int		len;
 
 	mask = 1;
+	counter = 0;
 	shift = 0;
 	curr = *stack_a;
 	biggest = get_value(find_biggest(*stack_a));
 	while (biggest != 0)
 	{
+		len = ft_lstsize(*stack_a);
+		counter = 0;
 		if (*stack_a != NULL)
 		{
-			while (!is_contains_all_same_bit(*stack_a, shift))
+			// while (!is_contains_all_same_bit(*stack_a, shift))
+			while (counter < len)
 			{
 				curr = *stack_a;
 				value = get_value(curr) >> shift;
@@ -288,11 +294,21 @@ void	sort2(t_list **stack_a, t_list **stack_b)
 					rotate("ra", stack_a, stack_b);
 				else
 					push("pb", stack_a, stack_b);
+				counter++;
 			}
 		}
+		if (shift == 0)
+		{
+			shift++;
+			biggest >>= 1;
+			continue;
+		}
+		len = ft_lstsize(*stack_b);
+		counter = 0;
 		if (*stack_b != NULL)
 		{
-			while (!is_contains_all_same_bit(*stack_b, shift))
+			// while (!is_contains_all_same_bit(*stack_b, shift))
+			while (counter < len)
 			{
 				curr = *stack_b;
 				value = get_value(curr) >> shift;
@@ -300,11 +316,14 @@ void	sort2(t_list **stack_a, t_list **stack_b)
 					push("pa", stack_a, stack_b);
 				else
 					rotate("rb", stack_a, stack_b);
+				counter++;
 			}
 		}
 		shift++;
 		biggest >>= 1;
 	}
+	while (*stack_b  != NULL)
+		push("pa", stack_a, stack_b);
 }
 
 int	main(int argc, char **argv)
