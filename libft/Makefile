@@ -1,5 +1,8 @@
 NAME := libft.a
 
+PRINTF_DIR := ./ft_printf
+PRINTF_NAME   = $(PRINTF_DIR)/libftprintf.a
+
 SOURCES := \
 	ft_isalnum.c \
 	ft_isalpha.c \
@@ -7,6 +10,7 @@ SOURCES := \
 	ft_isdigit.c \
 	ft_isprint.c \
 	ft_strlen.c \
+	ft_nbrlen.c \
 	ft_tolower.c \
 	ft_toupper.c \
 	ft_bzero.c \
@@ -14,6 +18,7 @@ SOURCES := \
 	ft_strlcat.c \
 	ft_atoi.c \
 	ft_strdup.c \
+	ft_strndup.c \
 	ft_memset.c \
 	ft_memmove.c \
 	ft_memcpy.c \
@@ -34,9 +39,7 @@ SOURCES := \
 	ft_strmapi.c \
 	ft_striteri.c \
 	ft_itoa.c \
-	ft_split.c
-
-BONUS_SOURCES := \
+	ft_split.c \
 	ft_lstnew_bonus.c \
 	ft_lstadd_front_bonus.c \
 	ft_lstsize_bonus.c \
@@ -45,31 +48,39 @@ BONUS_SOURCES := \
 	ft_lstdelone_bonus.c \
 	ft_lstclear_bonus.c \
 	ft_lstiter_bonus.c \
-	ft_lstmap_bonus.c
+	ft_lstmap_bonus.c \
+	ft_isspace.c \
+	ft_isminus.c \
+	ft_issign.c \
+	ft_atoll.c \
+	ft_atof.c \
 
 OBJECTS := $(SOURCES:%.c=%.o)
-BONUS_OBJECTS := $(BONUS_SOURCES:%.c=%.o)
 
 CC := cc
 FLAGS := -Wall -Wextra -Werror
 
-.PHONY: all bonus clean fclean re
-
 all: $(NAME)
 
 $(NAME): $(OBJECTS)
+	make -C $(PRINTF_DIR)
+	mv $(PRINTF_NAME) ./$@
 	ar -rcs $(NAME) $^
 
-bonus: $(OBJECTS) $(BONUS_OBJECTS)
-	ar -rcs $(NAME) $^
+$(PRINTF_NAME):
+	make -C $(PRINTF_DIR)
 
 %.o: %.c
 	$(CC) $(FLAGS) -c $< -o $@
 
 clean:
-	rm -rf $(OBJECTS) $(BONUS_OBJECTS)
+	rm -rf $(OBJECTS)
+	make -C $(PRINTF_DIR) clean
 
 fclean: clean
 	rm -rf $(NAME)
+	make -C $(PRINTF_DIR) fclean
 
 re: fclean all
+
+.PHONY: all clean fclean re

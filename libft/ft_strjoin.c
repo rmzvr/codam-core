@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_strjoin.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rmzvr <rmzvr@student.42.fr>                +#+  +:+       +#+        */
+/*   By: rzvir <rzvir@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/09 17:51:27 by rzvir             #+#    #+#             */
-/*   Updated: 2024/10/13 19:52:54 by rmzvr            ###   ########.fr       */
+/*   Updated: 2024/12/30 10:20:27 by rzvir            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ char	*ft_strjoin(char const *s1, char const *s2)
 	size_t	s2_len;
 	size_t	joined_str_len;
 
-	if (s1 == NULL || s1 == NULL)
+	if (s1 == NULL || s2 == NULL)
 		return (NULL);
 	i = 0;
 	s1_len = ft_strlen(s1);

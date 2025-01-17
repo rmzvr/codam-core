@@ -1,42 +1,27 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_atoi.c                                          :+:      :+:    :+:   */
+/*   ft_put_unum.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: rzvir <rzvir@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/10/08 17:34:13 by rzvir             #+#    #+#             */
-/*   Updated: 2025/01/17 16:34:37 by rzvir            ###   ########.fr       */
+/*   Created: 2024/10/30 10:51:35 by rzvir             #+#    #+#             */
+/*   Updated: 2024/10/30 11:36:19 by rzvir            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "ft_printf.h"
 
-int	ft_atoi(const char *nptr)
+int	ft_put_unum(unsigned long n, char *base, size_t base_len)
 {
-	int	i;
-	int	num;
-	int	sign;
+	int		count;
 
-	i = 0;
-	num = 0;
-	sign = 1;
-	while (ft_isspace(nptr[i]))
+	count = 0;
+	if (n >= base_len)
 	{
-		i++;
+		count += ft_put_unum(n / base_len, base, base_len);
 	}
-	if (ft_issign(nptr[i]))
-	{
-		if (ft_isminus(nptr[i]))
-		{
-			sign = -1;
-		}
-		i++;
-	}
-	while (ft_isdigit(nptr[i]))
-	{
-		num = num * 10 + (nptr[i] - '0');
-		i++;
-	}
-	return (num * sign);
+	ft_putchar_fd(base[n % base_len], 1);
+	count++;
+	return (count);
 }

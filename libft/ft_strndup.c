@@ -1,42 +1,31 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_atoi.c                                          :+:      :+:    :+:   */
+/*   ft_strndup.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: rzvir <rzvir@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/10/08 17:34:13 by rzvir             #+#    #+#             */
-/*   Updated: 2025/01/17 16:34:37 by rzvir            ###   ########.fr       */
+/*   Created: 2024/12/30 10:30:16 by rzvir             #+#    #+#             */
+/*   Updated: 2024/12/30 10:30:30 by rzvir            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-int	ft_atoi(const char *nptr)
+char	*ft_strndup(const char *src, size_t n)
 {
-	int	i;
-	int	num;
-	int	sign;
+	char	*dest;
+	size_t	i;
 
+	dest = (char *)malloc(n + 1);
+	if (dest == NULL)
+		return (NULL);
 	i = 0;
-	num = 0;
-	sign = 1;
-	while (ft_isspace(nptr[i]))
+	while (i < n)
 	{
+		dest[i] = *src++;
 		i++;
 	}
-	if (ft_issign(nptr[i]))
-	{
-		if (ft_isminus(nptr[i]))
-		{
-			sign = -1;
-		}
-		i++;
-	}
-	while (ft_isdigit(nptr[i]))
-	{
-		num = num * 10 + (nptr[i] - '0');
-		i++;
-	}
-	return (num * sign);
+	dest[i] = '\0';
+	return (dest);
 }

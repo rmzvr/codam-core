@@ -1,42 +1,30 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_atoi.c                                          :+:      :+:    :+:   */
+/*   ft_handle_conv_specs.c                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: rzvir <rzvir@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/10/08 17:34:13 by rzvir             #+#    #+#             */
-/*   Updated: 2025/01/17 16:34:37 by rzvir            ###   ########.fr       */
+/*   Created: 2024/10/20 14:34:56 by rzvir             #+#    #+#             */
+/*   Updated: 2024/10/26 11:24:33 by rzvir            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "ft_printf.h"
 
-int	ft_atoi(const char *nptr)
+int	ft_handle_conv_specs(va_list args, char conv_spec, int str_len)
 {
-	int	i;
-	int	num;
-	int	sign;
-
-	i = 0;
-	num = 0;
-	sign = 1;
-	while (ft_isspace(nptr[i]))
+	if (ft_strchr("cs%", conv_spec))
 	{
-		i++;
+		str_len = ft_handle_char_specs(args, conv_spec, str_len);
 	}
-	if (ft_issign(nptr[i]))
+	else if (ft_strchr("diu", conv_spec))
 	{
-		if (ft_isminus(nptr[i]))
-		{
-			sign = -1;
-		}
-		i++;
+		str_len = ft_handle_num_specs(args, conv_spec, str_len);
 	}
-	while (ft_isdigit(nptr[i]))
+	else if (ft_strchr("pxX", conv_spec))
 	{
-		num = num * 10 + (nptr[i] - '0');
-		i++;
+		str_len = ft_handle_mem_specs(args, conv_spec, str_len);
 	}
-	return (num * sign);
+	return (str_len);
 }
