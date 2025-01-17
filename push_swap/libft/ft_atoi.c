@@ -6,39 +6,11 @@
 /*   By: rzvir <rzvir@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/08 17:34:13 by rzvir             #+#    #+#             */
-/*   Updated: 2025/01/03 11:55:03 by rzvir            ###   ########.fr       */
+/*   Updated: 2025/01/17 16:34:37 by rzvir            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
-
-static int	ft_isspace(int c)
-{
-	if (c == ' ' || c == '\f' || c == '\n'
-		|| c == '\r' || c == '\t' || c == '\v')
-	{
-		return (1);
-	}
-	return (0);
-}
-
-static int	ft_isminus(int c)
-{
-	if (c == '-')
-	{
-		return (1);
-	}
-	return (0);
-}
-
-static int	ft_issign(int c)
-{
-	if (ft_isminus(c) || c == '+')
-	{
-		return (1);
-	}
-	return (0);
-}
 
 int	ft_atoi(const char *nptr)
 {

@@ -1,25 +1,29 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   utils.c                                            :+:      :+:    :+:   */
+/*   sort.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: rzvir <rzvir@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/01/02 14:29:41 by rzvir             #+#    #+#             */
-/*   Updated: 2025/01/17 17:05:13 by rzvir            ###   ########.fr       */
+/*   Created: 2025/01/17 12:40:08 by rzvir             #+#    #+#             */
+/*   Updated: 2025/01/17 16:55:33 by rzvir            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "push_swap.h"
 
-void	delete_content(void *content)
+static void	sort_two(t_list **stack_a)
 {
-	free(content);
-	content = NULL;
+	if (get_content(*stack_a) > get_content((*stack_a)->next))
+		sa(stack_a);
 }
 
-void	show_error_and_exit(void)
+void	sort_stack(t_list **stack_a, t_list **stack_b)
 {
-	write(2, "Error\n", 6);
-	exit(EXIT_FAILURE);
+	if (ft_lstsize(*stack_a) == 2)
+		sort_two(stack_a);
+	else if (ft_lstsize(*stack_a) <= 5)
+		sort_five(stack_a, stack_b);
+	else
+		sort_radix(stack_a, stack_b);
 }

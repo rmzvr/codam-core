@@ -6,13 +6,13 @@
 /*   By: rzvir <rzvir@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/02 14:21:12 by rzvir             #+#    #+#             */
-/*   Updated: 2025/01/04 15:04:13 by rzvir            ###   ########.fr       */
+/*   Updated: 2025/01/17 15:34:09 by rzvir            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "push_swap.h"
 
-static void	ft_remove_file(t_list **list, int *content)
+static void	ft_lstremove(t_list **list, int *content)
 {
 	t_list	*curr;
 	t_list	*file_to_delete;
@@ -40,29 +40,30 @@ static void	ft_remove_file(t_list **list, int *content)
 	}
 }
 
-void	push(char *operation, t_list **stack_a, t_list **stack_b)
+void	pa(t_list **stack_a, t_list **stack_b)
 {
 	t_list	*arg;
 	int		*content;
 
-	if (ft_strncmp(operation, "pa", 2) == 0)
-	{
-		if (*stack_b == NULL)
-			return ;
-		content = (*stack_b)->content;
-		arg = ft_lstnew(content);
-		ft_printf("pa\n");
-		ft_lstadd_front(stack_a, arg);
-		ft_remove_file(stack_b, content);
-	}
-	else if (ft_strncmp(operation, "pb", 2) == 0)
-	{
-		if (*stack_a == NULL)
-			return ;
-		content = (*stack_a)->content;
-		arg = ft_lstnew(content);
-		ft_printf("pb\n");
-		ft_lstadd_front(stack_b, arg);
-		ft_remove_file(stack_a, content);
-	}
+	if (*stack_b == NULL)
+		return ;
+	content = (*stack_b)->content;
+	arg = ft_lstnew(content);
+	ft_printf("pa\n");
+	ft_lstadd_front(stack_a, arg);
+	ft_lstremove(stack_b, content);
+}
+
+void	pb(t_list **stack_a, t_list **stack_b)
+{
+	t_list	*arg;
+	int		*content;
+
+	if (*stack_a == NULL)
+		return ;
+	content = (*stack_a)->content;
+	arg = ft_lstnew(content);
+	ft_printf("pb\n");
+	ft_lstadd_front(stack_b, arg);
+	ft_lstremove(stack_a, content);
 }

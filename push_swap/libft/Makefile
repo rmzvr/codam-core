@@ -49,6 +49,11 @@ SOURCES := \
 	ft_lstclear_bonus.c \
 	ft_lstiter_bonus.c \
 	ft_lstmap_bonus.c \
+	ft_isspace.c \
+	ft_isminus.c \
+	ft_issign.c \
+	ft_atoll.c \
+	ft_atof.c \
 
 OBJECTS := $(SOURCES:%.c=%.o)
 

@@ -11,6 +11,11 @@ SOURCES := \
 	utils.c \
 	validation.c \
 	init.c \
+	sort.c \
+	list_utils.c \
+	radix_sort.c \
+	five_sort.c \
+	linked_list_utils.c \
 
 OBJECTS := $(SOURCES:.c=.o)
 
