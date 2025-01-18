@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rzvir <rzvir@student.42.fr>                +#+  +:+       +#+        */
+/*   By: rmzvr <rmzvr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/30 10:33:37 by rzvir             #+#    #+#             */
-/*   Updated: 2025/01/17 17:18:59 by rzvir            ###   ########.fr       */
+/*   Updated: 2025/01/18 13:42:12 by rmzvr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,11 @@ int	main(int argc, char **argv)
 		arguments = ft_split(argv[1], ' ');
 		if (arguments == NULL)
 			return (1);
+		if (*arguments == NULL)
+		{
+			free_split(arguments);
+			return (1);
+		}
 		if (ft_strlen(argv[1]) == 0)
 			show_error_and_exit();
 	}
