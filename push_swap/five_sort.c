@@ -6,7 +6,7 @@
 /*   By: rzvir <rzvir@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/17 15:10:57 by rzvir             #+#    #+#             */
-/*   Updated: 2025/01/17 17:11:02 by rzvir            ###   ########.fr       */
+/*   Updated: 2025/01/18 15:19:08 by rzvir            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,7 @@ void	sort_five(t_list **stack_a, t_list **stack_b)
 	int		smallest_index;
 
 	stack_length = ft_lstsize(*stack_a);
-	while (stack_length != 3)
+	while (stack_length > 3)
 	{
 		smallest = find_smallest(*stack_a);
 		smallest_index = find_position(*stack_a, get_content(smallest));

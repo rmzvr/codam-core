@@ -6,13 +6,13 @@
 /*   By: rzvir <rzvir@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/02 14:21:12 by rzvir             #+#    #+#             */
-/*   Updated: 2025/01/17 15:34:09 by rzvir            ###   ########.fr       */
+/*   Updated: 2025/01/18 15:08:01 by rzvir            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "push_swap.h"
 
-static void	ft_lstremove(t_list **list, int *content)
+static void	remove_node_from_list(t_list **list, int *content)
 {
 	t_list	*curr;
 	t_list	*file_to_delete;
@@ -51,7 +51,7 @@ void	pa(t_list **stack_a, t_list **stack_b)
 	arg = ft_lstnew(content);
 	ft_printf("pa\n");
 	ft_lstadd_front(stack_a, arg);
-	ft_lstremove(stack_b, content);
+	remove_node_from_list(stack_b, content);
 }
 
 void	pb(t_list **stack_a, t_list **stack_b)
@@ -65,5 +65,5 @@ void	pb(t_list **stack_a, t_list **stack_b)
 	arg = ft_lstnew(content);
 	ft_printf("pb\n");
 	ft_lstadd_front(stack_b, arg);
-	ft_lstremove(stack_a, content);
+	remove_node_from_list(stack_a, content);
 }

@@ -5,80 +5,49 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: rzvir <rzvir@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/01/17 12:44:05 by rzvir             #+#    #+#             */
-/*   Updated: 2025/01/17 17:07:55 by rzvir            ###   ########.fr       */
+/*   Created: 2025/01/17 16:27:47 by rzvir             #+#    #+#             */
+/*   Updated: 2025/01/18 15:05:10 by rzvir            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "push_swap.h"
 
-int	get_content(t_list *stack)
+t_list	*get_second_last_node(t_list *list)
 {
-	t_content	*content;
-
-	content = stack->content;
-	return (content->value);
-}
-
-int	get_index(t_list *stack)
-{
-	t_content	*content;
-
-	content = stack->content;
-	return (content->index);
-}
-
-int	find_position(t_list *stack, int value)
-{
-	int		index;
-	t_list	*curr;
-
-	index = 0;
-	curr = stack;
-	while (curr != NULL)
+	if (list == NULL)
 	{
-		if (get_content(curr) == value)
-			break ;
-		curr = curr->next;
-		index++;
+		return (list);
 	}
-	return (index);
+	while (list->next->next != NULL)
+	{
+		list = list->next;
+	}
+	return (list);
 }
 
-t_list	*find_smallest(t_list *stack)
+void	reverse_rotate_list(t_list **list)
 {
-	t_list	*curr;
-	t_list	*smallest;
+	t_list	*curr_node;
+	t_list	*next_node;
+	t_list	*second_last_node;
 
-	curr = stack;
-	smallest = curr;
-	while (curr->next != NULL)
-	{
-		if (get_content(smallest) > get_content(curr->next))
-			smallest = curr->next;
-		curr = curr->next;
-	}
-	return (smallest);
+	if (list == NULL || *list == NULL)
+		return ;
+	curr_node = *list;
+	next_node = ft_lstlast(curr_node);
+	second_last_node = get_second_last_node(curr_node);
+	ft_lstadd_front(list, next_node);
+	second_last_node->next = NULL;
 }
 
-t_list	*find_biggest(t_list *stack, long last_biggest)
+void	rotate_list(t_list **list)
 {
-	t_list	*biggest;
+	t_list	*curr_node;
 
-	biggest = NULL;
-	while (stack->next != NULL && get_content(stack) >= last_biggest)
-		stack = stack->next;
-	if (get_content(stack) >= last_biggest)
-		return (NULL);
-	biggest = stack;
-	while (stack->next != NULL)
-	{
-		if (get_content(biggest) < get_content(stack->next))
-		{
-			if (get_content(stack->next) < last_biggest)
-				biggest = stack->next;
-		}
-		stack = stack->next;
-	}
-	return (biggest);
+	if (list == NULL || *list == NULL)
+		return ;
+	curr_node = *list;
+	ft_lstadd_back(list, curr_node);
+	*list = curr_node->next;
+	curr_node->next = NULL;
 }

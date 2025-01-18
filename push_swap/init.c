@@ -6,7 +6,7 @@
 /*   By: rzvir <rzvir@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/02 14:32:54 by rzvir             #+#    #+#             */
-/*   Updated: 2025/01/17 17:08:54 by rzvir            ###   ########.fr       */
+/*   Updated: 2025/01/18 15:07:04 by rzvir            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,7 @@ void	init_stack(t_list **stack, char **arguments)
 		node = ft_lstnew(content);
 		if (node == NULL)
 		{
-			delete_content(content);
+			delete_node_content(content);
 			exit(EXIT_FAILURE);
 		}
 		ft_lstadd_back(stack, node);
