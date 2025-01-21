@@ -20,6 +20,8 @@ FLAGS := -Wall -Wextra -Werror
 
 all: $(CLIENT_NAME) $(SERVER_NAME)
 
+bonus: all
+
 $(CLIENT_NAME): $(LIBFT_NAME) $(CLIENT_OBJECTS)
 	$(CC) $(FLAGS) $(CLIENT_OBJECTS) $(LIBFT_NAME) -o $(CLIENT_NAME)
 
