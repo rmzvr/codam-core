@@ -6,7 +6,7 @@
 /*   By: rzvir <rzvir@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/20 10:54:53 by rmzvr             #+#    #+#             */
-/*   Updated: 2025/01/22 12:10:13 by rzvir            ###   ########.fr       */
+/*   Updated: 2025/01/22 12:32:16 by rzvir            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,29 +35,28 @@ void	set_signal_action(void)
 
 static void	send_message(int server_pid, char *message)
 {
-	int		i;
 	char	character;
 	char	iteration;
+	int		kill_success;
 
-	i = 0;
-	while (message[i] != '\0')
+	while (*message != '\0')
 	{
 		iteration = 0;
-		character = message[i];
+		character = *message++;
 		while (iteration < 8)
 		{
 			if (character & 0b10000000)
-				kill(server_pid, SIGUSR2);
+				kill_success = kill(server_pid, SIGUSR2);
 			else
-				kill(server_pid, SIGUSR1);
+				kill_success = kill(server_pid, SIGUSR1);
+			if (kill_success == -1)
+				exit(EXIT_FAILURE);
 			iteration++;
 			character <<= 1;
 			while (g_pause)
 				usleep(50);
 			g_pause = 1;
 		}
-		iteration = 0;
-		i++;
 	}
 }
 
@@ -66,7 +65,8 @@ int	main(int argc, char **argv)
 	char	*message;
 	int		server_pid;
 
-	(void) argc;
+	if (argc != 3)
+		return (1);
 	message = argv[2];
 	server_pid = ft_atoi(argv[1]);
 	set_signal_action();

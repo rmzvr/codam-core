@@ -6,7 +6,7 @@
 /*   By: rzvir <rzvir@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/20 10:54:51 by rmzvr             #+#    #+#             */
-/*   Updated: 2025/01/22 12:10:12 by rzvir            ###   ########.fr       */
+/*   Updated: 2025/01/22 12:17:52 by rzvir            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,9 +22,9 @@ static void	decode_bits(int signal_number)
 		character = 0;
 	if (!current_bit)
 		current_bit = 1;
-	if (signal_number == 10)
+	if (signal_number == SIGUSR1)
 		character ^= 0;
-	else if (signal_number == 12)
+	else if (signal_number == SIGUSR2)
 		character ^= 1;
 	if (current_bit == 8)
 	{
