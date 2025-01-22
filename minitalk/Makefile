@@ -4,8 +4,6 @@ SERVER_NAME := server
 LIBFT_DIR := ./libft
 LIBFT_NAME := $(LIBFT_DIR)/libft.a
 
-NAME := push_swap
-
 CLIENT_SOURCES := \
 	client.c \
 
