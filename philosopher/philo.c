@@ -6,11 +6,13 @@
 /*   By: rzvir <rzvir@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/23 12:19:15 by rzvir             #+#    #+#             */
-/*   Updated: 2025/01/27 18:48:31 by rzvir            ###   ########.fr       */
+/*   Updated: 2025/01/27 21:25:12 by rzvir            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
+
+pthread_mutex_t	mutex;
 
 long	get_current_time_in_milliseconds()
 {
@@ -28,20 +30,30 @@ void	*philosopher_routine(void *arguments)
 	long			milliseconds;
 
 	philosopher = (t_philosopher *)arguments;
+	// long init_curr_time = get_current_time_in_milliseconds();
+	// long diff = 0;
+	// long curr_time = init_curr_time;
+	// while (diff < 1000)
+	// {
+		pthread_mutex_lock(&mutex);
+		milliseconds = get_current_time_in_milliseconds();
+		printf("%ld %d has taken a fork\n", milliseconds, philosopher->philosopher_number);
+		printf("%ld %d has taken a fork\n", milliseconds, philosopher->philosopher_number);
 
-	milliseconds = get_current_time_in_milliseconds();
-	printf("%ld %d has taken a fork\n", milliseconds, philosopher->philosopher_number);
+		milliseconds = get_current_time_in_milliseconds();
+		printf("%ld %d is eating\n", milliseconds, philosopher->philosopher_number);
+		usleep(philosopher->time_to_eat * 1000);
+		pthread_mutex_unlock(&mutex);
 
-	milliseconds = get_current_time_in_milliseconds();
-	printf("%ld %d is eating\n", milliseconds, philosopher->philosopher_number);
-	usleep(philosopher->time_to_eat * 1000);
+		milliseconds = get_current_time_in_milliseconds();
+		printf("%ld %d is sleeping\n", milliseconds, philosopher->philosopher_number);
+		usleep(philosopher->time_to_sleep * 1000);
 
-	milliseconds = get_current_time_in_milliseconds();
-	printf("%ld %d is sleeping\n", milliseconds, philosopher->philosopher_number);
-	usleep(philosopher->time_to_sleep * 1000);
-
-	milliseconds = get_current_time_in_milliseconds();
-	printf("%ld %d is thinking\n", milliseconds, philosopher->philosopher_number);
+		milliseconds = get_current_time_in_milliseconds();
+		printf("%ld %d is thinking\n", milliseconds, philosopher->philosopher_number);
+		// curr_time = get_current_time_in_milliseconds();
+		// diff = curr_time - init_curr_time;
+	// }
 
 	return (NULL);
 }
@@ -82,7 +94,7 @@ int	initialize_monitor(t_monitor *monitor, char **argv)
 
 	i = 0;
 	number_of_philosophers = ft_atoui(argv[1]);
-	monitor->philosophers = malloc((number_of_philosophers + 1) * sizeof(t_philosopher));
+	monitor->philosophers = malloc((number_of_philosophers + 1) * sizeof(t_philosopher *));
 	if (monitor->philosophers == NULL)
 	{
 		//! HANDLE ERROR
@@ -108,6 +120,7 @@ int	main(int argc, char **argv)
 	t_monitor		monitor;
 	if (validate_arguments(argc, argv))
 		return (1);
+	pthread_mutex_init(&mutex, NULL);
 	if (initialize_monitor(&monitor, argv))
 		return (2);
 	i = 1;
@@ -124,5 +137,6 @@ int	main(int argc, char **argv)
 	// printf("Philosopher %d terminated in %ld milliseconds.\n", i, milliseconds);
 		i++;
 	}
+	pthread_mutex_destroy(&mutex);
 	return (0);
 }

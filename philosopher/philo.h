@@ -6,7 +6,7 @@
 /*   By: rzvir <rzvir@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/26 15:38:35 by rzvir             #+#    #+#             */
-/*   Updated: 2025/01/27 16:54:52 by rzvir            ###   ########.fr       */
+/*   Updated: 2025/01/27 21:19:03 by rzvir            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,12 @@
 # include <pthread.h>
 # include <sys/time.h>
 
+typedef struct s_fork
+{
+	pthread_mutex_t	mutex;
+	int				taken;
+}	t_fork;
+
 typedef struct s_philosopher
 {
 	pthread_t			thread;
@@ -32,6 +38,7 @@ typedef struct s_philosopher
 }	t_philosopher;
 typedef struct s_monitor
 {
+	t_fork			**forks;
 	t_philosopher	**philosophers;
 }	t_monitor;
 
