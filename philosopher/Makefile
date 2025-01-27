@@ -3,6 +3,8 @@ NAME := philo
 SOURCES := \
 	philo.c \
 	utils.c \
+	validation.c \
+	error_handling.c \
 
 OBJECTS := $(SOURCES:.c=.o)
 

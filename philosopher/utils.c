@@ -6,7 +6,7 @@
 /*   By: rzvir <rzvir@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/26 15:43:20 by rzvir             #+#    #+#             */
-/*   Updated: 2025/01/26 16:48:14 by rzvir            ###   ########.fr       */
+/*   Updated: 2025/01/27 16:13:00 by rzvir            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,30 +43,46 @@ size_t	ft_nbrlen(int n)
 	return (nbr_length);
 }
 
-long long	ft_atoll(const char *nptr)
+unsigned long long	ft_atoull(const char *nptr)
 {
-	int			i;
-	long long	num;
-	int			sign;
+	int					i;
+	unsigned long long	num;
 
 	i = 0;
 	num = 0;
-	sign = 1;
 	while (nptr[i] == ' ' || nptr[i] == '\f' || nptr[i] == '\n'
 		|| nptr[i] == '\r' || nptr[i] == '\t' || nptr[i] == '\v')
-	{
 		i++;
-	}
-	if (nptr[i] == '-' || nptr[i] == '+')
-	{
-		if (nptr[i] == '-')
-			sign = -1;
+	if (nptr[i] == '-')
+		return (0);
+	if (nptr[i] == '+')
 		i++;
-	}
 	while (nptr[i] >= '0' && nptr[i] <= '9')
 	{
 		num = num * 10 + (nptr[i] - '0');
 		i++;
 	}
-	return (num * sign);
+	return (num);
+}
+
+unsigned int	ft_atoui(const char *nptr)
+{
+	int	i;
+	int	num;
+
+	i = 0;
+	num = 0;
+	while (nptr[i] == ' ' || nptr[i] == '\f' || nptr[i] == '\n'
+		|| nptr[i] == '\r' || nptr[i] == '\t' || nptr[i] == '\v')
+		i++;
+	if (nptr[i] == '-')
+		return (0);
+	if (nptr[i] == '+')
+		i++;
+	while (nptr[i] >= '0' && nptr[i] <= '9')
+	{
+		num = num * 10 + (nptr[i] - '0');
+		i++;
+	}
+	return (num);
 }
