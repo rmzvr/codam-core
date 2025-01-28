@@ -16,7 +16,7 @@ FLAGS := -Wall -Wextra -Werror
 all: $(NAME)
 
 $(NAME): $(OBJECTS)
-	$(CC) $(FLAGS) $(OBJECTS) -o $(NAME)
+	$(CC) $(FLAGS) $(OBJECTS) -o $(NAME) -lpthread
 
 %.o: %.c
 	$(CC) $(FLAGS) -c $< -o $@
