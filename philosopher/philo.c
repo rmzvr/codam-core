@@ -6,7 +6,7 @@
 /*   By: rzvir <rzvir@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/23 12:19:15 by rzvir             #+#    #+#             */
-/*   Updated: 2025/01/31 15:55:40 by rzvir            ###   ########.fr       */
+/*   Updated: 2025/01/31 17:24:37 by rzvir            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,20 +22,43 @@ long	get_current_time_in_milliseconds()
 	return (milliseconds);
 }
 
+int	wait_to_eat(t_philosopher *philosopher, unsigned long long current_time, unsigned long long time_since_last_eat)
+{
+	int	is_time_to_eat;
+
+	is_time_to_eat = philosopher->forks.left_fork->taken == 0 && philosopher->forks.right_fork->taken == 0;
+	while (!is_time_to_eat)
+	{
+		usleep(1);
+		is_time_to_eat = philosopher->forks.left_fork->taken == 0 && philosopher->forks.right_fork->taken == 0;
+		current_time = get_current_time_in_milliseconds();
+		if (current_time - time_since_last_eat >= philosopher->time_to_die)
+			return (1);
+	}
+	return (0);
+}
+
+// int	check_time_left_to_die(unsigned long long time_to_die, unsigned long long current_time, unsigned long long time_since_last_eat)
+// {
+// 	current_time = get_current_time_in_milliseconds();
+// 	if (current_time - time_since_last_eat >= time_to_die)
+// 		return (1);
+// 	return (0);
+// }
+
 void	*philosopher_routine(void *arg)
 {
 	t_philo_info		*info;
 	t_philosopher		*philosopher;
 	long				milliseconds;
-	int					is_time_to_eat;
+	unsigned long long	current_time;
 	unsigned long long	time_since_last_eat;
-	unsigned long long	init_curr_time;
 
 	info = (t_philo_info *)arg;
 	philosopher = info->philo;
-	init_curr_time = get_current_time_in_milliseconds();
-	time_since_last_eat = init_curr_time;
-	while (time_since_last_eat - init_curr_time <= philosopher->time_to_die)
+	time_since_last_eat = get_current_time_in_milliseconds();
+	current_time = time_since_last_eat;
+	while (current_time - time_since_last_eat <= philosopher->time_to_die)
 	{
 		if (philosopher->number_of_meals == 0)
 			break ;
@@ -43,24 +66,18 @@ void	*philosopher_routine(void *arg)
 		if (philosopher->forks.left_fork == NULL || philosopher->forks.right_fork == NULL)
 			break ;
 
-		time_since_last_eat = get_current_time_in_milliseconds();
-		if (time_since_last_eat - init_curr_time >= philosopher->time_to_die)
+		current_time = get_current_time_in_milliseconds();
+		if (current_time - time_since_last_eat >= philosopher->time_to_die)
 			break ;
 		if (*info->is_someone_dead > 0)
 			return (info->is_someone_dead);
 
-		is_time_to_eat = philosopher->forks.left_fork->taken == 0 && philosopher->forks.right_fork->taken == 0;
-		while (!is_time_to_eat)
-		{
-			usleep(1);
-			is_time_to_eat = philosopher->forks.left_fork->taken == 0 && philosopher->forks.right_fork->taken == 0;
-			time_since_last_eat = get_current_time_in_milliseconds();
-			if (time_since_last_eat - init_curr_time >= philosopher->time_to_die)
-				break ;
-		}
+		if (wait_to_eat(philosopher, current_time, time_since_last_eat))
+			break ;
 
-		time_since_last_eat = get_current_time_in_milliseconds();
-		if (time_since_last_eat - init_curr_time >= philosopher->time_to_die)
+		
+		current_time = get_current_time_in_milliseconds();
+		if (current_time - time_since_last_eat >= philosopher->time_to_die)
 			break ;
 		if (*info->is_someone_dead > 0)
 			return (info->is_someone_dead);
@@ -78,20 +95,20 @@ void	*philosopher_routine(void *arg)
 			milliseconds = get_current_time_in_milliseconds();
 			printf("%ld %d has taken a fork\n", milliseconds, philosopher->philosopher_number);
 
-			if (*info->is_someone_dead == 1)
+			if (*info->is_someone_dead > 0)
 				return (NULL);
 
 			milliseconds = get_current_time_in_milliseconds();
 			printf("%ld %d is eating\n", milliseconds, philosopher->philosopher_number);
-			init_curr_time = get_current_time_in_milliseconds();
 			time_since_last_eat = get_current_time_in_milliseconds();
+			current_time = get_current_time_in_milliseconds();
 			usleep(philosopher->time_to_eat * 1000);
 
 			if (philosopher->number_of_meals > 0)
 				philosopher->number_of_meals -= 1;
 
-			time_since_last_eat = get_current_time_in_milliseconds();
-			if (time_since_last_eat - init_curr_time >= philosopher->time_to_die)
+			current_time = get_current_time_in_milliseconds();
+			if (current_time - time_since_last_eat >= philosopher->time_to_die)
 			{
 				philosopher->forks.left_fork->taken = 0;
 				philosopher->forks.right_fork->taken = 0;
@@ -99,7 +116,7 @@ void	*philosopher_routine(void *arg)
 				pthread_mutex_unlock(&philosopher->forks.right_fork->mutex);
 				break ;
 			}
-			if (*info->is_someone_dead == 1)
+			if (*info->is_someone_dead > 0)
 			{
 				philosopher->forks.left_fork->taken = 0;
 				philosopher->forks.right_fork->taken = 0;
@@ -114,8 +131,8 @@ void	*philosopher_routine(void *arg)
 			pthread_mutex_unlock(&philosopher->forks.right_fork->mutex);
 		}
 
-		time_since_last_eat = get_current_time_in_milliseconds();
-		if (time_since_last_eat - init_curr_time >= philosopher->time_to_die)
+		current_time = get_current_time_in_milliseconds();
+		if (current_time - time_since_last_eat >= philosopher->time_to_die)
 			break ;
 		if (*info->is_someone_dead > 0)
 			return (info->is_someone_dead);
@@ -124,8 +141,8 @@ void	*philosopher_routine(void *arg)
 		printf("%ld %d is sleeping\n", milliseconds, philosopher->philosopher_number);
 		usleep(philosopher->time_to_sleep * 1000);
 
-		time_since_last_eat = get_current_time_in_milliseconds();
-		if (time_since_last_eat - init_curr_time >= philosopher->time_to_die)
+		current_time = get_current_time_in_milliseconds();
+		if (current_time - time_since_last_eat >= philosopher->time_to_die)
 			break ;
 		if (*info->is_someone_dead > 0)
 			return (info->is_someone_dead);
@@ -133,8 +150,8 @@ void	*philosopher_routine(void *arg)
 		milliseconds = get_current_time_in_milliseconds();
 		printf("%ld %d is thinking\n", milliseconds, philosopher->philosopher_number);
 
-		time_since_last_eat = get_current_time_in_milliseconds();
-		if (time_since_last_eat - init_curr_time >= philosopher->time_to_die)
+		current_time = get_current_time_in_milliseconds();
+		if (current_time - time_since_last_eat >= philosopher->time_to_die)
 			break ;
 
 		if (*info->is_someone_dead > 0)
@@ -289,7 +306,7 @@ int	wait_for_philosophers_done(t_monitor *monitor)
 	int	*res;
 
 	i = 0;
-	while (monitor->philosophers[i] != NULL)
+	while (monitor->philosophers[0] != NULL)
 	{
 		if (pthread_join(monitor->philosophers[i]->thread, (void **)&res))
 		{
