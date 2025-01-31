@@ -6,7 +6,7 @@
 /*   By: rzvir <rzvir@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/27 16:16:33 by rzvir             #+#    #+#             */
-/*   Updated: 2025/01/27 16:19:26 by rzvir            ###   ########.fr       */
+/*   Updated: 2025/01/30 11:45:33 by rzvir            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,11 +18,13 @@ int	show_error(int code)
 	char	*message2;
 	char	*message3;
 	char	*message4;
+	char	*message5;
 
 	message1 = "Wrong amount of arguments\n";
 	message2 = "One of arguments is invalid\n";
-	message3 = "Number of philosophers should be at least 2\n";
+	message3 = "Number of philosophers should be at least 1\n";
 	message4 = "All arguments must be positive numbers\n";
+	message5 = "Number of meals should be at least 1\n";
 	if (code == 1)
 		write(STDERR_FILENO, message1, ft_strlen(message1));
 	else if (code == 2)
@@ -31,6 +33,8 @@ int	show_error(int code)
 		write(STDERR_FILENO, message3, ft_strlen(message3));
 	else if (code == 4)
 		write(STDERR_FILENO, message4, ft_strlen(message4));
+	else if (code == 5)
+		write(STDERR_FILENO, message5, ft_strlen(message5));
 	return (code);
 }
 

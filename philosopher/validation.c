@@ -6,7 +6,7 @@
 /*   By: rzvir <rzvir@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/27 16:15:21 by rzvir             #+#    #+#             */
-/*   Updated: 2025/01/27 16:15:55 by rzvir            ###   ########.fr       */
+/*   Updated: 2025/01/30 11:51:57 by rzvir            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,9 +32,9 @@ int	validate_arguments(int argc, char **argv)
 {
 	int	i;
 
-	if (argc != 6)
+	if (argc < 5 || argc > 6)
 		return (show_help());
-	if (ft_atoull(argv[1]) <= 1)
+	if (ft_atoull(argv[1]) < 1)
 		return (show_error(3));
 	i = 1;
 	while (i < argc)
@@ -43,5 +43,7 @@ int	validate_arguments(int argc, char **argv)
 			return (show_error(2));
 		i++;
 	}
+	if (argv[5] != NULL && ft_atoui(argv[5]) == 0)
+		return (show_error(5));
 	return (0);
 }
