@@ -6,7 +6,7 @@
 /*   By: rzvir <rzvir@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/26 15:38:35 by rzvir             #+#    #+#             */
-/*   Updated: 2025/01/31 15:30:58 by rzvir            ###   ########.fr       */
+/*   Updated: 2025/02/04 18:54:32 by rzvir            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,8 @@ typedef struct s_philosopher
 	unsigned long long	time_to_die;
 	unsigned long long	time_to_eat;
 	unsigned long long	time_to_sleep;
+	unsigned int		is_someone_dead;
+	unsigned long long	last_meal_time;
 	pthread_t			thread;
 	t_philosopher_forks	forks;
 }	t_philosopher;
