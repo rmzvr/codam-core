@@ -6,7 +6,7 @@
 /*   By: rzvir <rzvir@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/26 15:38:35 by rzvir             #+#    #+#             */
-/*   Updated: 2025/02/04 18:54:32 by rzvir            ###   ########.fr       */
+/*   Updated: 2025/02/06 14:40:35 by rzvir            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,50 +18,41 @@
 # include <stdlib.h>
 # include <string.h>
 # include <limits.h>
+# include <stdint.h>
 # include <pthread.h>
 # include <sys/time.h>
 
-typedef struct s_fork
+typedef enum e_action
 {
-	pthread_mutex_t	mutex;
-	int				taken;
-}	t_fork;
-
-typedef struct s_philosopher_forks
-{
-	t_fork	*left_fork;
-	t_fork	*right_fork;
-}	t_philosopher_forks;
+	TAKE,
+	EAT,
+	SLEEP,
+	THINK,
+	DIE
+}	t_action;
 
 typedef struct s_philosopher
 {
-	int					number_of_meals;
-	unsigned int		philosopher_number;
-	unsigned long long	time_to_die;
-	unsigned long long	time_to_eat;
-	unsigned long long	time_to_sleep;
-	unsigned int		is_someone_dead;
-	unsigned long long	last_meal_time;
-	pthread_t			thread;
-	t_philosopher_forks	forks;
+	pthread_t		thread;
+	pthread_mutex_t	*left_fork;
+	pthread_mutex_t	*right_fork;
+	uint32_t		number_of_meals;
+	uint32_t		philosopher_number;
+	uint64_t		time_to_die;
+	uint64_t		time_to_eat;
+	uint64_t		time_to_sleep;
+	uint32_t		is_someone_dead;
+	uint64_t		last_meal_time;
 }	t_philosopher;
 typedef struct s_monitor
 {
-	unsigned int	is_someone_dead;
-	t_fork			**forks;
+	pthread_mutex_t	**forks;
 	t_philosopher	**philosophers;
 }	t_monitor;
 
-typedef struct s_philo_info
-{
-	t_philosopher	*philo;
-	unsigned int	*is_someone_dead;
-}	t_philo_info;
-
-
 size_t				ft_nbrlen(int n);
 size_t				ft_strlen(const char *s);
-unsigned int		ft_atoui(const char *nptr);
+uint32_t		ft_atoui(const char *nptr);
 unsigned long long	ft_atoull(const char *nptr);
 
 int					show_help(void);
