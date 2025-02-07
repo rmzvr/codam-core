@@ -6,7 +6,7 @@
 /*   By: rzvir <rzvir@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/26 15:38:35 by rzvir             #+#    #+#             */
-/*   Updated: 2025/02/06 14:40:35 by rzvir            ###   ########.fr       */
+/*   Updated: 2025/02/07 15:15:09 by rzvir            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,6 +48,10 @@ typedef struct s_monitor
 {
 	pthread_mutex_t	**forks;
 	t_philosopher	**philosophers;
+	pthread_mutex_t	startMutex;
+	pthread_mutex_t	deathMutex;
+	pthread_mutex_t	mealMutex;
+	pthread_mutex_t	printMutex;
 }	t_monitor;
 
 size_t				ft_nbrlen(int n);
