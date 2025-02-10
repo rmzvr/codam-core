@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philo.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rmzvr <rmzvr@student.42.fr>                +#+  +:+       +#+        */
+/*   By: rzvir <rzvir@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/26 15:38:35 by rzvir             #+#    #+#             */
-/*   Updated: 2025/02/08 17:56:58 by rmzvr            ###   ########.fr       */
+/*   Updated: 2025/02/10 12:49:02 by rzvir            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ typedef struct s_philosopher
 	pthread_t		thread;
 	pthread_mutex_t	*left_fork;
 	pthread_mutex_t	*right_fork;
-	uint32_t		number_of_meals;
+	int		number_of_meals;
 	uint32_t		philosopher_number;
 	uint64_t		time_to_die;
 	uint64_t		time_to_eat;
