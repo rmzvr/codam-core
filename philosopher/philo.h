@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philo.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rzvir <rzvir@student.42.fr>                +#+  +:+       +#+        */
+/*   By: rmzvr <rmzvr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/26 15:38:35 by rzvir             #+#    #+#             */
-/*   Updated: 2025/02/07 15:15:09 by rzvir            ###   ########.fr       */
+/*   Updated: 2025/02/08 17:56:58 by rmzvr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,28 +41,35 @@ typedef struct s_philosopher
 	uint64_t		time_to_die;
 	uint64_t		time_to_eat;
 	uint64_t		time_to_sleep;
-	uint32_t		is_someone_dead;
+	uint32_t		*is_someone_dead;
 	uint64_t		last_meal_time;
+	int64_t			*dinner_start_time;
+	pthread_mutex_t	*startMutex;
+	pthread_mutex_t	*deathMutex;
+	pthread_mutex_t	*mealMutex;
+	pthread_mutex_t	*printMutex;
 }	t_philosopher;
-typedef struct s_monitor
+typedef struct s_table
 {
-	pthread_mutex_t	**forks;
-	t_philosopher	**philosophers;
+	int64_t			dinner_start_time;
+	uint32_t		is_someone_dead;
 	pthread_mutex_t	startMutex;
 	pthread_mutex_t	deathMutex;
-	pthread_mutex_t	mealMutex;
 	pthread_mutex_t	printMutex;
-}	t_monitor;
+	pthread_mutex_t	mealMutex;
+	pthread_mutex_t	**forks;
+	t_philosopher	**philosophers;
+}	t_table;
 
-size_t				ft_nbrlen(int n);
-size_t				ft_strlen(const char *s);
-uint32_t		ft_atoui(const char *nptr);
-unsigned long long	ft_atoull(const char *nptr);
+size_t		ft_nbrlen(int n);
+size_t		ft_strlen(const char *s);
+uint32_t	ft_atoui(const char *nptr);
+uint64_t	ft_atoul(const char *nptr);
 
-int					show_help(void);
-int					show_error(int code);
+int			show_help(void);
+int			show_error(int code);
 
-int					is_invalid_argument(char *argument);
-int					validate_arguments(int argc, char **argv);
+int			is_invalid_argument(char *argument);
+int			validate_arguments(int argc, char **argv);
 
 #endif

@@ -4,8 +4,6 @@ init waiter 1 (thread)
 init forks 1 (mutex)
 run routine till someone die
 run routine till all of them full
-mutex for print
-
 
 mutex lock start
 while -> create_t 0 1 2

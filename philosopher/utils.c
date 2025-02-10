@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rzvir <rzvir@student.42.fr>                +#+  +:+       +#+        */
+/*   By: rmzvr <rmzvr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/26 15:43:20 by rzvir             #+#    #+#             */
-/*   Updated: 2025/01/27 16:13:00 by rzvir            ###   ########.fr       */
+/*   Updated: 2025/02/08 14:36:30 by rmzvr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,10 +43,10 @@ size_t	ft_nbrlen(int n)
 	return (nbr_length);
 }
 
-unsigned long long	ft_atoull(const char *nptr)
+uint64_t	ft_atoul(const char *nptr)
 {
-	int					i;
-	unsigned long long	num;
+	int			i;
+	uint64_t	num;
 
 	i = 0;
 	num = 0;
@@ -65,10 +65,10 @@ unsigned long long	ft_atoull(const char *nptr)
 	return (num);
 }
 
-unsigned int	ft_atoui(const char *nptr)
+uint32_t	ft_atoui(const char *nptr)
 {
-	int	i;
-	int	num;
+	int			i;
+	uint32_t	num;
 
 	i = 0;
 	num = 0;
