@@ -3,14 +3,42 @@
 /*                                                        :::      ::::::::   */
 /*   philo.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rzvir <rzvir@student.42.fr>                +#+  +:+       +#+        */
+/*   By: rmzvr <rmzvr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/23 12:19:15 by rzvir             #+#    #+#             */
-/*   Updated: 2025/02/10 14:43:12 by rzvir            ###   ########.fr       */
+/*   Updated: 2025/02/16 21:58:30 by rmzvr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
+
+int	handle_mutex(pthread_mutex_t *mutex, t_mutex_action action)
+{
+	int	return_code;
+
+	return_code = 0;
+	if (action == INIT)
+		return_code = handle_mutex_error(pthread_mutex_init(mutex, NULL), INIT);
+	else if (action == DESTROY)
+		return_code = handle_mutex_error(pthread_mutex_destroy(mutex), DESTROY);
+	else if (action == LOCK)
+		return_code = handle_mutex_error(pthread_mutex_lock(mutex), LOCK);
+	else if (action == UNLOCK)
+		return_code = handle_mutex_error(pthread_mutex_unlock(mutex), UNLOCK);
+	return (return_code);
+}
+
+// int	handle_thread(pthread_t *thread, void *(*routine)(void *), void *arg)
+// {
+// 	int	return_code;
+
+// 	return_code = 0;
+// 	if (action == CREATE)
+// 		return_code = handle_thread_error(pthread_create(thread, NULL, routine, arg), CREATE);
+// 	else if (action == JOIN)
+// 		return_code = handle_thread_error(pthread_join(*thread, NULL), JOIN);
+// 	return (return_code);
+// }
 
 uint64_t	get_current_time_in_milliseconds()
 {
@@ -42,8 +70,8 @@ void	wait(uint64_t time_to_wait)
 	uint64_t	time_to_work;
 
 	time_to_work = get_current_time_in_milliseconds() + time_to_wait;
-	while (get_current_time_in_milliseconds() < time_to_work)
-		usleep(1000);
+	while (get_current_time_in_milliseconds() <= time_to_work)
+		usleep(500);
 }
 
 void	action(t_action action, uint64_t dinner_start, t_philosopher *philosopher)
@@ -53,15 +81,15 @@ void	action(t_action action, uint64_t dinner_start, t_philosopher *philosopher)
 	pthread_mutex_lock(philosopher->printMutex);
 	milliseconds = get_current_time_in_milliseconds();
 	if (action == TAKE)
-		printf("%ld %d has taken a fork\n", milliseconds - dinner_start, philosopher->philosopher_number);
+		printf("%ld %d has taken a fork\n", milliseconds - dinner_start, philosopher->seat);
 	else if (action == EAT)
-		printf("%ld %d is eating\n", milliseconds - dinner_start, philosopher->philosopher_number);
+		printf("%ld %d is eating\n", milliseconds - dinner_start, philosopher->seat);
 	else if (action == SLEEP)
-		printf("%ld %d is sleeping\n", milliseconds - dinner_start, philosopher->philosopher_number);
+		printf("%ld %d is sleeping\n", milliseconds - dinner_start, philosopher->seat);
 	else if (action == THINK)
-		printf("%ld %d is thinking\n", milliseconds - dinner_start, philosopher->philosopher_number);
+		printf("%ld %d is thinking\n", milliseconds - dinner_start, philosopher->seat);
 	else if (action == DIE)
-		printf("%ld %d died\n", milliseconds - dinner_start, philosopher->philosopher_number);
+		printf("%ld %d died\n", milliseconds - dinner_start, philosopher->seat);
 	pthread_mutex_unlock(philosopher->printMutex);
 }
 
@@ -82,55 +110,26 @@ void	*philosopher_routine(void *arg)
 	t_philosopher	*philosopher;
 
 	philosopher = (t_philosopher *) arg;
-	// philosopher->last_meal_time = get_current_time_in_milliseconds();
-	// usleep(1000);
 	pthread_mutex_lock(philosopher->startMutex);
-	pthread_mutex_lock(philosopher->printMutex);
-	// printf("start time %lu - philosopher %d\n", get_current_time_in_milliseconds(), philosopher->philosopher_number);
-	pthread_mutex_unlock(philosopher->printMutex);
 	pthread_mutex_unlock(philosopher->startMutex);
-	// printf("philo #%d, left - %p\n", philosopher->philosopher_number, philosopher->left_fork);
-	// printf("philo #%d, right - %p\n", philosopher->philosopher_number, philosopher->right_fork);
+	if (philosopher->seat % 2)
+		wait(philosopher->time_to_eat / 2);
 	while (1)
 	{
-		// if (philosopher->right_fork == NULL)
-		// 	wait(philosopher->time_to_die);
+		if (philosopher->right_fork == NULL)
+			wait(philosopher->time_to_die);
 
-		// if (check_death(philosopher))
-		// 	return (NULL);
+		if (check_death(philosopher))
+			return (NULL);
 
-		// if (philosopher->philosopher_number % 2 == 0)
-		// 	wait(philosopher->time_to_eat / 2);
+		pthread_mutex_lock(philosopher->left_fork);
 
-		// if (check_death(philosopher))
-		// 	return (NULL);
-
-		if (philosopher->philosopher_number % 2 == 0)
-		{
-			// printf("Philosopher %d: Taking forks\n", philosopher->philosopher_number);
-			pthread_mutex_lock(philosopher->left_fork);
-			pthread_mutex_lock(philosopher->right_fork);
-		}
-		else
-		{
-			// printf("Philosopher %d: Taking forks\n", philosopher->philosopher_number);
-			pthread_mutex_lock(philosopher->right_fork);
-			pthread_mutex_lock(philosopher->left_fork);
-		}
-
+		pthread_mutex_lock(philosopher->right_fork);
 
 		if (check_death(philosopher))
 		{
-			if (philosopher->philosopher_number % 2 == 0)
-			{
-				pthread_mutex_unlock(philosopher->left_fork);
-				pthread_mutex_unlock(philosopher->right_fork);
-			}
-			else
-			{
-				pthread_mutex_unlock(philosopher->right_fork);
-				pthread_mutex_unlock(philosopher->left_fork);
-			}
+			pthread_mutex_unlock(philosopher->left_fork);
+			pthread_mutex_unlock(philosopher->right_fork);
 			return (NULL);
 		}
 
@@ -147,29 +146,13 @@ void	*philosopher_routine(void *arg)
 
 		if (check_death(philosopher))
 		{
-			if (philosopher->philosopher_number % 2 == 0)
-			{
-				pthread_mutex_unlock(philosopher->left_fork);
-				pthread_mutex_unlock(philosopher->right_fork);
-			}
-			else
-			{
-				pthread_mutex_unlock(philosopher->right_fork);
-				pthread_mutex_unlock(philosopher->left_fork);
-			}
+			pthread_mutex_unlock(philosopher->left_fork);
+			pthread_mutex_unlock(philosopher->right_fork);
 			return (NULL);
 		}
 
-		if (philosopher->philosopher_number % 2 == 0)
-		{
-			pthread_mutex_unlock(philosopher->left_fork);
-			pthread_mutex_unlock(philosopher->right_fork);
-		}
-		else
-		{
-			pthread_mutex_unlock(philosopher->right_fork);
-			pthread_mutex_unlock(philosopher->left_fork);
-		}
+		pthread_mutex_unlock(philosopher->left_fork);
+		pthread_mutex_unlock(philosopher->right_fork);
 
 		if (check_death(philosopher))
 			return (NULL);
@@ -187,25 +170,33 @@ void	*philosopher_routine(void *arg)
 
 int	initialize_table(t_table *table, char **argv)
 {
-	uint32_t	number_of_philosophers;
+	size_t	i;
+	size_t	number_of_philosophers;
 
-	table->dinner_start_time = -1;
+	i = 0;
 	table->is_someone_dead = 0;
+	table->dinner_start_time = -1;
 	number_of_philosophers = ft_atoui(argv[1]);
-	table->philosophers = malloc((number_of_philosophers + 1) * sizeof(t_philosopher *));
+	table->number_of_philosophers = number_of_philosophers;
+	table->philosophers = malloc((number_of_philosophers) * sizeof(t_philosopher));
 	if (table->philosophers == NULL)
 	{
 		//! HANDLE ERROR
 		return (1);
 	}
-	table->forks = malloc((number_of_philosophers + 1) * sizeof(pthread_mutex_t *));
+	table->forks = malloc((number_of_philosophers) * sizeof(pthread_mutex_t));
 	if (table->forks == NULL)
 	{
 		//! HANDLE ERROR
 		return (1);
 	}
-	pthread_mutex_init(&table->startMutex, NULL);
+	while (i < number_of_philosophers)
+	{
+		pthread_mutex_init(&table->forks[i], NULL);
+		i++;
+	}
 	pthread_mutex_init(&table->mealMutex, NULL);
+	pthread_mutex_init(&table->startMutex, NULL);
 	pthread_mutex_init(&table->deathMutex, NULL);
 	pthread_mutex_init(&table->printMutex, NULL);
 	return (0);
@@ -220,20 +211,25 @@ int	deinitialize_table(t_table *table)
 	return (0);
 }
 
-t_philosopher	*initialize_philosopher(uint32_t philosopher_number, char **argv, pthread_mutex_t *left_fork, pthread_mutex_t *right_fork, t_table *table)
+void	get_forks(t_philosopher *philosopher, pthread_mutex_t *forks, size_t seat, size_t number_of_philosophers)
 {
-	t_philosopher	*philosopher;
+	pthread_mutex_t	*left_fork;
+	pthread_mutex_t	*right_fork;
 
+	left_fork = &forks[seat];
+	if (number_of_philosophers == 1)
+		right_fork = NULL;
+	else if (seat + 1 == number_of_philosophers)
+		right_fork = &forks[0];
+	else
+		right_fork = &forks[seat + 1];
+	philosopher->left_fork = left_fork;
+	philosopher->right_fork = right_fork;
+}
 
-	philosopher = malloc(sizeof(t_philosopher));
-	if (philosopher == NULL)
-	{
-		//! HANDLE ERROR
-		return (NULL);
-	}
-	philosopher->philosopher_number = philosopher_number;
-	philosopher->last_meal_time = get_current_time_in_milliseconds();
-	philosopher->is_someone_dead = &table->is_someone_dead;
+void	initialize_philosopher(t_philosopher *philosopher, size_t seat, char **argv, t_table *table)
+{
+	philosopher->seat = seat;
 	philosopher->time_to_die = ft_atoul(argv[2]);
 	philosopher->time_to_eat = ft_atoul(argv[3]);
 	philosopher->time_to_sleep = ft_atoul(argv[4]);
@@ -241,113 +237,55 @@ t_philosopher	*initialize_philosopher(uint32_t philosopher_number, char **argv, 
 	philosopher->deathMutex = &table->deathMutex;
 	philosopher->printMutex = &table->printMutex;
 	philosopher->mealMutex = &table->mealMutex;
+	philosopher->is_someone_dead = &table->is_someone_dead;
 	philosopher->dinner_start_time = &table->dinner_start_time;
+	philosopher->last_meal_time = get_current_time_in_milliseconds();
 	if (argv[5] == NULL)
 		philosopher->number_of_meals = -1;
 	else
 		philosopher->number_of_meals = ft_atoui(argv[5]);
-	philosopher->left_fork = left_fork;
-	philosopher->right_fork = right_fork;
-	if (pthread_create(&philosopher->thread, NULL, philosopher_routine, philosopher) != 0)
+
+	if (pthread_create(&philosopher->thread, NULL, philosopher_routine, philosopher))
 	{
 		//! HANDLE ERROR
 		printf("ERROR THREAD CREATION\n");
-		return (NULL);
+		// return (NULL);
 	}
-	return (philosopher);
 }
 
 int	initialize_philosophers(t_table *table, char **argv)
 {
-	uint32_t	i;
-	uint32_t	number_of_philosophers;
-	pthread_mutex_t	*left_fork;
-	pthread_mutex_t	*right_fork;
+	size_t			i;
+	size_t			number_of_philosophers;
+	t_philosopher	*philosopher;
 
 	i = 0;
-	number_of_philosophers = ft_atoui(argv[1]);
-	pthread_mutex_lock(&table->startMutex);
+	number_of_philosophers = table->number_of_philosophers;
+	philosopher = table->philosophers + i;
+	if (handle_mutex(&table->startMutex, LOCK))
+		return (1);
 	while (i < number_of_philosophers)
 	{
-		left_fork = table->forks[i];
-		if (number_of_philosophers == 1)
-			right_fork = NULL;
-		else if (i + 1 == number_of_philosophers)
-			right_fork = table->forks[0];
-		else
-			right_fork = table->forks[i + 1];
-		table->philosophers[i] = initialize_philosopher(i + 1, argv, left_fork, right_fork, table);
-		if (table->philosophers[i] == NULL)
-		{
-			//! HANDLE ERROR AND FREE ALL PREVIOUSLY CREATED PHILOSOPHERS
-			pthread_mutex_unlock(&table->startMutex);
-			return (1);
-		}
+		initialize_philosopher(philosopher, i + 1, argv, table);
+		get_forks(philosopher, table->forks, i, number_of_philosophers);
 		i++;
 	}
-	table->philosophers[i] = NULL;
 	table->dinner_start_time = get_current_time_in_milliseconds();
-	pthread_mutex_unlock(&table->startMutex);
-	return (0);
-}
-
-pthread_mutex_t	*initialize_fork()
-{
-	pthread_mutex_t *fork;
-
-	fork = malloc(sizeof(pthread_mutex_t));
-	if (fork == NULL)
-		return (NULL);
-	pthread_mutex_init(fork, NULL);
-	return (fork);
-}
-
-int	initialize_forks(t_table *table, char **argv)
-{
-	uint32_t	i;
-	uint32_t	number_of_philosophers;
-
-	i = 0;
-	number_of_philosophers = ft_atoui(argv[1]);
-	while (i < number_of_philosophers)
-	{
-		table->forks[i] = initialize_fork();
-		if (table->forks[i] == NULL)
-		{
-			//! HANDLE ERROR AND FREE ALL PREVIOUSLY CREATED PHILOSOPHERS
-			return (1);
-		}
-		pthread_mutex_init(table->forks[i], NULL);
-		i++;
-	}
-	table->forks[i] = NULL;
-	return (0);
-}
-
-int	deinitialize_forks(t_table *table)
-{
-	int	i;
-
-	i = 0;
-	while (table->forks[i] != NULL)
-	{
-		//! HANDLE RETURN ERROR
-		pthread_mutex_destroy(table->forks[i]);
-		i++;
-	}
+	if (handle_mutex(&table->startMutex, UNLOCK))
+		return (1);
 	return (0);
 }
 
 int	deinitialize_philosophers(t_table *table)
 {
-	int	i;
+	size_t	i;
 
 	i = 0;
-	while (table->philosophers[i] != NULL)
+	while (i < table->number_of_philosophers)
 	{
-		if (pthread_join(table->philosophers[i]->thread, NULL) != 0)
+		if (pthread_join(table->philosophers[i].thread, NULL))
 		{
-			printf("ERROR PHILOSOPHER %d TERMINATION\n", i);
+			printf("Error occurred while join philosopher %ld\n", i);
 			return (1);
 		}
 		i++;
@@ -355,113 +293,100 @@ int	deinitialize_philosophers(t_table *table)
 	return (0);
 }
 
-int	is_all_philosophers_alive(t_philosopher **philosophers)
+int	is_someone_dead(t_philosopher *philosophers, size_t number_of_philosophers)
 {
-	int	i;
+	size_t	i;
+	t_philosopher	*philosopher;
+	pthread_mutex_t	*death_mutex;
+	uint64_t		dinner_start_time;
 
 	i = 0;
-	while (philosophers[i] != NULL)
+	while (i < number_of_philosophers)
 	{
-		if (is_philosopher_dead(philosophers[i]))
+		philosopher = philosophers + i;
+		death_mutex = (philosophers + i)->deathMutex;
+		dinner_start_time = *(philosophers + i)->dinner_start_time;
+		if (is_philosopher_dead(philosopher))
 		{
-			pthread_mutex_lock(philosophers[i]->deathMutex);
-			action(DIE, *philosophers[i]->dinner_start_time, philosophers[i]);
-			pthread_mutex_unlock(philosophers[i]->deathMutex);
-			return (0);
+			if (handle_mutex(death_mutex, LOCK))
+				return (-1);
+			action(DIE, dinner_start_time, philosopher);
+			if (handle_mutex(death_mutex, UNLOCK))
+				return (-1);
+			return (1);
 		}
 		i++;
 	}
-	return (1);
+	return (0);
 }
 
-int	is_all_philosophers_full(t_philosopher **philosophers)
+int	is_all_philosophers_full(t_philosopher *philosophers, size_t number_of_philosophers)
 {
-	int	i;
+	size_t			i;
+	pthread_mutex_t	*meal_mutex;
+	int				number_of_meals;
 
 	i = 0;
-	while (philosophers[i] != NULL)
+	while (i < number_of_philosophers)
 	{
-		pthread_mutex_lock(philosophers[i]->mealMutex);
-		if (philosophers[i]->number_of_meals >= 0)
+		meal_mutex = (philosophers + i)->mealMutex;
+		number_of_meals = (philosophers + i)->number_of_meals;
+		if (handle_mutex(meal_mutex, LOCK))
+			return (-1);
+		if (number_of_meals > 0)
 		{
-			pthread_mutex_unlock(philosophers[i]->mealMutex);
+			if (handle_mutex(meal_mutex, UNLOCK))
+				return (-1);
 			return (0);
 		}
-		pthread_mutex_unlock(philosophers[i]->mealMutex);
+		if (handle_mutex(meal_mutex, UNLOCK))
+			return (-1);
 		i++;
 	}
-	// printf("DONE\n");
 	return (1);
 }
 
 void	*waiter_routine(t_table *table)
 {
+	int	is_all_full;
+	int	is_one_dead;
+
 	while (1)
 	{
-		if (!is_all_philosophers_alive(table->philosophers))
-		{
-			usleep(100);
+		is_one_dead = is_someone_dead(table->philosophers, table->number_of_philosophers);
+		if (is_one_dead == -1)
+			return (NULL);
+		if (is_someone_dead(table->philosophers, table->number_of_philosophers))
 			break ;
-		}
-		if (is_all_philosophers_full(table->philosophers))
-		{
-			usleep(100);
+		is_all_full = is_all_philosophers_full(table->philosophers, table->number_of_philosophers);
+		if (is_all_full == -1)
+			return (NULL);
+		if (table->philosophers[0].number_of_meals >= 0 && is_all_full)
 			break ;
-		}
+		usleep(1000);
 	}
-	pthread_mutex_lock(&table->deathMutex);
+	if (handle_mutex(&table->deathMutex, LOCK))
+		return (NULL);
 	table->is_someone_dead = 1;
-	pthread_mutex_unlock(&table->deathMutex);
-
+	if (handle_mutex(&table->deathMutex, UNLOCK))
+		return (NULL);
 	return (NULL);
-}
-
-// int	initialize_waiter(pthread_t	*waiter, t_table *table)
-// {
-// 	if (pthread_create(waiter, NULL, waiter_routine, table) != 0)
-// 	{
-// 		//! HANDLE ERROR
-// 		printf("ERROR WAITER CREATION\n");
-// 		return (1);
-// 	}
-// 	return (0);
-// }
-
-int	deinitialize_waiter(pthread_t	waiter)
-{
-	if (pthread_join(waiter, NULL) != 0)
-	{
-		//! HANDLE ERROR
-		printf("ERROR WAITER TERMINATION\n");
-		return (1);
-	}
-	return (0);
 }
 
 int	main(int argc, char **argv)
 {
-	// pthread_t	waiter;
 	t_table	table;
 
 	if (validate_arguments(argc, argv))
 		return (1);
 	if (initialize_table(&table, argv))
-		return (2);
-	if (initialize_forks(&table, argv))
-		return (3);
-	// if (initialize_waiter(&waiter, &table))
-	// 	return (4);
+		return (1);
 	if (initialize_philosophers(&table, argv))
-		return (5);
-
+		return (1);
 	waiter_routine(&table);
-	// if (deinitialize_waiter(waiter))
-	// 	return (6);
 	if (deinitialize_philosophers(&table))
-		return (7);
-	if (deinitialize_forks(&table))
-		return (9);
+		return (1);
 	if (deinitialize_table(&table))
-		return (10);
+		return (1);
 	return (0);
 }
