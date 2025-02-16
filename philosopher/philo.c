@@ -6,7 +6,7 @@
 /*   By: rmzvr <rmzvr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/23 12:19:15 by rzvir             #+#    #+#             */
-/*   Updated: 2025/02/16 21:58:30 by rmzvr            ###   ########.fr       */
+/*   Updated: 2025/02/16 23:14:36 by rmzvr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,17 +28,17 @@ int	handle_mutex(pthread_mutex_t *mutex, t_mutex_action action)
 	return (return_code);
 }
 
-// int	handle_thread(pthread_t *thread, void *(*routine)(void *), void *arg)
-// {
-// 	int	return_code;
+int	handle_thread(pthread_t *thread, void *(*routine)(void *), void *arg)
+{
+	int	return_code;
 
-// 	return_code = 0;
-// 	if (action == CREATE)
-// 		return_code = handle_thread_error(pthread_create(thread, NULL, routine, arg), CREATE);
-// 	else if (action == JOIN)
-// 		return_code = handle_thread_error(pthread_join(*thread, NULL), JOIN);
-// 	return (return_code);
-// }
+	return_code = 0;
+	if (action == CREATE)
+		return_code = handle_thread_error(pthread_create(thread, NULL, routine, arg), CREATE);
+	else if (action == JOIN)
+		return_code = handle_thread_error(pthread_join(*thread, NULL), JOIN);
+	return (return_code);
+}
 
 uint64_t	get_current_time_in_milliseconds()
 {
@@ -261,11 +261,11 @@ int	initialize_philosophers(t_table *table, char **argv)
 
 	i = 0;
 	number_of_philosophers = table->number_of_philosophers;
-	philosopher = table->philosophers + i;
 	if (handle_mutex(&table->startMutex, LOCK))
-		return (1);
+	return (1);
 	while (i < number_of_philosophers)
 	{
+		philosopher = table->philosophers + i;
 		initialize_philosopher(philosopher, i + 1, argv, table);
 		get_forks(philosopher, table->forks, i, number_of_philosophers);
 		i++;
