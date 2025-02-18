@@ -6,7 +6,7 @@
 /*   By: rmzvr <rmzvr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/27 16:16:33 by rzvir             #+#    #+#             */
-/*   Updated: 2025/02/16 18:59:05 by rmzvr            ###   ########.fr       */
+/*   Updated: 2025/02/18 12:43:04 by rmzvr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 int	show_malloc_error(int code)
 {
 	char	*message1;
+
 	message1 = "Error occurred while allocating memory\n";
 	if (code == 1)
 		write(STDERR_FILENO, message1, ft_strlen(message1));
@@ -68,6 +69,7 @@ int	show_error(int code)
 	char	*message3;
 	char	*message4;
 	char	*message5;
+
 	message1 = "Wrong amount of arguments\n";
 	message2 = "One of arguments is invalid\n";
 	message3 = "Number of philosophers should be at least 1\n";
@@ -91,14 +93,14 @@ int	show_help(void)
 	char	*message;
 
 	message = "Usage: ./philo number_of_philosophers time_to_die "
-		"time_to_eat time_to_sleep [number_of_times_each_philosopher_must_eat]\n\n"
+		"time_to_eat time_to_sleep [number_of_meals]\n\n"
 		"Arguments:\n"
-		"  number_of_philosophers    Number of philosophers (and forks), >1.\n"
-		"  time_to_die               Time (ms) a philosopher lives without eating.\n"
-		"  time_to_eat               Time (ms) it takes for a philosopher to eat.\n"
-		"  time_to_sleep             Time (ms) a philosopher sleeps after eating.\n"
+		"  number_of_philosophers   Number of philosophers (and forks), >1.\n"
+		"  time_to_die              Time (ms) a philo lives without eating.\n"
+		"  time_to_eat              Time (ms) it takes for a philo to eat.\n"
+		"  time_to_sleep            Time (ms) a philo sleeps after eating.\n"
 		"  [number_of_times_each_philosopher_must_eat] (optional)\n"
-		"                                 Number of meals before simulation ends.\n\n"
+		"                           Number of meals before simulation ends.\n\n"
 		"Notes:\n"
 		"  - All arguments must be positive numbers.\n"
 		"  - Missing or invalid arguments terminate the program.\n\n"

@@ -5,6 +5,12 @@ SOURCES := \
 	utils.c \
 	validation.c \
 	error_handling.c \
+	handlers.c \
+	initialization.c \
+	deinitialization.c \
+	waiter.c \
+	routine.c \
+	actions.c \
 
 OBJECTS := $(SOURCES:.c=.o)
 

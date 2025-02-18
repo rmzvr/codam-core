@@ -6,11 +6,21 @@
 /*   By: rmzvr <rmzvr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/26 15:43:20 by rzvir             #+#    #+#             */
-/*   Updated: 2025/02/08 14:36:30 by rmzvr            ###   ########.fr       */
+/*   Updated: 2025/02/18 12:22:42 by rmzvr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
+
+long	get_current_time_in_milliseconds(void)
+{
+	struct timeval	current_time;
+	long			milliseconds;
+
+	gettimeofday(&current_time, NULL);
+	milliseconds = (current_time.tv_sec * 1000) + (current_time.tv_usec / 1000);
+	return (milliseconds);
+}
 
 size_t	ft_strlen(const char *s)
 {
@@ -43,46 +53,60 @@ size_t	ft_nbrlen(int n)
 	return (nbr_length);
 }
 
-uint64_t	ft_atoul(const char *nptr)
+long	ft_atol(const char *nptr)
 {
-	int			i;
-	uint64_t	num;
+	int		i;
+	long	num;
+	int		sign;
 
 	i = 0;
 	num = 0;
+	sign = 1;
+	num = 0;
 	while (nptr[i] == ' ' || nptr[i] == '\f' || nptr[i] == '\n'
 		|| nptr[i] == '\r' || nptr[i] == '\t' || nptr[i] == '\v')
+	{
 		i++;
-	if (nptr[i] == '-')
-		return (0);
-	if (nptr[i] == '+')
+	}
+	if (nptr[i] == '+' || nptr[i] == '-')
+	{
+		if (nptr[i] == '-')
+			sign = -1;
 		i++;
+	}
 	while (nptr[i] >= '0' && nptr[i] <= '9')
 	{
 		num = num * 10 + (nptr[i] - '0');
 		i++;
 	}
-	return (num);
+	return (num * sign);
 }
 
-uint32_t	ft_atoui(const char *nptr)
+int	ft_atoi(const char *nptr)
 {
-	int			i;
-	uint32_t	num;
+	int	i;
+	int	num;
+	int	sign;
 
 	i = 0;
 	num = 0;
+	sign = 1;
+	num = 0;
 	while (nptr[i] == ' ' || nptr[i] == '\f' || nptr[i] == '\n'
 		|| nptr[i] == '\r' || nptr[i] == '\t' || nptr[i] == '\v')
+	{
 		i++;
-	if (nptr[i] == '-')
-		return (0);
-	if (nptr[i] == '+')
+	}
+	if (nptr[i] == '+' || nptr[i] == '-')
+	{
+		if (nptr[i] == '-')
+			sign = -1;
 		i++;
+	}
 	while (nptr[i] >= '0' && nptr[i] <= '9')
 	{
 		num = num * 10 + (nptr[i] - '0');
 		i++;
 	}
-	return (num);
+	return (num * sign);
 }
