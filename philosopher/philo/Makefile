@@ -12,10 +12,11 @@ SRCS := \
 	initialization.c \
 	deinitialization.c \
 	waiter.c \
-	routine.c \
 	actions.c \
 	death_checkers.c \
 	initialization_utils.c \
+	eating_routine.c \
+	philosopher_routine.c \
 
 OBJS := $(SRCS:.c=.o)
 

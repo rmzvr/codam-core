@@ -6,7 +6,7 @@
 /*   By: rzvir <rzvir@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/26 15:38:35 by rzvir             #+#    #+#             */
-/*   Updated: 2025/02/18 15:55:52 by rzvir            ###   ########.fr       */
+/*   Updated: 2025/02/19 11:33:18 by rzvir            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,4 +109,10 @@ int		is_someone_dead(t_philosopher *philosophers,
 void	get_forks(t_philosopher *philosopher,
 			pthread_mutex_t *forks, size_t seat, size_t number_of_philosophers);
 void	set_number_of_meals(t_table *table, char **argv);
+int		deinitialize_forks(t_table *table);
+int		take_forks(t_philosopher *philosopher);
+int		put_forks(t_philosopher *philosopher);
+int		eating(t_philosopher *philosopher);
+void	wait(long time_to_wait);
+
 #endif

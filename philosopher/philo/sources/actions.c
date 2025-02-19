@@ -6,7 +6,7 @@
 /*   By: rzvir <rzvir@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/18 12:33:44 by rmzvr             #+#    #+#             */
-/*   Updated: 2025/02/18 16:23:07 by rzvir            ###   ########.fr       */
+/*   Updated: 2025/02/19 11:29:29 by rzvir            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,8 +17,6 @@ int	action(t_action action, long dinner_start_time, t_philosopher *philosopher)
 	long	current_time;
 	long	elapsed_time;
 
-	if (check_death(philosopher))
-		return (1);
 	if (handle_mutex(philosopher->print_mutex, LOCK))
 		return (-1);
 	current_time = get_current_time_in_milliseconds();

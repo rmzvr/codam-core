@@ -1,54 +1,21 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   routine.c                                          :+:      :+:    :+:   */
+/*   philosopher_routine.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: rzvir <rzvir@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/18 12:19:32 by rmzvr             #+#    #+#             */
-/*   Updated: 2025/02/18 19:11:07 by rzvir            ###   ########.fr       */
+/*   Updated: 2025/02/19 11:33:12 by rzvir            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-static void	wait(long time_to_wait)
-{
-	long	time_to_work;
-
-	time_to_work = get_current_time_in_milliseconds() + time_to_wait;
-	while (get_current_time_in_milliseconds() <= time_to_work)
-		usleep(500);
-}
-
-static int	eating(t_philosopher *philosopher)
-{
-	if (handle_mutex(philosopher->left_fork, LOCK))
-		return (-1);
-	if (action(TAKE, *philosopher->dinner_start_time, philosopher))
-		return (1);
-	if (handle_mutex(philosopher->right_fork, LOCK))
-		return (-1);
-	if (action(TAKE, *philosopher->dinner_start_time, philosopher))
-		return (1);
-	if (handle_mutex(philosopher->meal_mutex, LOCK))
-		return (-1);
-	philosopher->last_meal_time = get_current_time_in_milliseconds();
-	philosopher->number_of_meals -= 1;
-	if (handle_mutex(philosopher->meal_mutex, UNLOCK))
-		return (-1);
-	if (action(EAT, *philosopher->dinner_start_time, philosopher))
-		return (1);
-	wait(philosopher->time_to_eat);
-	if (handle_mutex(philosopher->left_fork, UNLOCK))
-		return (-1);
-	if (handle_mutex(philosopher->right_fork, UNLOCK))
-		return (-1);
-	return (0);
-}
-
 static int	sleeping(t_philosopher *philosopher)
 {
+	if (check_death(philosopher))
+		return (1);
 	if (action(SLEEP, *philosopher->dinner_start_time, philosopher))
 		return (1);
 	wait(philosopher->time_to_sleep);
@@ -57,9 +24,20 @@ static int	sleeping(t_philosopher *philosopher)
 
 static int	thinking(t_philosopher *philosopher)
 {
+	if (check_death(philosopher))
+		return (1);
 	if (action(THINK, *philosopher->dinner_start_time, philosopher))
 		return (1);
 	return (0);
+}
+
+void	wait(long time_to_wait)
+{
+	long	time_to_work;
+
+	time_to_work = get_current_time_in_milliseconds() + time_to_wait;
+	while (get_current_time_in_milliseconds() <= time_to_work)
+		usleep(500);
 }
 
 void	*philosopher_routine(void *arg)
