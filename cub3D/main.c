@@ -3,16 +3,22 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rmzvr <rmzvr@student.42.fr>                +#+  +:+       +#+        */
+/*   By: rzvir <rzvir@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/22 16:12:09 by rmzvr             #+#    #+#             */
-/*   Updated: 2025/06/02 13:07:50 by rmzvr            ###   ########.fr       */
+/*   Updated: 2025/06/02 20:58:59 by rzvir            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "mlx.h"
 #include "libft.h"
+#include <math.h>
+#include <stdio.h>
 #include <X11/keysym.h>
+
+#ifndef M_PI
+# define M_PI 3.14159265358979323846
+#endif
 
 #define mapWidth 24
 #define mapHeight 24
@@ -62,6 +68,10 @@ typedef struct s_game
 	int					mapHeightPx;
 	int					shiftX;
 	int					shiftY;
+	int					init_pos_x;
+	int					init_pos_y;
+	double				bx;
+	double				by;
 	t_player_position	player_position;
 	t_mlx	mlx;
 }	t_game;
@@ -215,15 +225,15 @@ void	draw_line_vertical(int x0, int y0, int x1, int y1, t_game *game)
 	}
 }
 
-void	draw_line(t_game *game, int i_x, int i_y)
+void	draw_line(t_game *game, int i_x, int i_y, int end_x, int end_y)
 {
 	int	cell_x_start = get_cell_x_head_addr(i_x) + playerSize + game->shiftX;
 	int	cell_y_start = get_cell_y_head_addr(i_y) + playerSize + game->shiftY;
 
 	int	x0 = cell_x_start + playerSize / 2;
 	int	y0 = cell_y_start + playerSize / 2;
-	int	x1 = i_x * cellSize + playerSize + (playerSize / 2);
-	int	y1 = i_y * cellSize + playerSize + (playerSize / 2);
+	int	x1 = end_x * cellSize + playerSize + (playerSize / 2);
+	int	y1 = end_y * cellSize + playerSize + (playerSize / 2);
 
 	if (abs(x1 - x0) > abs(y1 - y0))
 	{
@@ -233,76 +243,6 @@ void	draw_line(t_game *game, int i_x, int i_y)
 	{
 		draw_line_vertical(x0, y0, x1, y1, game);
 	}
-}
-
-void	draw_player(char map[mapHeight][mapWidth], t_img *img, int x, int y, t_game *game)
-{
-	(void) map;
-	int	cell_x;
-	int	cell_y;
-
-	cell_x = 0;
-	cell_y = get_cell_y_head_addr(y) + playerSize + game->shiftY;
-	game->player_position.cell_y = cell_y;
-	while (cell_y < get_cell_y_head_addr(y) + playerSize + game->shiftY + playerSize)
-	{
-		cell_x = get_cell_x_head_addr(x) + playerSize + game->shiftX;
-		game->player_position.cell_x = cell_x;
-		while (cell_x < get_cell_x_head_addr(x) + playerSize + game->shiftX + playerSize)
-		{
-			my_mlx_pixel_put(img, cell_x, cell_y, 0x000000);
-			cell_x++;
-		}
-		cell_y++;
-	}
-	draw_line(game, 11, 0);
-	// ft_printf("%d\n", map[y][x]);
-	// if (map[y][x] == 'N')
-	// {
-	// 	ft_printf("WORK\n");
-	// 	draw_line(game, x, 0);
-	// }
-}
-
-void	draw_map(char map[mapHeight][mapWidth], t_game *game)
-{
-	int	cell_x;
-	int	cell_y;
-	int	pos_x;
-	int	pos_y;
-
-	pos_x = 0;
-	pos_y = 0;
-	game->y = 0;
-	while (game->y < mapHeight)
-	{
-		game->x = 0;
-		while (game->x < mapWidth)
-		{
-			cell_y = get_cell_y_head_addr(game->y);
-			while (cell_y <= get_cell_y_tail_addr(game->y))
-			{
-				if (map[game->y][game->x] == 'N')
-				{
-					pos_x = game->x;
-					pos_y = game->y;
-				}
-				cell_x = get_cell_x_head_addr(game->x);
-				while (cell_x <= get_cell_x_tail_addr(game->x))
-				{
-					draw_elements(map, &game->mlx.img, cell_x, cell_y, game->x, game->y);
-					draw_borders(game->mapWidthPx, game->mapHeightPx, &game->mlx.img, cell_x, cell_y, game->x, game->y);
-					cell_x++;
-				}
-				cell_y++;
-			}
-			game->x++;
-		}
-		game->y++;
-	}
-	// ft_printf("WORK %d, x: %d, y: %d\n", map[game->y][game->x], game->x, game->y);
-	draw_player(map, &game->mlx.img, pos_x, pos_y, game);
-	mlx_put_image_to_window(game->mlx.ptr, game->mlx.win_ptr, game->mlx.img.ptr, 0, 0);
 }
 
 void	cleanup(t_mlx *mlx, unsigned int with_exit)
@@ -349,6 +289,68 @@ void	init_game(t_game *game)
 	game->mapHeightPx = mapHeight * cellSize;
 	game->shiftX = 0;
 	game->shiftY = 0;
+	game->init_pos_x = 0;
+	game->init_pos_y = 0;
+	game->bx = 0;
+	game->by = 0;
+}
+
+void	draw_player(char map[mapHeight][mapWidth], t_img *img, t_game *game)
+{
+	(void) map;
+	int	cell_x;
+	int	cell_y;
+
+	cell_x = 0;
+	cell_y = get_cell_y_head_addr(game->init_pos_y) + playerSize + game->shiftY;
+	game->player_position.cell_y = cell_y;
+	while (cell_y < get_cell_y_head_addr(game->init_pos_y) + playerSize + game->shiftY + playerSize)
+	{
+		cell_x = get_cell_x_head_addr(game->init_pos_x) + playerSize + game->shiftX;
+		game->player_position.cell_x = cell_x;
+		while (cell_x < get_cell_x_head_addr(game->init_pos_x) + playerSize + game->shiftX + playerSize)
+		{
+			my_mlx_pixel_put(img, cell_x, cell_y, 0x000000);
+			cell_x++;
+		}
+		cell_y++;
+	}
+}
+
+void	draw_map(char map[mapHeight][mapWidth], t_game *game)
+{
+	int	cell_x;
+	int	cell_y;
+
+	game->y = 0;
+	while (game->y < mapHeight)
+	{
+		game->x = 0;
+		while (game->x < mapWidth)
+		{
+			cell_y = get_cell_y_head_addr(game->y);
+			while (cell_y <= get_cell_y_tail_addr(game->y))
+			{
+				if (map[game->y][game->x] == 'N' || map[game->y][game->x] == 'S' || map[game->y][game->x] == 'W' || map[game->y][game->x] == 'E')
+				{
+					game->init_pos_x = game->x;
+					game->init_pos_y = game->y;
+				}
+				cell_x = get_cell_x_head_addr(game->x);
+				while (cell_x <= get_cell_x_tail_addr(game->x))
+				{
+					draw_elements(map, &game->mlx.img, cell_x, cell_y, game->x, game->y);
+					draw_borders(game->mapWidthPx, game->mapHeightPx, &game->mlx.img, cell_x, cell_y, game->x, game->y);
+					cell_x++;
+				}
+				cell_y++;
+			}
+			game->x++;
+		}
+		game->y++;
+	}
+	draw_player(map, &game->mlx.img, game);
+	mlx_put_image_to_window(game->mlx.ptr, game->mlx.win_ptr, game->mlx.img.ptr, 0, 0);
 }
 
 int	check_wall(t_direction direction, t_game *game)
@@ -367,12 +369,12 @@ int	check_wall(t_direction direction, t_game *game)
 		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
 		{1,0,0,0,0,0,1,1,1,1,1,0,0,0,0,1,0,1,0,1,0,0,0,1},
 		{1,0,0,0,0,0,1,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,0,0,0,0,0,1,0,0,0,1,0,0,0,0,1,0,0,0,1,0,0,0,1},
+		{1,0,0,0,0,0,1,0,'W',0,1,0,0,0,0,1,0,0,0,1,0,0,0,1},
 		{1,0,0,0,0,0,1,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1},
 		{1,0,0,0,0,0,1,1,0,1,1,0,0,0,0,1,0,1,0,1,0,0,0,1},
 		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
 		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,0,0,0,0,0,0,0,0,0,0,'N',0,0,0,0,0,0,0,0,0,0,0,1},
+		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
 		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
 		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
 		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
@@ -436,12 +438,12 @@ static int	handle_keyboard(int keysym, t_game *game)
 		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
 		{1,0,0,0,0,0,1,1,1,1,1,0,0,0,0,1,0,1,0,1,0,0,0,1},
 		{1,0,0,0,0,0,1,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,0,0,0,0,0,1,0,0,0,1,0,0,0,0,1,0,0,0,1,0,0,0,1},
+		{1,0,0,0,0,0,1,0,'W',0,1,0,0,0,0,1,0,0,0,1,0,0,0,1},
 		{1,0,0,0,0,0,1,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1},
 		{1,0,0,0,0,0,1,1,0,1,1,0,0,0,0,1,0,1,0,1,0,0,0,1},
 		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
 		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,0,0,0,0,0,0,0,0,0,0,'N',0,0,0,0,0,0,0,0,0,0,0,1},
+		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
 		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
 		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
 		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
@@ -460,32 +462,95 @@ static int	handle_keyboard(int keysym, t_game *game)
 	{
 		cleanup(&game->mlx, 1);
 	}
-	else if (keysym == XK_Up)
+	else if (keysym == XK_w)
 	{
 		if (check_wall(TOP, game))
 			return (0);
 		game->shiftY -= stepSize;
+		draw_map(map, game);
 	}
-	else if (keysym == XK_Down)
+	else if (keysym == XK_s)
 	{
 		if (check_wall(BOTTOM, game))
 			return (0);
 		game->shiftY += stepSize;
+		draw_map(map, game);
 	}
-	else if (keysym == XK_Left)
+	else if (keysym == XK_a)
 	{
 		if (check_wall(LEFT, game))
 			return (0);
 		game->shiftX -= stepSize;
+		draw_map(map, game);
 	}
-	else if (keysym == XK_Right)
+	else if (keysym == XK_d)
 	{
 		if (check_wall(RIGHT, game))
 			return (0);
 		game->shiftX += stepSize;
+		draw_map(map, game);
 	}
-	draw_map(map, game);
+	else if (keysym == XK_Left)
+	{
+		printf("left - bx: %f, by: %f, o: %d\n", game->bx, game->by, 0);
+		double bx = (cos(0) * game->bx) - (sin(0) * game->by);
+		double by = (sin(0) * game->bx) + (cos(0) * game->by);
+		// bx = bx / sqrt(bx * bx + by * by);
+		// by = by / sqrt(bx * bx + by * by);
+		draw_map(map, game);
+		draw_line(game, game->init_pos_x, game->init_pos_y, bx, by);
+		game->bx = bx;
+		game->by = by;
+	}
+	else if (keysym == XK_Right)
+	{
+		printf("right - bx: %f, by: %f, o: %d\n", game->bx, game->by, 0);
+		double bx = (cos(0) * game->bx) + (game->by * sin(0));
+		double by = (sin(0) * -game->bx) + (game->by * cos(0));
+		// printf("right - bx: %f, by: %f\n", game->bx, game->by);
+		// bx = bx / sqrt(bx * bx + by * by);
+		// by = by / sqrt(bx * bx + by * by);
+		draw_map(map, game);
+		draw_line(game, game->init_pos_x, game->init_pos_y, bx, by);
+		game->bx = bx;
+		game->by = by;
+	}
+
 	return (0);
+}
+
+void	init_draw_line(char map[mapHeight][mapWidth], t_game *game)
+{
+	if (map[game->init_pos_y][game->init_pos_x] == 'N')
+	{
+		game->bx = game->init_pos_x + 0;
+		game->by = game->init_pos_y + -1;
+	}
+	else if (map[game->init_pos_y][game->init_pos_x] == 'S')
+	{
+		game->bx = game->init_pos_x + 0;
+		game->by = game->init_pos_y + 1;
+	}
+	else if (map[game->init_pos_y][game->init_pos_x] == 'W')
+	{
+		game->bx = game->init_pos_x + -1;
+		game->by = game->init_pos_y + 0;
+	}
+	else if (map[game->init_pos_y][game->init_pos_x] == 'E')
+	{
+		game->bx = game->init_pos_x + 1;
+		game->by = game->init_pos_y + 0;
+	}
+	printf("left - bx: %f, by: %f, o: %d\n", game->bx, game->by, 0);
+	double bx = (cos(0) * game->bx) - (sin(0) * game->by);
+	double by = (sin(0) * game->bx) + (cos(0) * game->by);
+	// bx = bx / sqrt(bx * bx + by * by);
+	// by = by / sqrt(bx * bx + by * by);
+	draw_map(map, game);
+	draw_line(game, game->init_pos_x, game->init_pos_y, bx, by);
+	game->bx = bx;
+	game->by = by;
+	// draw_line(game, game->init_pos_x, game->init_pos_y, game->bx, game->by);
 }
 
 int	main(void)
@@ -499,12 +564,12 @@ int	main(void)
 		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
 		{1,0,0,0,0,0,1,1,1,1,1,0,0,0,0,1,0,1,0,1,0,0,0,1},
 		{1,0,0,0,0,0,1,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,0,0,0,0,0,1,0,0,0,1,0,0,0,0,1,0,0,0,1,0,0,0,1},
+		{1,0,0,0,0,0,1,0,'W',0,1,0,0,0,0,1,0,0,0,1,0,0,0,1},
 		{1,0,0,0,0,0,1,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1},
 		{1,0,0,0,0,0,1,1,0,1,1,0,0,0,0,1,0,1,0,1,0,0,0,1},
 		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
 		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,0,0,0,0,0,0,0,0,0,0,'N',0,0,0,0,0,0,0,0,0,0,0,1},
+		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
 		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
 		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
 		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
@@ -522,6 +587,8 @@ int	main(void)
 	init_project(&game.mlx);
 	init_game(&game);
 	draw_map(map, &game);
+	draw_player(map, &game.mlx.img, &game);
+	init_draw_line(map, &game);
 	mlx_hook(game.mlx.win_ptr, 2, (1L << 0), handle_keyboard, &game);
 	mlx_loop(game.mlx.ptr);
 }
