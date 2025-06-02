@@ -10,7 +10,7 @@ SOURCES :=         \
 	main.c          \
 
 OBJECTS := $(SOURCES:%.c=%.o)
-CFLAGS := -Wall -Wextra -Werror -I/usr/include -Imlx_linux -I$(LIBFT_DIR) -O3
+CFLAGS := -Wall -Wextra -Werror -I/usr/include -fPIE -Imlx_linux -I$(LIBFT_DIR) -O3
 
 all: $(NAME)
 

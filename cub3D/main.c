@@ -1,99 +1,527 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   main.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: rmzvr <rmzvr@student.42.fr>                +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/05/22 16:12:09 by rmzvr             #+#    #+#             */
+/*   Updated: 2025/06/02 13:07:50 by rmzvr            ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "mlx.h"
 #include "libft.h"
+#include <X11/keysym.h>
 
 #define mapWidth 24
 #define mapHeight 24
+#define cellSize 30
+#define playerSize 10
+#define stepSize cellSize / 6
 
-typedef struct	s_data {
-	void	*img;
-	char	*addr;
-	int		bits_per_pixel;
-	int		line_length;
+typedef enum	e_element {
+	FLOOR,
+	WALL,
+}	t_element;
+
+typedef enum	e_direction {
+	TOP,
+	RIGHT,
+	BOTTOM,
+	LEFT,
+}	t_direction;
+
+typedef struct s_player_position
+{
+	int	cell_x;
+	int	cell_y;
+}	t_player_position;
+
+typedef struct s_img
+{
+	void	*ptr;
+	char	*pixels_addr;
+	int		bpp;
+	int		ll;
 	int		endian;
-}				t_data;
+}	t_img;
 
-void	my_mlx_pixel_put(t_data *data, int x, int y, int color)
+typedef struct s_mlx
+{
+	void	*ptr;
+	void	*win_ptr;
+	t_img	img;
+}	t_mlx;
+
+typedef struct s_game
+{
+	int					x;
+	int					y;
+	int					mapWidthPx;
+	int					mapHeightPx;
+	int					shiftX;
+	int					shiftY;
+	t_player_position	player_position;
+	t_mlx	mlx;
+}	t_game;
+
+void	my_mlx_pixel_put(t_img *data, int x, int y, int color)
 {
 	char	*dst;
 
-	dst = data->addr + (y * data->line_length + x * (data->bits_per_pixel / 8));
+	dst = data->pixels_addr + (y * data->ll + x * (data->bpp / 8));
 	*(unsigned int*)dst = color;
 }
 
-int	main(void)
+int	get_cell_x_head_addr(int x)
 {
-	void	*mlx;
-	void	*mlx_win;
-	t_data	img;
-	int		x = 0;
-	int		cellX = x;
-	int		y = 0;
-	int		cellY = y;
-	int		cellSize = 30;
-	int		worldMap[mapHeight][mapWidth] =
+	return (x * cellSize);
+}
+
+int	get_cell_x_tail_addr(int x)
+{
+	return (x * cellSize + cellSize - 1);
+}
+
+int	get_cell_y_head_addr(int y)
+{
+	return (y * cellSize);
+}
+
+int	get_cell_y_tail_addr(int y)
+{
+	return (y * cellSize + cellSize - 1);
+}
+
+int get_cell_index(int position)
+{
+	return (position / cellSize);
+}
+
+void	draw_elements(char map[mapHeight][mapWidth], t_img *img, int cell_x, int cell_y, int x, int y)
+{
+	if (map[y][x] == WALL)
+	{
+		my_mlx_pixel_put(img, cell_x, cell_y, 0x008000);
+	}
+	else
+	{
+		my_mlx_pixel_put(img, cell_x, cell_y, 0x00BFFF);
+	}
+}
+
+void	draw_borders(int mapWidthPx, int mapHeightPx, t_img *img, int cell_x, int cell_y, int x, int y)
+{
+	if (
+		cell_x == x
+		|| cell_y == y
+		|| cell_x == mapWidthPx - 1
+		|| cell_y == mapHeightPx - 1
+		|| cell_x == get_cell_x_head_addr(x)
+		|| cell_x == get_cell_x_tail_addr(x)
+		|| cell_y == get_cell_y_head_addr(y)
+		|| cell_y == get_cell_y_tail_addr(y)
+	)
+	{
+		my_mlx_pixel_put(img, cell_x, cell_y, 0xAAAAAA);
+	}
+}
+
+void	draw_line_horizontal(int x0, int y0, int x1, int y1, t_game *game)
+{
+	int	temp;
+
+	if (x0 > x1)
+	{
+		temp = x0;
+		x0 = x1;
+		x1 = temp;
+
+		temp = y0;
+		y0 = y1;
+		y1 = temp;
+	}
+
+	int	dx = x1 - x0;
+	int	dy = y1 - y0;
+	int	dir = 1;
+	if (dy < 0)
+	{
+		dir = -1;
+		dy = dy * dir;
+	}
+	
+	if (dx != 0)
+	{
+		int	x = x0;
+		int	y = y0;
+		int	D = (2 * dy) - dx;
+
+		while (x < x1)
+		{
+			my_mlx_pixel_put(&game->mlx.img, x, y, 0x000000);
+			if (D >= 0)
+			{
+				y = y + dir;
+				D = D - (2 * dx);
+			}
+			D = D + 2 * dy;
+			x++;
+		}
+	}
+}
+
+void	draw_line_vertical(int x0, int y0, int x1, int y1, t_game *game)
+{
+	int	temp;
+
+	if (y0 > y1)
+	{
+		temp = x0;
+		x0 = x1;
+		x1 = temp;
+
+		temp = y0;
+		y0 = y1;
+		y1 = temp;
+	}
+
+	int	dx = x1 - x0;
+	int	dy = y1 - y0;
+	int	dir = 1;
+	if (dx < 0)
+	{
+		dir = -1;
+		dx = dx * dir;
+	}
+	if (dy != 0)
+	{
+		int	x = x0;
+		int	y = y0;
+		int	D = (2 * dx) - dy;
+
+		while (y < y1)
+		{
+			my_mlx_pixel_put(&game->mlx.img, x, y, 0x000000);
+			if (D >= 0)
+			{
+				x = x + dir;
+				D = D - (2 * dy);
+			}
+			D = D + 2 * dx;
+			y++;
+		}
+	}
+}
+
+void	draw_line(t_game *game, int i_x, int i_y)
+{
+	int	cell_x_start = get_cell_x_head_addr(i_x) + playerSize + game->shiftX;
+	int	cell_y_start = get_cell_y_head_addr(i_y) + playerSize + game->shiftY;
+
+	int	x0 = cell_x_start + playerSize / 2;
+	int	y0 = cell_y_start + playerSize / 2;
+	int	x1 = i_x * cellSize + playerSize + (playerSize / 2);
+	int	y1 = i_y * cellSize + playerSize + (playerSize / 2);
+
+	if (abs(x1 - x0) > abs(y1 - y0))
+	{
+		draw_line_horizontal(x0, y0, x1, y1, game);
+	}
+	else
+	{
+		draw_line_vertical(x0, y0, x1, y1, game);
+	}
+}
+
+void	draw_player(char map[mapHeight][mapWidth], t_img *img, int x, int y, t_game *game)
+{
+	(void) map;
+	int	cell_x;
+	int	cell_y;
+
+	cell_x = 0;
+	cell_y = get_cell_y_head_addr(y) + playerSize + game->shiftY;
+	game->player_position.cell_y = cell_y;
+	while (cell_y < get_cell_y_head_addr(y) + playerSize + game->shiftY + playerSize)
+	{
+		cell_x = get_cell_x_head_addr(x) + playerSize + game->shiftX;
+		game->player_position.cell_x = cell_x;
+		while (cell_x < get_cell_x_head_addr(x) + playerSize + game->shiftX + playerSize)
+		{
+			my_mlx_pixel_put(img, cell_x, cell_y, 0x000000);
+			cell_x++;
+		}
+		cell_y++;
+	}
+	draw_line(game, 11, 0);
+	// ft_printf("%d\n", map[y][x]);
+	// if (map[y][x] == 'N')
+	// {
+	// 	ft_printf("WORK\n");
+	// 	draw_line(game, x, 0);
+	// }
+}
+
+void	draw_map(char map[mapHeight][mapWidth], t_game *game)
+{
+	int	cell_x;
+	int	cell_y;
+	int	pos_x;
+	int	pos_y;
+
+	pos_x = 0;
+	pos_y = 0;
+	game->y = 0;
+	while (game->y < mapHeight)
+	{
+		game->x = 0;
+		while (game->x < mapWidth)
+		{
+			cell_y = get_cell_y_head_addr(game->y);
+			while (cell_y <= get_cell_y_tail_addr(game->y))
+			{
+				if (map[game->y][game->x] == 'N')
+				{
+					pos_x = game->x;
+					pos_y = game->y;
+				}
+				cell_x = get_cell_x_head_addr(game->x);
+				while (cell_x <= get_cell_x_tail_addr(game->x))
+				{
+					draw_elements(map, &game->mlx.img, cell_x, cell_y, game->x, game->y);
+					draw_borders(game->mapWidthPx, game->mapHeightPx, &game->mlx.img, cell_x, cell_y, game->x, game->y);
+					cell_x++;
+				}
+				cell_y++;
+			}
+			game->x++;
+		}
+		game->y++;
+	}
+	// ft_printf("WORK %d, x: %d, y: %d\n", map[game->y][game->x], game->x, game->y);
+	draw_player(map, &game->mlx.img, pos_x, pos_y, game);
+	mlx_put_image_to_window(game->mlx.ptr, game->mlx.win_ptr, game->mlx.img.ptr, 0, 0);
+}
+
+void	cleanup(t_mlx *mlx, unsigned int with_exit)
+{
+	if (mlx->img.ptr != NULL)
+		mlx_destroy_image(mlx->ptr, mlx->img.ptr);
+	if (mlx->win_ptr != NULL)
+		mlx_destroy_window(mlx->ptr, mlx->win_ptr);
+	mlx_destroy_display(mlx->ptr);
+	free(mlx->ptr);
+	if (with_exit > 0)
+		exit(1);
+}
+
+static void	init_mlx_window_and_image(t_mlx *mlx)
+{
+	mlx->ptr = mlx_init();
+	if (mlx->ptr == NULL)
+		exit(1);
+	mlx->win_ptr = mlx_new_window(mlx->ptr, 720, 720, "cub3D");
+	if (mlx->win_ptr == NULL)
+		cleanup(mlx, 1);
+	mlx->img.ptr = mlx_new_image(mlx->ptr, 720, 720);
+	if (mlx->img.ptr == NULL)
+		cleanup(mlx, 1);
+	mlx->img.pixels_addr = mlx_get_data_addr(mlx->img.ptr, &mlx->img.bpp,
+			&mlx->img.ll, &mlx->img.endian);
+	if (mlx->img.pixels_addr == NULL)
+		cleanup(mlx, 1);
+}
+void	init_project(t_mlx *mlx)
+{
+	mlx->ptr = NULL;
+	mlx->win_ptr = NULL;
+	mlx->img.ptr = NULL;
+	init_mlx_window_and_image(mlx);
+}
+
+void	init_game(t_game *game)
+{
+	game->x = 0;
+	game->y = 0;
+	game->mapWidthPx = mapWidth * cellSize;
+	game->mapHeightPx = mapHeight * cellSize;
+	game->shiftX = 0;
+	game->shiftY = 0;
+}
+
+int	check_wall(t_direction direction, t_game *game)
+{
+	int		curr_cell_y_index = get_cell_index(game->player_position.cell_y);
+	int		sibling_cell_y_index = get_cell_index(game->player_position.cell_y + stepSize);
+
+	int		curr_cell_x_index = get_cell_index(game->player_position.cell_x);
+	int		sibling_cell_x_index = get_cell_index(game->player_position.cell_x + stepSize);
+	
+	char	map[mapHeight][mapWidth] =
 	{
 		{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
 		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
 		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
 		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,0,0,0,0,0,2,2,2,2,2,0,0,0,0,3,0,3,0,3,0,0,0,1},
-		{1,0,0,0,0,0,2,0,0,0,2,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,0,0,0,0,0,2,0,0,0,2,0,0,0,0,3,0,0,0,3,0,0,0,1},
-		{1,0,0,0,0,0,2,0,0,0,2,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,0,0,0,0,0,2,2,0,2,2,0,0,0,0,3,0,3,0,3,0,0,0,1},
+		{1,0,0,0,0,0,1,1,1,1,1,0,0,0,0,1,0,1,0,1,0,0,0,1},
+		{1,0,0,0,0,0,1,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1},
+		{1,0,0,0,0,0,1,0,0,0,1,0,0,0,0,1,0,0,0,1,0,0,0,1},
+		{1,0,0,0,0,0,1,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1},
+		{1,0,0,0,0,0,1,1,0,1,1,0,0,0,0,1,0,1,0,1,0,0,0,1},
 		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
 		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,0,0,0,0,0,0,0,0,1,0,0,0,0,1,0,0,0,0,0,0,0,0,1},
+		{1,0,0,0,0,0,0,0,0,0,0,'N',0,0,0,0,0,0,0,0,0,0,0,1},
 		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
 		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
 		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
 		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,4,4,4,4,4,4,4,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,4,0,4,0,0,0,0,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,4,0,0,0,0,5,0,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,4,0,4,0,0,0,0,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,4,0,4,4,4,4,4,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,4,4,4,4,4,4,4,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+		{1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+		{1,1,0,1,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+		{1,1,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+		{1,1,0,1,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+		{1,1,0,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+		{1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+		{1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
 		{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1}
 	};
 
-	mlx = mlx_init();
-	mlx_win = mlx_new_window(mlx, 720, 720, "cub3D");
-	img.img = mlx_new_image(mlx, 720, 720);
-	img.addr = mlx_get_data_addr(img.img, &img.bits_per_pixel, &img.line_length, &img.endian);
-
-	while (y < mapHeight)
+	if (direction == TOP)
 	{
-		x = 0;
-		while (x < mapWidth)
+		int	prev_cell_y_index = get_cell_index(game->player_position.cell_y - stepSize);
+		if (map[prev_cell_y_index][curr_cell_x_index] == WALL
+			|| map[prev_cell_y_index][sibling_cell_x_index] == WALL)
 		{
-			if (worldMap[y][x] == 1)
-			{
-				// ft_printf("cellX: %d, cellY: %d, cell_value: %d\n", cellX, cellY, worldMap[y][x]);
-				// ft_printf("right boundaries: %d\n", cellX + cellSize - 1);
-				cellY = y * cellSize;
-				while (cellY < y * cellSize + cellSize)
-				{
-					cellX = x * cellSize;
-					while (cellX < x * cellSize + cellSize)
-					{
-						// ft_printf("cellX inside while: %d, cellY inside while: %d\n", cellX, cellY);
-						my_mlx_pixel_put(&img, cellX, cellY, 0x00FF0000);
-						// my_mlx_pixel_put(&img, cellX, cellY + cellSize - 1, 0x00FF0000);
-						// my_mlx_pixel_put(&img, cellX + cellSize - 1, cellY, 0x00FF0000);
-						// my_mlx_pixel_put(&img, cellX + cellSize - 1, cellY + cellSize - 1, 0x00FF0000);
-						cellX++;
-					}
-					cellY++;
-				}
-			}
-			x++;
+			return (1);
 		}
-		y++;
 	}
-	// my_mlx_pixel_put(&img, 720 / 2, 720 / 2, 0x00FF0000);
-	// my_mlx_pixel_put(&img, 720 / 3, 720 / 3, 0x00FF0000);
-	mlx_put_image_to_window(mlx, mlx_win, img.img, 0, 0);
-	mlx_loop(mlx);
+	else if (direction == RIGHT)
+	{
+		int	next_cell_x_index = get_cell_index(game->player_position.cell_x + stepSize - 1 + playerSize);
+		if (map[curr_cell_y_index][next_cell_x_index] == WALL
+			|| map[sibling_cell_y_index][next_cell_x_index] == WALL)
+		{
+			return (1);
+		}
+	}
+	else if (direction == BOTTOM)
+	{
+		int	next_cell_y_index = get_cell_index(game->player_position.cell_y + stepSize - 1 + playerSize);
+		if (map[next_cell_y_index][curr_cell_x_index] == WALL
+			|| map[next_cell_y_index][sibling_cell_x_index] == WALL)
+		{
+			return (1);
+		}
+	}
+	else if (direction == LEFT)
+	{
+		int	prev_cell_x_index = get_cell_index(game->player_position.cell_x - stepSize);
+		if (map[curr_cell_y_index][prev_cell_x_index] == WALL
+			|| map[sibling_cell_y_index][prev_cell_x_index] == WALL)
+		{
+			return (1);
+		}
+	}
+	return (0);
+}
+
+static int	handle_keyboard(int keysym, t_game *game)
+{
+	char	map[mapHeight][mapWidth] =
+	{
+		{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
+		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+		{1,0,0,0,0,0,1,1,1,1,1,0,0,0,0,1,0,1,0,1,0,0,0,1},
+		{1,0,0,0,0,0,1,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1},
+		{1,0,0,0,0,0,1,0,0,0,1,0,0,0,0,1,0,0,0,1,0,0,0,1},
+		{1,0,0,0,0,0,1,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1},
+		{1,0,0,0,0,0,1,1,0,1,1,0,0,0,0,1,0,1,0,1,0,0,0,1},
+		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+		{1,0,0,0,0,0,0,0,0,0,0,'N',0,0,0,0,0,0,0,0,0,0,0,1},
+		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+		{1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+		{1,1,0,1,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+		{1,1,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+		{1,1,0,1,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+		{1,1,0,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+		{1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+		{1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+		{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1}
+	};
+
+	if (keysym == XK_Escape)
+	{
+		cleanup(&game->mlx, 1);
+	}
+	else if (keysym == XK_Up)
+	{
+		if (check_wall(TOP, game))
+			return (0);
+		game->shiftY -= stepSize;
+	}
+	else if (keysym == XK_Down)
+	{
+		if (check_wall(BOTTOM, game))
+			return (0);
+		game->shiftY += stepSize;
+	}
+	else if (keysym == XK_Left)
+	{
+		if (check_wall(LEFT, game))
+			return (0);
+		game->shiftX -= stepSize;
+	}
+	else if (keysym == XK_Right)
+	{
+		if (check_wall(RIGHT, game))
+			return (0);
+		game->shiftX += stepSize;
+	}
+	draw_map(map, game);
+	return (0);
+}
+
+int	main(void)
+{
+	t_game	game;
+	char	map[mapHeight][mapWidth] =
+	{
+		{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
+		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+		{1,0,0,0,0,0,1,1,1,1,1,0,0,0,0,1,0,1,0,1,0,0,0,1},
+		{1,0,0,0,0,0,1,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1},
+		{1,0,0,0,0,0,1,0,0,0,1,0,0,0,0,1,0,0,0,1,0,0,0,1},
+		{1,0,0,0,0,0,1,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1},
+		{1,0,0,0,0,0,1,1,0,1,1,0,0,0,0,1,0,1,0,1,0,0,0,1},
+		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+		{1,0,0,0,0,0,0,0,0,0,0,'N',0,0,0,0,0,0,0,0,0,0,0,1},
+		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+		{1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+		{1,1,0,1,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+		{1,1,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+		{1,1,0,1,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+		{1,1,0,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+		{1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+		{1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+		{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1}
+	};
+
+	init_project(&game.mlx);
+	init_game(&game);
+	draw_map(map, &game);
+	mlx_hook(game.mlx.win_ptr, 2, (1L << 0), handle_keyboard, &game);
+	mlx_loop(game.mlx.ptr);
 }
