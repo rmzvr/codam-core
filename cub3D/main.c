@@ -6,7 +6,7 @@
 /*   By: rzvir <rzvir@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/22 16:12:09 by rmzvr             #+#    #+#             */
-/*   Updated: 2025/06/02 20:58:59 by rzvir            ###   ########.fr       */
+/*   Updated: 2025/06/03 18:28:09 by rzvir            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,8 +20,8 @@
 # define M_PI 3.14159265358979323846
 #endif
 
-#define mapWidth 24
-#define mapHeight 24
+#define mapWidth 25
+#define mapHeight 25
 #define cellSize 30
 #define playerSize 10
 #define stepSize cellSize / 6
@@ -68,10 +68,14 @@ typedef struct s_game
 	int					mapHeightPx;
 	int					shiftX;
 	int					shiftY;
-	int					init_pos_x;
-	int					init_pos_y;
+	int					init_cell_pos_x;
+	int					init_cell_pos_y;
 	double				bx;
 	double				by;
+	double				vector_x_start;
+	double				vector_y_start;
+	double				vector_x_end;
+	double				vector_y_end;
 	t_player_position	player_position;
 	t_mlx	mlx;
 }	t_game;
@@ -225,16 +229,8 @@ void	draw_line_vertical(int x0, int y0, int x1, int y1, t_game *game)
 	}
 }
 
-void	draw_line(t_game *game, int i_x, int i_y, int end_x, int end_y)
+void	draw_line(t_game *game, int x0, int y0, int x1, int y1)
 {
-	int	cell_x_start = get_cell_x_head_addr(i_x) + playerSize + game->shiftX;
-	int	cell_y_start = get_cell_y_head_addr(i_y) + playerSize + game->shiftY;
-
-	int	x0 = cell_x_start + playerSize / 2;
-	int	y0 = cell_y_start + playerSize / 2;
-	int	x1 = end_x * cellSize + playerSize + (playerSize / 2);
-	int	y1 = end_y * cellSize + playerSize + (playerSize / 2);
-
 	if (abs(x1 - x0) > abs(y1 - y0))
 	{
 		draw_line_horizontal(x0, y0, x1, y1, game);
@@ -262,10 +258,10 @@ static void	init_mlx_window_and_image(t_mlx *mlx)
 	mlx->ptr = mlx_init();
 	if (mlx->ptr == NULL)
 		exit(1);
-	mlx->win_ptr = mlx_new_window(mlx->ptr, 720, 720, "cub3D");
+	mlx->win_ptr = mlx_new_window(mlx->ptr, 750, 750, "cub3D");
 	if (mlx->win_ptr == NULL)
 		cleanup(mlx, 1);
-	mlx->img.ptr = mlx_new_image(mlx->ptr, 720, 720);
+	mlx->img.ptr = mlx_new_image(mlx->ptr, 750, 750);
 	if (mlx->img.ptr == NULL)
 		cleanup(mlx, 1);
 	mlx->img.pixels_addr = mlx_get_data_addr(mlx->img.ptr, &mlx->img.bpp,
@@ -289,31 +285,44 @@ void	init_game(t_game *game)
 	game->mapHeightPx = mapHeight * cellSize;
 	game->shiftX = 0;
 	game->shiftY = 0;
-	game->init_pos_x = 0;
-	game->init_pos_y = 0;
-	game->bx = 0;
-	game->by = 0;
+	game->init_cell_pos_x = 0;
+	game->init_cell_pos_y = 0;
+	game->vector_x_start = 0;
+	game->vector_y_start = 0;
+	game->vector_x_end = 0;
+	game->vector_y_end = 0;
 }
 
-void	draw_player(char map[mapHeight][mapWidth], t_img *img, t_game *game)
+void	draw_player(t_img *img, t_game *game)
 {
-	(void) map;
-	int	cell_x;
-	int	cell_y;
+	int	x;
+	int	y;
 
-	cell_x = 0;
-	cell_y = get_cell_y_head_addr(game->init_pos_y) + playerSize + game->shiftY;
-	game->player_position.cell_y = cell_y;
-	while (cell_y < get_cell_y_head_addr(game->init_pos_y) + playerSize + game->shiftY + playerSize)
+	int	player_x_start;
+	int	player_x_end;
+
+	int	player_y_start;
+	int	player_y_end;
+
+	player_x_start = get_cell_x_head_addr(game->init_cell_pos_x) + playerSize + game->shiftX;
+	player_x_end = player_x_start + playerSize;
+
+	player_y_start = get_cell_y_head_addr(game->init_cell_pos_y) + playerSize + game->shiftY;
+	player_y_end = player_y_start + playerSize;
+
+	game->player_position.cell_x = player_x_start;
+	game->player_position.cell_y = player_y_start;
+
+	y = player_y_start;
+	while (y < player_y_end)
 	{
-		cell_x = get_cell_x_head_addr(game->init_pos_x) + playerSize + game->shiftX;
-		game->player_position.cell_x = cell_x;
-		while (cell_x < get_cell_x_head_addr(game->init_pos_x) + playerSize + game->shiftX + playerSize)
+		x = player_x_start;
+		while (x < player_x_end)
 		{
-			my_mlx_pixel_put(img, cell_x, cell_y, 0x000000);
-			cell_x++;
+			my_mlx_pixel_put(img, x, y, 0x000000);
+			x++;
 		}
-		cell_y++;
+		y++;
 	}
 }
 
@@ -329,13 +338,13 @@ void	draw_map(char map[mapHeight][mapWidth], t_game *game)
 		while (game->x < mapWidth)
 		{
 			cell_y = get_cell_y_head_addr(game->y);
+			if (map[game->y][game->x] == 'N' || map[game->y][game->x] == 'S' || map[game->y][game->x] == 'W' || map[game->y][game->x] == 'E')
+			{
+				game->init_cell_pos_x = game->x;
+				game->init_cell_pos_y = game->y;
+			}
 			while (cell_y <= get_cell_y_tail_addr(game->y))
 			{
-				if (map[game->y][game->x] == 'N' || map[game->y][game->x] == 'S' || map[game->y][game->x] == 'W' || map[game->y][game->x] == 'E')
-				{
-					game->init_pos_x = game->x;
-					game->init_pos_y = game->y;
-				}
 				cell_x = get_cell_x_head_addr(game->x);
 				while (cell_x <= get_cell_x_tail_addr(game->x))
 				{
@@ -349,7 +358,6 @@ void	draw_map(char map[mapHeight][mapWidth], t_game *game)
 		}
 		game->y++;
 	}
-	draw_player(map, &game->mlx.img, game);
 	mlx_put_image_to_window(game->mlx.ptr, game->mlx.win_ptr, game->mlx.img.ptr, 0, 0);
 }
 
@@ -363,30 +371,31 @@ int	check_wall(t_direction direction, t_game *game)
 	
 	char	map[mapHeight][mapWidth] =
 	{
-		{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
-		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,0,0,0,0,0,1,1,1,1,1,0,0,0,0,1,0,1,0,1,0,0,0,1},
-		{1,0,0,0,0,0,1,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,0,0,0,0,0,1,0,'W',0,1,0,0,0,0,1,0,0,0,1,0,0,0,1},
-		{1,0,0,0,0,0,1,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,0,0,0,0,0,1,1,0,1,1,0,0,0,0,1,0,1,0,1,0,0,0,1},
-		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,1,0,1,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,1,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,1,0,1,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,1,0,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1}
+		{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
+		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+		{1,0,0,0,0,0,1,1,1,1,1,0,0,0,0,1,0,1,0,1,0,0,0,0,1},
+		{1,0,0,0,0,0,1,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+		{1,0,0,0,0,0,1,0,0,0,1,0,0,0,0,1,0,0,0,1,0,0,0,0,1},
+		{1,0,0,0,0,0,1,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+		{1,0,0,0,0,0,1,1,0,1,1,0,0,0,0,1,0,1,0,1,0,0,0,0,1},
+		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+		{1,0,0,0,0,0,0,0,0,0,0,0,'N',0,0,0,0,0,0,0,0,0,0,0,1},
+		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+		{1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+		{1,1,0,1,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+		{1,1,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+		{1,1,0,1,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+		{1,1,0,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+		{1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+		{1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+		{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1}
 	};
 
 	if (direction == TOP)
@@ -432,30 +441,31 @@ static int	handle_keyboard(int keysym, t_game *game)
 {
 	char	map[mapHeight][mapWidth] =
 	{
-		{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
-		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,0,0,0,0,0,1,1,1,1,1,0,0,0,0,1,0,1,0,1,0,0,0,1},
-		{1,0,0,0,0,0,1,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,0,0,0,0,0,1,0,'W',0,1,0,0,0,0,1,0,0,0,1,0,0,0,1},
-		{1,0,0,0,0,0,1,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,0,0,0,0,0,1,1,0,1,1,0,0,0,0,1,0,1,0,1,0,0,0,1},
-		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,1,0,1,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,1,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,1,0,1,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,1,0,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1}
+		{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
+		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+		{1,0,0,0,0,0,1,1,1,1,1,0,0,0,0,1,0,1,0,1,0,0,0,0,1},
+		{1,0,0,0,0,0,1,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+		{1,0,0,0,0,0,1,0,0,0,1,0,0,0,0,1,0,0,0,1,0,0,0,0,1},
+		{1,0,0,0,0,0,1,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+		{1,0,0,0,0,0,1,1,0,1,1,0,0,0,0,1,0,1,0,1,0,0,0,0,1},
+		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+		{1,0,0,0,0,0,0,0,0,0,0,0,'N',0,0,0,0,0,0,0,0,0,0,0,1},
+		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+		{1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+		{1,1,0,1,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+		{1,1,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+		{1,1,0,1,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+		{1,1,0,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+		{1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+		{1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+		{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1}
 	};
 
 	if (keysym == XK_Escape)
@@ -467,90 +477,84 @@ static int	handle_keyboard(int keysym, t_game *game)
 		if (check_wall(TOP, game))
 			return (0);
 		game->shiftY -= stepSize;
-		draw_map(map, game);
 	}
 	else if (keysym == XK_s)
 	{
 		if (check_wall(BOTTOM, game))
 			return (0);
 		game->shiftY += stepSize;
-		draw_map(map, game);
 	}
 	else if (keysym == XK_a)
 	{
 		if (check_wall(LEFT, game))
 			return (0);
 		game->shiftX -= stepSize;
-		draw_map(map, game);
 	}
 	else if (keysym == XK_d)
 	{
 		if (check_wall(RIGHT, game))
 			return (0);
 		game->shiftX += stepSize;
-		draw_map(map, game);
 	}
 	else if (keysym == XK_Left)
 	{
-		printf("left - bx: %f, by: %f, o: %d\n", game->bx, game->by, 0);
-		double bx = (cos(0) * game->bx) - (sin(0) * game->by);
-		double by = (sin(0) * game->bx) + (cos(0) * game->by);
-		// bx = bx / sqrt(bx * bx + by * by);
-		// by = by / sqrt(bx * bx + by * by);
-		draw_map(map, game);
-		draw_line(game, game->init_pos_x, game->init_pos_y, bx, by);
-		game->bx = bx;
-		game->by = by;
+		game->vector_x_start = game->player_position.cell_x + (playerSize / 2);
+		game->vector_y_start = game->player_position.cell_y + (playerSize / 2);
+		double	xp = game->vector_x_end - game->vector_x_start;
+		double	yp = game->vector_y_end - game->vector_y_start;
+		double	xpp = xp * cos(M_PI / 4) + yp * sin(M_PI / 4);
+		double	ypp = -xp * sin(M_PI / 4) + yp * cos(M_PI / 4);
+		game->vector_x_end = xpp + game->vector_x_start;
+		game->vector_y_end = ypp + game->vector_y_start;
+		printf("vector_x_start: %f, vector_y_start: %f\n", game->vector_x_start, game->vector_y_start);
+		printf("vector_x_end: %f, vector_y_end: %f\n", game->vector_x_end, game->vector_y_end);
 	}
 	else if (keysym == XK_Right)
 	{
-		printf("right - bx: %f, by: %f, o: %d\n", game->bx, game->by, 0);
-		double bx = (cos(0) * game->bx) + (game->by * sin(0));
-		double by = (sin(0) * -game->bx) + (game->by * cos(0));
-		// printf("right - bx: %f, by: %f\n", game->bx, game->by);
-		// bx = bx / sqrt(bx * bx + by * by);
-		// by = by / sqrt(bx * bx + by * by);
-		draw_map(map, game);
-		draw_line(game, game->init_pos_x, game->init_pos_y, bx, by);
-		game->bx = bx;
-		game->by = by;
+		game->vector_x_start = game->player_position.cell_x + (playerSize / 2);
+		game->vector_y_start = game->player_position.cell_y + (playerSize / 2);
+		double	xp = game->vector_x_end - game->vector_x_start;
+		double	yp = game->vector_y_end - game->vector_y_start;
+		double	xpp = xp * cos(M_PI / 4) - yp * sin(M_PI / 4);
+		double	ypp = xp * sin(M_PI / 4) + yp * cos(M_PI / 4);
+		game->vector_x_end = xpp + game->vector_x_start;
+		game->vector_y_end = ypp + game->vector_y_start;
+		ft_printf("player - x: %d, y: %d\n", game->player_position.cell_x, game->player_position.cell_y);
+		printf("vector_x_start: %f, vector_y_start: %f\n", game->vector_x_start, game->vector_y_start);
+		printf("vector_x_end: %f, vector_y_end: %f\n", game->vector_x_end, game->vector_y_end);
 	}
-
+	draw_map(map, game);
+	draw_player(&game->mlx.img, game);
+	ft_printf("player - x: %d, y: %d\n", game->player_position.cell_x, game->player_position.cell_y);
+	draw_line(game, game->vector_x_start, game->vector_y_start, game->vector_x_end, game->vector_y_end);
 	return (0);
 }
 
 void	init_draw_line(char map[mapHeight][mapWidth], t_game *game)
 {
-	if (map[game->init_pos_y][game->init_pos_x] == 'N')
+	game->vector_x_start = game->player_position.cell_x + (playerSize / 2);
+	game->vector_y_start = game->player_position.cell_y + (playerSize / 2);
+	if (map[game->init_cell_pos_y][game->init_cell_pos_x] == 'N')
 	{
-		game->bx = game->init_pos_x + 0;
-		game->by = game->init_pos_y + -1;
+		game->vector_x_end = game->vector_x_start + 0;
+		game->vector_y_end = game->vector_y_start + -cellSize;
 	}
-	else if (map[game->init_pos_y][game->init_pos_x] == 'S')
+	else if (map[game->init_cell_pos_y][game->init_cell_pos_x] == 'S')
 	{
-		game->bx = game->init_pos_x + 0;
-		game->by = game->init_pos_y + 1;
+		game->vector_x_end = game->vector_x_start + 0;
+		game->vector_y_end = game->vector_y_start + cellSize;
 	}
-	else if (map[game->init_pos_y][game->init_pos_x] == 'W')
+	else if (map[game->init_cell_pos_y][game->init_cell_pos_x] == 'W')
 	{
-		game->bx = game->init_pos_x + -1;
-		game->by = game->init_pos_y + 0;
+		game->vector_x_end = game->vector_x_start + -cellSize;
+		game->vector_y_end = game->vector_y_start + 0;
 	}
-	else if (map[game->init_pos_y][game->init_pos_x] == 'E')
+	else if (map[game->init_cell_pos_y][game->init_cell_pos_x] == 'E')
 	{
-		game->bx = game->init_pos_x + 1;
-		game->by = game->init_pos_y + 0;
+		game->vector_x_end = game->vector_x_start + cellSize;
+		game->vector_y_end = game->vector_y_start + 0;
 	}
-	printf("left - bx: %f, by: %f, o: %d\n", game->bx, game->by, 0);
-	double bx = (cos(0) * game->bx) - (sin(0) * game->by);
-	double by = (sin(0) * game->bx) + (cos(0) * game->by);
-	// bx = bx / sqrt(bx * bx + by * by);
-	// by = by / sqrt(bx * bx + by * by);
-	draw_map(map, game);
-	draw_line(game, game->init_pos_x, game->init_pos_y, bx, by);
-	game->bx = bx;
-	game->by = by;
-	// draw_line(game, game->init_pos_x, game->init_pos_y, game->bx, game->by);
+	draw_line(game, game->vector_x_start, game->vector_y_start, game->vector_x_end, game->vector_y_end);
 }
 
 int	main(void)
@@ -558,36 +562,37 @@ int	main(void)
 	t_game	game;
 	char	map[mapHeight][mapWidth] =
 	{
-		{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
-		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,0,0,0,0,0,1,1,1,1,1,0,0,0,0,1,0,1,0,1,0,0,0,1},
-		{1,0,0,0,0,0,1,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,0,0,0,0,0,1,0,'W',0,1,0,0,0,0,1,0,0,0,1,0,0,0,1},
-		{1,0,0,0,0,0,1,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,0,0,0,0,0,1,1,0,1,1,0,0,0,0,1,0,1,0,1,0,0,0,1},
-		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,1,0,1,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,1,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,1,0,1,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,1,0,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1}
+		{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
+		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+		{1,0,0,0,0,0,1,1,1,1,1,0,0,0,0,1,0,1,0,1,0,0,0,0,1},
+		{1,0,0,0,0,0,1,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+		{1,0,0,0,0,0,1,0,0,0,1,0,0,0,0,1,0,0,0,1,0,0,0,0,1},
+		{1,0,0,0,0,0,1,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+		{1,0,0,0,0,0,1,1,0,1,1,0,0,0,0,1,0,1,0,1,0,0,0,0,1},
+		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+		{1,0,0,0,0,0,0,0,0,0,0,0,'N',0,0,0,0,0,0,0,0,0,0,0,1},
+		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+		{1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+		{1,1,0,1,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+		{1,1,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+		{1,1,0,1,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+		{1,1,0,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+		{1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+		{1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+		{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1}
 	};
 
 	init_project(&game.mlx);
 	init_game(&game);
 	draw_map(map, &game);
-	draw_player(map, &game.mlx.img, &game);
+	draw_player(&game.mlx.img, &game);
 	init_draw_line(map, &game);
 	mlx_hook(game.mlx.win_ptr, 2, (1L << 0), handle_keyboard, &game);
 	mlx_loop(game.mlx.ptr);
