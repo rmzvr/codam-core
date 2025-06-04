@@ -6,7 +6,7 @@
 /*   By: rzvir <rzvir@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/22 16:12:09 by rmzvr             #+#    #+#             */
-/*   Updated: 2025/06/03 18:28:09 by rzvir            ###   ########.fr       */
+/*   Updated: 2025/06/04 17:12:53 by rzvir            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -383,7 +383,7 @@ int	check_wall(t_direction direction, t_game *game)
 		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
 		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
 		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,0,0,0,0,0,0,0,0,0,0,0,'N',0,0,0,0,0,0,0,0,0,0,0,1},
+		{1,0,0,0,0,0,0,0,0,0,0,0,'S',0,0,0,0,0,0,0,0,0,0,0,1},
 		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
 		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
 		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
@@ -453,7 +453,7 @@ static int	handle_keyboard(int keysym, t_game *game)
 		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
 		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
 		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,0,0,0,0,0,0,0,0,0,0,0,'N',0,0,0,0,0,0,0,0,0,0,0,1},
+		{1,0,0,0,0,0,0,0,0,0,0,0,'S',0,0,0,0,0,0,0,0,0,0,0,1},
 		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
 		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
 		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
@@ -467,6 +467,8 @@ static int	handle_keyboard(int keysym, t_game *game)
 		{1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
 		{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1}
 	};
+	game->vector_x_start = game->player_position.cell_x + (playerSize / 2);
+	game->vector_y_start = game->player_position.cell_y + (playerSize / 2);
 
 	if (keysym == XK_Escape)
 	{
@@ -477,55 +479,53 @@ static int	handle_keyboard(int keysym, t_game *game)
 		if (check_wall(TOP, game))
 			return (0);
 		game->shiftY -= stepSize;
+		game->vector_y_start -= stepSize;
+		game->vector_y_end -= stepSize;
 	}
 	else if (keysym == XK_s)
 	{
 		if (check_wall(BOTTOM, game))
 			return (0);
 		game->shiftY += stepSize;
+		game->vector_y_start += stepSize;
+		game->vector_y_end += stepSize;
 	}
 	else if (keysym == XK_a)
 	{
 		if (check_wall(LEFT, game))
 			return (0);
 		game->shiftX -= stepSize;
+		game->vector_x_start -= stepSize;
+		game->vector_x_end -= stepSize;
 	}
 	else if (keysym == XK_d)
 	{
 		if (check_wall(RIGHT, game))
 			return (0);
 		game->shiftX += stepSize;
+		game->vector_x_start += stepSize;
+		game->vector_x_end += stepSize;
 	}
 	else if (keysym == XK_Left)
 	{
-		game->vector_x_start = game->player_position.cell_x + (playerSize / 2);
-		game->vector_y_start = game->player_position.cell_y + (playerSize / 2);
 		double	xp = game->vector_x_end - game->vector_x_start;
 		double	yp = game->vector_y_end - game->vector_y_start;
-		double	xpp = xp * cos(M_PI / 4) + yp * sin(M_PI / 4);
-		double	ypp = -xp * sin(M_PI / 4) + yp * cos(M_PI / 4);
+		double	xpp = xp * cos(M_PI / 6) + yp * sin(M_PI / 6);
+		double	ypp = -xp * sin(M_PI / 6) + yp * cos(M_PI / 6);
 		game->vector_x_end = xpp + game->vector_x_start;
 		game->vector_y_end = ypp + game->vector_y_start;
-		printf("vector_x_start: %f, vector_y_start: %f\n", game->vector_x_start, game->vector_y_start);
-		printf("vector_x_end: %f, vector_y_end: %f\n", game->vector_x_end, game->vector_y_end);
 	}
 	else if (keysym == XK_Right)
 	{
-		game->vector_x_start = game->player_position.cell_x + (playerSize / 2);
-		game->vector_y_start = game->player_position.cell_y + (playerSize / 2);
 		double	xp = game->vector_x_end - game->vector_x_start;
 		double	yp = game->vector_y_end - game->vector_y_start;
-		double	xpp = xp * cos(M_PI / 4) - yp * sin(M_PI / 4);
-		double	ypp = xp * sin(M_PI / 4) + yp * cos(M_PI / 4);
+		double	xpp = xp * cos(M_PI / 6) - yp * sin(M_PI / 6);
+		double	ypp = xp * sin(M_PI / 6) + yp * cos(M_PI / 6);
 		game->vector_x_end = xpp + game->vector_x_start;
 		game->vector_y_end = ypp + game->vector_y_start;
-		ft_printf("player - x: %d, y: %d\n", game->player_position.cell_x, game->player_position.cell_y);
-		printf("vector_x_start: %f, vector_y_start: %f\n", game->vector_x_start, game->vector_y_start);
-		printf("vector_x_end: %f, vector_y_end: %f\n", game->vector_x_end, game->vector_y_end);
 	}
 	draw_map(map, game);
 	draw_player(&game->mlx.img, game);
-	ft_printf("player - x: %d, y: %d\n", game->player_position.cell_x, game->player_position.cell_y);
 	draw_line(game, game->vector_x_start, game->vector_y_start, game->vector_x_end, game->vector_y_end);
 	return (0);
 }
@@ -537,23 +537,25 @@ void	init_draw_line(char map[mapHeight][mapWidth], t_game *game)
 	if (map[game->init_cell_pos_y][game->init_cell_pos_x] == 'N')
 	{
 		game->vector_x_end = game->vector_x_start + 0;
-		game->vector_y_end = game->vector_y_start + -cellSize;
+		game->vector_y_end = game->vector_y_start + -(cellSize / 2);
 	}
 	else if (map[game->init_cell_pos_y][game->init_cell_pos_x] == 'S')
 	{
 		game->vector_x_end = game->vector_x_start + 0;
-		game->vector_y_end = game->vector_y_start + cellSize;
+		game->vector_y_end = game->vector_y_start + (cellSize / 2);
 	}
 	else if (map[game->init_cell_pos_y][game->init_cell_pos_x] == 'W')
 	{
-		game->vector_x_end = game->vector_x_start + -cellSize;
+		game->vector_x_end = game->vector_x_start + -(cellSize / 2);
 		game->vector_y_end = game->vector_y_start + 0;
 	}
 	else if (map[game->init_cell_pos_y][game->init_cell_pos_x] == 'E')
 	{
-		game->vector_x_end = game->vector_x_start + cellSize;
+		game->vector_x_end = game->vector_x_start + (cellSize / 2);
 		game->vector_y_end = game->vector_y_start + 0;
 	}
+	printf("x_start: %f, x_end %f, sum: %f\n", game->vector_x_start, game->vector_x_end, game->vector_x_end - game->vector_x_start);
+	printf("y_start: %f, y_end %f, sum: %f\n", game->vector_y_start, game->vector_y_end, game->vector_y_end - game->vector_y_start);
 	draw_line(game, game->vector_x_start, game->vector_y_start, game->vector_x_end, game->vector_y_end);
 }
 
@@ -574,7 +576,7 @@ int	main(void)
 		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
 		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
 		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,0,0,0,0,0,0,0,0,0,0,0,'N',0,0,0,0,0,0,0,0,0,0,0,1},
+		{1,0,0,0,0,0,0,0,0,0,0,0,'S',0,0,0,0,0,0,0,0,0,0,0,1},
 		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
 		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
 		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
