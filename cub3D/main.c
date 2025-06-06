@@ -6,7 +6,7 @@
 /*   By: rzvir <rzvir@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/22 16:12:09 by rmzvr             #+#    #+#             */
-/*   Updated: 2025/06/04 17:12:53 by rzvir            ###   ########.fr       */
+/*   Updated: 2025/06/06 20:38:04 by rzvir            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -437,6 +437,16 @@ int	check_wall(t_direction direction, t_game *game)
 	return (0);
 }
 
+void	calculate_vector_length()
+{
+	
+}
+
+void	normalize_vector()
+{
+	
+}
+
 static int	handle_keyboard(int keysym, t_game *game)
 {
 	char	map[mapHeight][mapWidth] =
@@ -467,8 +477,21 @@ static int	handle_keyboard(int keysym, t_game *game)
 		{1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
 		{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1}
 	};
+
+	double cosA = cos(M_PI / 6);
+	double sinA = sin(M_PI / 6);
 	game->vector_x_start = game->player_position.cell_x + (playerSize / 2);
 	game->vector_y_start = game->player_position.cell_y + (playerSize / 2);
+
+	double dx = game->vector_x_end - game->vector_x_start;
+	double dy = game->vector_y_end - game->vector_y_start;
+
+	double length = sqrt(dx*dx + dy*dy);
+	if (length != 0)
+	{
+		dx /= length;
+		dy /= length;
+	}
 
 	if (keysym == XK_Escape)
 	{
@@ -508,22 +531,105 @@ static int	handle_keyboard(int keysym, t_game *game)
 	}
 	else if (keysym == XK_Left)
 	{
-		double	xp = game->vector_x_end - game->vector_x_start;
-		double	yp = game->vector_y_end - game->vector_y_start;
-		double	xpp = xp * cos(M_PI / 6) + yp * sin(M_PI / 6);
-		double	ypp = -xp * sin(M_PI / 6) + yp * cos(M_PI / 6);
-		game->vector_x_end = xpp + game->vector_x_start;
-		game->vector_y_end = ypp + game->vector_y_start;
+		double	xpp = dx * cosA + dy * sinA;
+		double	ypp = -dx * sinA + dy * cosA;
+		game->vector_x_end = game->vector_x_start + xpp;
+		game->vector_y_end = game->vector_y_start + ypp;
 	}
 	else if (keysym == XK_Right)
 	{
-		double	xp = game->vector_x_end - game->vector_x_start;
-		double	yp = game->vector_y_end - game->vector_y_start;
-		double	xpp = xp * cos(M_PI / 6) - yp * sin(M_PI / 6);
-		double	ypp = xp * sin(M_PI / 6) + yp * cos(M_PI / 6);
-		game->vector_x_end = xpp + game->vector_x_start;
-		game->vector_y_end = ypp + game->vector_y_start;
+		double	xpp = dx * cosA - dy * sinA;
+		double	ypp = dx * sinA + dy * cosA;
+		game->vector_x_end = game->vector_x_start + xpp;
+		game->vector_y_end = game->vector_y_start + ypp;
 	}
+
+	dx = game->vector_x_end - game->vector_x_start;
+	dy = game->vector_y_end - game->vector_y_start;
+
+	length = sqrt(dx*dx + dy*dy);
+	if (length != 0)
+	{
+		dx /= length;
+		dy /= length;
+	}
+
+	double	xmin = 0;
+	double	xmax = mapWidth * cellSize - 1;
+
+	double	ymin = 0;
+	double	ymax = mapHeight * cellSize - 1;
+
+	double	tx1;
+	if (dx != 0)
+	{
+		tx1 = (xmin - game->vector_x_start) / dx;
+	}
+	else
+	{
+		tx1 = -INFINITY;
+	}
+
+	double	tx2;
+	if (dx != 0)
+	{
+		tx2 = (xmax - game->vector_x_start) / dx;
+	}
+	else
+	{
+		tx2 = INFINITY;
+	}
+
+	double	ty1;
+	if (dy != 0)
+	{
+		ty1 = (ymin - game->vector_y_start) / dy;
+	}
+	else
+	{
+		ty1 = -INFINITY;
+	}
+
+	double	ty2;
+	if (dy != 0)
+	{
+		ty2 = (ymax - game->vector_y_start) / dy;
+	}
+	else
+	{
+		ty2 = INFINITY;
+	}
+
+	if (tx1 > tx2)
+	{
+		double	temp = tx1;
+		tx1 = tx2;
+		tx2 = temp;
+	}
+	if (ty1 > ty2)
+	{
+		double	temp = ty1;
+		ty1 = ty2;
+		ty2 = temp;
+	}
+
+	double	tmax;
+	if (tx2 < ty2)
+	{
+		tmax = tx2;
+	}
+	else
+	{
+		tmax = ty2;
+	}
+
+	if (tmax < 0)
+	{
+		printf("Ray points backwards or no exit ahead\n");
+		// return;
+	}
+	game->vector_x_end = game->vector_x_start + dx * tmax;
+	game->vector_y_end = game->vector_y_start + dy * tmax;
 	draw_map(map, game);
 	draw_player(&game->mlx.img, game);
 	draw_line(game, game->vector_x_start, game->vector_y_start, game->vector_x_end, game->vector_y_end);
@@ -532,30 +638,96 @@ static int	handle_keyboard(int keysym, t_game *game)
 
 void	init_draw_line(char map[mapHeight][mapWidth], t_game *game)
 {
+	double	dx = 0;
+	double	dy = 0;
 	game->vector_x_start = game->player_position.cell_x + (playerSize / 2);
 	game->vector_y_start = game->player_position.cell_y + (playerSize / 2);
 	if (map[game->init_cell_pos_y][game->init_cell_pos_x] == 'N')
-	{
-		game->vector_x_end = game->vector_x_start + 0;
-		game->vector_y_end = game->vector_y_start + -(cellSize / 2);
-	}
+		dy = -1;
 	else if (map[game->init_cell_pos_y][game->init_cell_pos_x] == 'S')
-	{
-		game->vector_x_end = game->vector_x_start + 0;
-		game->vector_y_end = game->vector_y_start + (cellSize / 2);
-	}
+		dy = 1;
 	else if (map[game->init_cell_pos_y][game->init_cell_pos_x] == 'W')
-	{
-		game->vector_x_end = game->vector_x_start + -(cellSize / 2);
-		game->vector_y_end = game->vector_y_start + 0;
-	}
+		dx = -1;
 	else if (map[game->init_cell_pos_y][game->init_cell_pos_x] == 'E')
+		dx = 1;
+
+	double	xmin = 0;
+	double	xmax = mapWidth * cellSize - 1;
+
+	double	ymin = 0;
+	double	ymax = mapHeight * cellSize - 1;
+
+	double	tx1;
+	if (dx != 0)
 	{
-		game->vector_x_end = game->vector_x_start + (cellSize / 2);
-		game->vector_y_end = game->vector_y_start + 0;
+		tx1 = (xmin - game->vector_x_start) / dx;
 	}
-	printf("x_start: %f, x_end %f, sum: %f\n", game->vector_x_start, game->vector_x_end, game->vector_x_end - game->vector_x_start);
-	printf("y_start: %f, y_end %f, sum: %f\n", game->vector_y_start, game->vector_y_end, game->vector_y_end - game->vector_y_start);
+	else
+	{
+		tx1 = -INFINITY;
+	}
+
+	double	tx2;
+	if (dx != 0)
+	{
+		tx2 = (xmax - game->vector_x_start) / dx;
+	}
+	else
+	{
+		tx2 = INFINITY;
+	}
+
+	double	ty1;
+	if (dy != 0)
+	{
+		ty1 = (ymin - game->vector_y_start) / dy;
+	}
+	else
+	{
+		ty1 = -INFINITY;
+	}
+
+	double	ty2;
+	if (dy != 0)
+	{
+		ty2 = (ymax - game->vector_y_start) / dy;
+	}
+	else
+	{
+		ty2 = INFINITY;
+	}
+
+	if (tx1 > tx2)
+	{
+		double	temp = tx1;
+		tx1 = tx2;
+		tx2 = temp;
+	}
+	if (ty1 > ty2)
+	{
+		double	temp = ty1;
+		ty1 = ty2;
+		ty2 = temp;
+	}
+
+	double	tmax;
+	if (tx2 < ty2)
+	{
+		tmax = tx2;
+	}
+	else
+	{
+		tmax = ty2;
+	}
+
+	if (tmax < 0)
+	{
+		printf("Ray points backwards or no exit ahead\n");
+		// return;
+	}
+
+	game->vector_x_end = game->vector_x_start + dx * tmax;
+	game->vector_y_end = game->vector_y_start + dy * tmax;
 	draw_line(game, game->vector_x_start, game->vector_y_start, game->vector_x_end, game->vector_y_end);
 }
 
