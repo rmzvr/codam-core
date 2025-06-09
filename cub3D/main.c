@@ -3,82 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rmzvr <rmzvr@student.42.fr>                +#+  +:+       +#+        */
+/*   By: rzvir <rzvir@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/22 16:12:09 by rmzvr             #+#    #+#             */
-/*   Updated: 2025/06/09 10:47:12 by rmzvr            ###   ########.fr       */
+/*   Updated: 2025/06/09 16:30:23 by rzvir            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "mlx.h"
-#include "libft.h"
-#include <math.h>
-#include <stdio.h>
-#include <X11/keysym.h>
-
-#ifndef M_PI
-# define M_PI 3.14159265358979323846
-#endif
-
-#define mapWidth 25
-#define mapHeight 25
-#define cellSize 30
-#define playerSize 10
-#define stepSize cellSize / 6
-
-typedef enum	e_element {
-	FLOOR,
-	WALL,
-}	t_element;
-
-typedef enum	e_direction {
-	TOP,
-	RIGHT,
-	BOTTOM,
-	LEFT,
-}	t_direction;
-
-typedef struct s_player_position
-{
-	int	cell_x;
-	int	cell_y;
-}	t_player_position;
-
-typedef struct s_img
-{
-	void	*ptr;
-	char	*pixels_addr;
-	int		bpp;
-	int		ll;
-	int		endian;
-}	t_img;
-
-typedef struct s_mlx
-{
-	void	*ptr;
-	void	*win_ptr;
-	t_img	img;
-}	t_mlx;
-
-typedef struct s_game
-{
-	int					x;
-	int					y;
-	int					mapWidthPx;
-	int					mapHeightPx;
-	int					shiftX;
-	int					shiftY;
-	int					init_cell_pos_x;
-	int					init_cell_pos_y;
-	double				bx;
-	double				by;
-	double				vector_x_start;
-	double				vector_y_start;
-	double				vector_x_end;
-	double				vector_y_end;
-	t_player_position	player_position;
-	t_mlx	mlx;
-}	t_game;
+#include "main.h"
 
 void	my_mlx_pixel_put(t_img *data, int x, int y, int color)
 {
@@ -142,7 +74,7 @@ void	draw_borders(int mapWidthPx, int mapHeightPx, t_img *img, int cell_x, int c
 	}
 }
 
-void	draw_line_horizontal(int x0, int y0, int x1, int y1, t_game *game)
+void	draw_line_horizontal(int x0, int y0, int x1, int y1, t_game *game, int color)
 {
 	int	temp;
 
@@ -174,7 +106,7 @@ void	draw_line_horizontal(int x0, int y0, int x1, int y1, t_game *game)
 
 		while (x < x1)
 		{
-			my_mlx_pixel_put(&game->mlx.img, x, y, 0x000000);
+			my_mlx_pixel_put(&game->mlx.img, x, y, color);
 			if (D >= 0)
 			{
 				y = y + dir;
@@ -186,7 +118,7 @@ void	draw_line_horizontal(int x0, int y0, int x1, int y1, t_game *game)
 	}
 }
 
-void	draw_line_vertical(int x0, int y0, int x1, int y1, t_game *game)
+void	draw_line_vertical(int x0, int y0, int x1, int y1, t_game *game, int color)
 {
 	int	temp;
 
@@ -217,7 +149,7 @@ void	draw_line_vertical(int x0, int y0, int x1, int y1, t_game *game)
 
 		while (y < y1)
 		{
-			my_mlx_pixel_put(&game->mlx.img, x, y, 0x000000);
+			my_mlx_pixel_put(&game->mlx.img, x, y, color);
 			if (D >= 0)
 			{
 				x = x + dir;
@@ -229,15 +161,15 @@ void	draw_line_vertical(int x0, int y0, int x1, int y1, t_game *game)
 	}
 }
 
-void	draw_line(t_game *game, int x0, int y0, int x1, int y1)
+void	draw_line(t_game *game, int x0, int y0, int x1, int y1, int color)
 {
 	if (abs(x1 - x0) > abs(y1 - y0))
 	{
-		draw_line_horizontal(x0, y0, x1, y1, game);
+		draw_line_horizontal(x0, y0, x1, y1, game, color);
 	}
 	else
 	{
-		draw_line_vertical(x0, y0, x1, y1, game);
+		draw_line_vertical(x0, y0, x1, y1, game, color);
 	}
 }
 
@@ -291,6 +223,17 @@ void	init_game(t_game *game)
 	game->vector_y_start = 0;
 	game->vector_x_end = 0;
 	game->vector_y_end = 0;
+	game->pos_x = 0;
+	game->pos_y = 0;
+	game->dir_x = 0;
+	game->dir_y = 0;
+	game->plane_x = 0.0;
+	game->plane_y = 0.66;
+	game->time = 0;
+	game->old_time = 0;
+	game->frame_time = 0;
+	game->move_speed = 0;
+	game->rot_speed = 0;
 }
 
 void	draw_player(t_img *img, t_game *game)
@@ -377,13 +320,13 @@ int	check_wall(t_direction direction, t_game *game)
 		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
 		{1,0,0,0,0,0,1,1,1,1,1,0,0,0,0,1,0,1,0,1,0,0,0,0,1},
 		{1,0,0,0,0,0,1,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,0,0,0,0,0,1,0,0,0,1,0,0,0,0,1,0,0,0,1,0,0,0,0,1},
+		{1,0,0,0,0,0,1,0,0,0,1,0,0,0,0,1,0,'E',0,1,0,0,0,0,1},
 		{1,0,0,0,0,0,1,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
 		{1,0,0,0,0,0,1,1,0,1,1,0,0,0,0,1,0,1,0,1,0,0,0,0,1},
 		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
 		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
 		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,0,0,0,0,0,0,0,0,0,0,0,'S',0,0,0,0,0,0,0,0,0,0,0,1},
+		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
 		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
 		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
 		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
@@ -437,14 +380,150 @@ int	check_wall(t_direction direction, t_game *game)
 	return (0);
 }
 
-void	calculate_vector_length()
+void	clear_image(t_img *img, int width, int height)
 {
-	
+	int	x, y;
+
+	for (y = 0; y < height; y++)
+	{
+		for (x = 0; x < width; x++)
+		{
+			// Fill with black (0x000000), or any background color
+			my_mlx_pixel_put(img, x, y, 0x000000);
+		}
+	}
 }
 
-void	normalize_vector()
+long	get_current_time_in_milliseconds(void)
 {
-	
+	struct timeval	current_time;
+	long			milliseconds;
+
+	gettimeofday(&current_time, NULL);
+	milliseconds = (current_time.tv_sec * 1000) + (current_time.tv_usec / 1000);
+	return (milliseconds);
+}
+
+void	draw_dda(char map[mapHeight][mapWidth], t_game *game)
+{
+	int		x = 0;
+	double	posX = game->pos_x, posY = game->pos_y;  //x and y start position
+	double	dirX = game->dir_x, dirY = game->dir_y; //initial direction vector
+
+	while (x < screenSize)
+	{
+		//calculate ray position and direction
+		double cameraX = 2 * x / (double)(screenSize) - 1; //x-coordinate in camera space
+		double rayDirX = dirX + game->plane_x * cameraX;
+		double rayDirY = dirY + game->plane_y * cameraX;
+
+		//which box of the map we're in
+		int mapX = posX;
+		int mapY = posY;
+
+		//length of ray from current position to next x or y-side
+		double sideDistX = 0.0;
+		double sideDistY = 0.0;
+
+		//length of ray from one x or y-side to next x or y-side
+		double deltaDistX = (rayDirX == 0) ? INFINITY : fabs(1 / rayDirX);
+		double deltaDistY = (rayDirY == 0) ? INFINITY : fabs(1 / rayDirY);
+
+		double perpWallDist = 0.0;
+
+		//what direction to step in x or y-direction (either +1 or -1)
+		int stepX = 0;
+		int stepY = 0;
+
+		int hit = 0; //was there a wall hit?
+		int side = 0; //was a NS or a EW wall hit?
+		//calculate step and initial sideDist
+		if (rayDirX < 0)
+		{
+			stepX = -1;
+			sideDistX = (posX - mapX) * deltaDistX;
+		}
+		else
+		{
+			stepX = 1;
+			sideDistX = (mapX + 1 - posX) * deltaDistX;
+		}
+		if (rayDirY < 0)
+		{
+			stepY = -1;
+			sideDistY = (posY - mapY) * deltaDistY;
+		}
+		else
+		{
+			stepY = 1;
+			sideDistY = (mapY + 1 - posY) * deltaDistY;
+		}
+
+		//perform DDA
+		while (hit == 0)
+		{
+			//jump to next map square, either in x-direction, or in y-direction
+			if (sideDistX < sideDistY)
+			{
+				sideDistX += deltaDistX;
+				mapX += stepX;
+				side = 0;
+			}
+			else
+			{
+				sideDistY += deltaDistY;
+				mapY += stepY;
+				side = 1;
+			}
+			//Check if ray has hit a wall
+			if (map[mapY][mapX] > 0)
+			{
+				hit = 1;
+			}
+		}
+
+
+		//Calculate distance projected on camera direction (Euclidean distance would give fisheye effect!)
+		if (side == 0)
+		{
+			perpWallDist = (sideDistX - deltaDistX);
+		}
+		else
+		{
+			perpWallDist = (sideDistY - deltaDistY);
+		}
+
+		//Calculate height of line to draw on screen
+		int lineHeight = (int)(screenSize / perpWallDist);
+
+		//calculate lowest and highest pixel to fill in current stripe
+		int drawStart = -lineHeight / 2 + screenSize / 2;
+		if (drawStart < 0)
+		{
+			drawStart = 0;
+		}
+		int drawEnd = lineHeight / 2 + screenSize / 2;
+		if (drawEnd >= screenSize)
+		{
+			drawEnd = screenSize - 1;
+		}
+		int color = 0x000000;
+
+		if (map[mapY][mapX] == 1)
+		{
+			color = 0xFF0000;
+		}
+
+		// give x and y sides different brightness
+		if (side == 1) {
+			color = color / 2;
+		}
+
+		//draw the pixels of the stripe as a vertical line
+		draw_line(game, x, drawStart, x, drawEnd, color);
+		x++;
+	}
+	mlx_put_image_to_window(game->mlx.ptr, game->mlx.win_ptr, game->mlx.img.ptr, 0, 0);
 }
 
 static int	handle_keyboard(int keysym, t_game *game)
@@ -457,13 +536,13 @@ static int	handle_keyboard(int keysym, t_game *game)
 		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
 		{1,0,0,0,0,0,1,1,1,1,1,0,0,0,0,1,0,1,0,1,0,0,0,0,1},
 		{1,0,0,0,0,0,1,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,0,0,0,0,0,1,0,0,0,1,0,0,0,0,1,0,0,0,1,0,0,0,0,1},
+		{1,0,0,0,0,0,1,0,0,0,1,0,0,0,0,1,0,'E',0,1,0,0,0,0,1},
 		{1,0,0,0,0,0,1,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
 		{1,0,0,0,0,0,1,1,0,1,1,0,0,0,0,1,0,1,0,1,0,0,0,0,1},
 		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
 		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
 		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,0,0,0,0,0,0,0,0,0,0,0,'S',0,0,0,0,0,0,0,0,0,0,0,1},
+		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
 		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
 		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
 		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
@@ -478,161 +557,85 @@ static int	handle_keyboard(int keysym, t_game *game)
 		{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1}
 	};
 
-	double cosA = cos(M_PI / 6);
-	double sinA = sin(M_PI / 6);
-	game->vector_x_start = game->player_position.cell_x + (playerSize / 2);
-	game->vector_y_start = game->player_position.cell_y + (playerSize / 2);
-
-	double dx = game->vector_x_end - game->vector_x_start;
-	double dy = game->vector_y_end - game->vector_y_start;
-
-	double length = sqrt(dx*dx + dy*dy);
-	if (length != 0)
-	{
-		dx /= length;
-		dy /= length;
-	}
-
+	game->old_time = game->time;
+	game->time = get_current_time_in_milliseconds();
+	game->frame_time = (game->time - game->old_time) / 1000.0;
+	game->move_speed = game->frame_time * 5.0;
+	game->rot_speed = game->frame_time * 3.0;
+	printf("before pos_x: %f, dir_x %f, move_speed: %f\n", game->pos_x, game->dir_x, game->move_speed);
 	if (keysym == XK_Escape)
 	{
 		cleanup(&game->mlx, 1);
 	}
 	else if (keysym == XK_w)
 	{
-		if (check_wall(TOP, game))
-			return (0);
-		game->shiftY -= stepSize;
-		game->vector_y_start -= stepSize;
-		game->vector_y_end -= stepSize;
+		if (map[(int)(game->pos_x + game->dir_x * game->move_speed)][(int)(game->pos_y)] == 1)
+		{
+			game->pos_x += game->dir_x * game->move_speed;
+		}
+		if (map[(int)(game->pos_x)][(int)(game->pos_y + game->dir_y * game->move_speed)] == 1)
+		{
+			game->pos_y += game->dir_y * game->move_speed;
+		}
 	}
 	else if (keysym == XK_s)
 	{
-		if (check_wall(BOTTOM, game))
-			return (0);
-		game->shiftY += stepSize;
-		game->vector_y_start += stepSize;
-		game->vector_y_end += stepSize;
+		if (map[(int)(game->pos_x - game->dir_x * game->move_speed)][(int)(game->pos_y)] == 1)
+		{
+			game->pos_x -= game->dir_x * game->move_speed;
+		}
+		if (map[(int)(game->pos_x)][(int)(game->pos_y - game->dir_y * game->move_speed)] == 1)
+		{
+			game->pos_y -= game->dir_y * game->move_speed;
+		}
 	}
 	else if (keysym == XK_a)
 	{
-		if (check_wall(LEFT, game))
-			return (0);
-		game->shiftX -= stepSize;
-		game->vector_x_start -= stepSize;
-		game->vector_x_end -= stepSize;
+		if (map[(int)(game->pos_x + game->dir_x * game->move_speed)][(int)(game->pos_y)] == 1)
+		{
+			game->pos_x += game->dir_x * game->move_speed;
+		}
+		if (map[(int)(game->pos_x)][(int)(game->pos_y + game->dir_y * game->move_speed)] == 1)
+		{
+			game->pos_y += game->dir_y * game->move_speed;
+		}
 	}
-	else if (keysym == XK_d)
-	{
-		if (check_wall(RIGHT, game))
-			return (0);
-		game->shiftX += stepSize;
-		game->vector_x_start += stepSize;
-		game->vector_x_end += stepSize;
-	}
+	// else if (keysym == XK_d)
+	// {
+	// 	if (check_wall(RIGHT, game))
+	// 		return (0);
+	// 	game->shiftX += stepSize;
+	// 	game->vector_x_start += stepSize;
+	// 	game->vector_x_end += stepSize;
+	// }
 	else if (keysym == XK_Left)
 	{
-		double	xpp = dx * cosA + dy * sinA;
-		double	ypp = -dx * sinA + dy * cosA;
-		game->vector_x_end = game->vector_x_start + xpp;
-		game->vector_y_end = game->vector_y_start + ypp;
+		double oldDirX = game->dir_x;
+		game->dir_x = game->dir_x * cos(-game->rot_speed) - game->dir_y * sin(-game->rot_speed);
+		game->dir_y = oldDirX * sin(-game->rot_speed) + game->dir_y * cos(-game->rot_speed);
+		double oldPlaneX = game->plane_x;
+		game->plane_x = game->plane_x * cos(-game->rot_speed) - game->plane_y * sin(-game->rot_speed);
+		game->plane_y = oldPlaneX * sin(-game->rot_speed) + game->plane_y * cos(-game->rot_speed);
 	}
 	else if (keysym == XK_Right)
 	{
-		double	xpp = dx * cosA - dy * sinA;
-		double	ypp = dx * sinA + dy * cosA;
-		game->vector_x_end = game->vector_x_start + xpp;
-		game->vector_y_end = game->vector_y_start + ypp;
+		double oldDirX = game->dir_x;
+		game->dir_x = game->dir_x * cos(game->rot_speed) - game->dir_y * sin(game->rot_speed);
+		game->dir_y = oldDirX * sin(game->rot_speed) + game->dir_y * cos(game->rot_speed);
+		double oldPlaneX = game->plane_x;
+		game->plane_x = game->plane_x * cos(game->rot_speed) - game->plane_y * sin(game->rot_speed);
+		game->plane_y = oldPlaneX * sin(game->rot_speed) + game->plane_y * cos(game->rot_speed);
 	}
+	// Clear or reset image
+	// mlx_destroy_image(game->mlx.ptr, game->mlx.img.ptr);
+	// game->mlx.img.ptr = mlx_new_image(game->mlx.ptr, screenSize, screenSize);
+	// game->mlx.img.pixels_addr = mlx_get_data_addr(game->mlx.img.ptr, &game->mlx.img.bpp, &game->mlx.img.ll, &game->mlx.img.endian);
+	clear_image(&game->mlx.img, screenSize, screenSize);
+	// Draw your scene: walls, floor, etc.
+	draw_dda(map, game); // or whatever your raycasting function is
 
-	dx = game->vector_x_end - game->vector_x_start;
-	dy = game->vector_y_end - game->vector_y_start;
-
-	length = sqrt(dx*dx + dy*dy);
-	if (length != 0)
-	{
-		dx /= length;
-		dy /= length;
-	}
-
-	double	xmin = 0;
-	double	xmax = mapWidth * cellSize - 1;
-
-	double	ymin = 0;
-	double	ymax = mapHeight * cellSize - 1;
-
-	double	tx1;
-	if (dx != 0)
-	{
-		tx1 = (xmin - game->vector_x_start) / dx;
-	}
-	else
-	{
-		tx1 = -INFINITY;
-	}
-
-	double	tx2;
-	if (dx != 0)
-	{
-		tx2 = (xmax - game->vector_x_start) / dx;
-	}
-	else
-	{
-		tx2 = INFINITY;
-	}
-
-	double	ty1;
-	if (dy != 0)
-	{
-		ty1 = (ymin - game->vector_y_start) / dy;
-	}
-	else
-	{
-		ty1 = -INFINITY;
-	}
-
-	double	ty2;
-	if (dy != 0)
-	{
-		ty2 = (ymax - game->vector_y_start) / dy;
-	}
-	else
-	{
-		ty2 = INFINITY;
-	}
-
-	if (tx1 > tx2)
-	{
-		double	temp = tx1;
-		tx1 = tx2;
-		tx2 = temp;
-	}
-	if (ty1 > ty2)
-	{
-		double	temp = ty1;
-		ty1 = ty2;
-		ty2 = temp;
-	}
-
-	double	tmax;
-	if (tx2 < ty2)
-	{
-		tmax = tx2;
-	}
-	else
-	{
-		tmax = ty2;
-	}
-
-	if (tmax < 0)
-	{
-		printf("Ray points backwards or no exit ahead\n");
-		// return;
-	}
-	game->vector_x_end = game->vector_x_start + dx * tmax;
-	game->vector_y_end = game->vector_y_start + dy * tmax;
-	draw_map(map, game);
-	draw_player(&game->mlx.img, game);
-	draw_line(game, game->vector_x_start, game->vector_y_start, game->vector_x_end, game->vector_y_end);
+	// Display the final image on screen
+	mlx_put_image_to_window(game->mlx.ptr, game->mlx.win_ptr, game->mlx.img.ptr, 0, 0);
 	return (0);
 }
 
@@ -723,42 +726,76 @@ void	init_draw_line(char map[mapHeight][mapWidth], t_game *game)
 	if (tmax < 0)
 	{
 		printf("Ray points backwards or no exit ahead\n");
-		// return;
 	}
 
 	game->vector_x_end = game->vector_x_start + dx * tmax;
 	game->vector_y_end = game->vector_y_start + dy * tmax;
-	draw_line(game, game->vector_x_start, game->vector_y_start, game->vector_x_end, game->vector_y_end);
+	draw_line(game, game->vector_x_start, game->vector_y_start, game->vector_x_end, game->vector_y_end, 0x000000);
 }
 
-void	draw_vertical_stripe(int x, int y_start, int y_end, int color, t_game *game)
+void	init_player_position(char map[mapHeight][mapWidth], t_game *game)
 {
+	int	x;
+	int	y;
 
-	if (y_start > y_end)
+	y = 0;
+	while (y < mapHeight)
 	{
-		int temp = y_start;
-		y_start = y_end;
-		y_end = temp;
-	}
-	for (int y = y_start; y <= y_end; y++)
-	{
-		// printf("x: %d, y: %d\n", x, y);
-		my_mlx_pixel_put(&game->mlx.img, x, y, color);
+		x = 0;
+		while (x < mapWidth)
+		{
+			if (map[y][x] == 'N' || map[y][x] == 'S' || map[y][x] == 'W' || map[y][x] == 'E')
+			{
+				game->pos_x = (double)(get_cell_x_head_addr(x) + playerSize) / cellSize;
+				game->pos_y = (double)(get_cell_y_head_addr(y) + playerSize) / cellSize;
+			}
+			x++;
+		}
+		y++;
 	}
 }
+
+void	init_player_direction(char map[mapHeight][mapWidth], t_game *game)
+{
+	game->dir_x = 0;
+	game->dir_y = 0;
+	if (map[(int)game->pos_y][(int)game->pos_x] == 'N')
+		game->dir_y = -1;
+	else if (map[(int)game->pos_y][(int)game->pos_x] == 'S')
+		game->dir_y = 1;
+	else if (map[(int)game->pos_y][(int)game->pos_x] == 'W')
+		game->dir_x = -1;
+	else if (map[(int)game->pos_y][(int)game->pos_x] == 'E')
+		game->dir_x = 1;
+}
+
+
+
+// int	render_next_frame(void *game)
+// {
+// 	t_game	*store;
+// 	store = (t_game *)game;
+// 	store->old_time = store->time;
+// 	store->time = get_current_time_in_milliseconds();
+// 	store->frame_time = (store->time - store->old_time) / 1000.0;
+// 	store->move_speed = store->frame_time * 25.0;
+// 	store->rot_speed = store->frame_time * 23.0;
+// 	printf("before pos_x: %f, dir_x %f, move_speed: %f\n", store->pos_x, store->dir_x, store->move_speed);
+// 	return (0);
+// }
 
 int	main(void)
 {
 	t_game	game;
 	char	map[mapHeight][mapWidth] =
-	{  //0,1,2,3,4,5,6,7,8,9,1,1,2
+	{
 		{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
 		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
 		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
 		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
 		{1,0,0,0,0,0,1,1,1,1,1,0,0,0,0,1,0,1,0,1,0,0,0,0,1},
 		{1,0,0,0,0,0,1,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,0,0,0,0,0,1,0,0,0,1,0,0,0,0,1,0,0,0,1,0,0,0,0,1},
+		{1,0,0,0,0,0,1,0,0,0,1,0,0,0,0,1,0,'E',0,1,0,0,0,0,1},
 		{1,0,0,0,0,0,1,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
 		{1,0,0,0,0,0,1,1,0,1,1,0,0,0,0,1,0,1,0,1,0,0,0,0,1},
 		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
@@ -780,161 +817,15 @@ int	main(void)
 	};
 	(void) map;
 
-	int		x = 0;
-	double	posX = 12.0, posY = 5.0;  //x and y start position
-	double	dirX = 0.0, dirY = 1.0; //initial direction vector
-	double	planeX = 0.0, planeY = 0.66; //the 2d raycaster version of camera plane
-
 	init_project(&game.mlx);
 	init_game(&game);
+	init_player_position(map, &game);
+	init_player_direction(map, &game);
+	draw_dda(map, &game);
 	// draw_map(map, &game);
 	// draw_player(&game.mlx.img, &game);
 	// init_draw_line(map, &game);
-	while (x < mapWidth * cellSize - 1)
-	{
-		//calculate ray position and direction
-		double cameraX = 2 * x / (double)(mapWidth * cellSize) - 1; //x-coordinate in camera space
-		double rayDirX = dirX + planeX * cameraX;
-		double rayDirY = dirY + planeY * cameraX;
-		printf("cameraX: %f, rayDirX: %f, rayDirY: %f\n", cameraX, rayDirX, rayDirY);
-
-		//which box of the map we're in
-		int mapX = (int)(posX);
-		int mapY = (int)(posY);
-		// printf("mapX: %d, mapY: %d\n", mapX, mapY);
-
-		//length of ray from current position to next x or y-side
-		double sideDistX = 0.0;
-		double sideDistY = 0.0;
-
-		//length of ray from one x or y-side to next x or y-side
-		double deltaDistX = (rayDirX == 0) ? INFINITY : fabs(1.0 / rayDirX);
-		double deltaDistY = (rayDirY == 0) ? INFINITY : fabs(1.0 / rayDirY);
-
-		printf("deltaDistX: %f, deltaDistY: %f\n", deltaDistX, deltaDistY);
-		double perpWallDist = 0.0;
-
-		//what direction to step in x or y-direction (either +1 or -1)
-		int stepX = 0.0;
-		int stepY = 0.0;
-
-		int hit = 0; //was there a wall hit?
-		int side = 0; //was a NS or a EW wall hit?
-		//calculate step and initial sideDist
-		if (rayDirX < 0.0)
-		{
-			stepX = -1;
-			sideDistX = (posX - mapX) * deltaDistX;
-		}
-		else
-		{
-			stepX = 1;
-			sideDistX = (mapX + 1.0 - posX) * deltaDistX;
-		}
-		if (rayDirY < 0.0)
-		{
-			stepY = -1;
-			sideDistY = (posY - mapY) * deltaDistY;
-		}
-		else
-		{
-			stepY = 1;
-			sideDistY = (mapY + 1.0 - posY) * deltaDistY;
-		}
-
-		// printf("posX: %f, posY: %f\n", posX, posY);
-		// printf("stepX: %d, stepY: %d\n", stepX, stepY);
-		// printf("sideDistX: %f, sideDistY: %f\n", sideDistX, sideDistY);
-
-		//perform DDA
-		printf("BEFORE DDA => sideDistX: %f, deltaDistX: %f\n", sideDistX, deltaDistX);
-		printf(	"BEFORE DDA => sideDistY: %f, deltaDistY: %f\n", sideDistY, deltaDistY);
-		while (hit == 0)
-		{
-			printf("DDA\n");
-			//jump to next map square, either in x-direction, or in y-direction
-			if (sideDistX < sideDistY)
-			{
-				sideDistX += deltaDistX;
-				mapX += stepX;
-				side = 0;
-				printf("X IN DDA => sideDistX: %f, deltaDistX: %f\n", sideDistX, deltaDistX);
-				printf("sideDistY: %f, deltaDistY: %f\n", sideDistY, deltaDistY);
-				printf("X mapX: %d, mapY: %d\n", mapX, mapY);
-			}
-			else
-			{
-				sideDistY += deltaDistY;
-				mapY += stepY;
-				side = 1;
-				printf("Y IN DDA => sideDistY: %f, deltaDistY: %f\n", sideDistY, deltaDistY);
-				printf("sideDistX: %f, deltaDistX: %f\n", sideDistX, deltaDistX);
-				printf("Y mapX: %d, mapY: %d\n", mapX, mapY);
-			}
-			//Check if ray has hit a wall
-			if (map[mapY][mapX] > 0)
-			{
-				printf("HIT\n");
-				hit = 1;
-			}
-		}
-		printf("mapX: %d, mapY: %d\n", mapX, mapY);
-
-
-		//Calculate distance projected on camera direction (Euclidean distance would give fisheye effect!)
-		printf("side: %d\n", side);
-		if (side == 0)
-		{
-			printf("sideDistX: %f, deltaDistX: %f\n", sideDistX, deltaDistX);
-			perpWallDist = (sideDistX - deltaDistX);
-		}
-		else
-		{
-			// printf("perpWallDist: %f\n", perpWallDist);
-			perpWallDist = (sideDistY - deltaDistY);
-		}
-
-		//Calculate height of line to draw on screen
-		printf("perpWallDist: %f\n", perpWallDist);
-		int lineHeight = (int)((mapHeight * cellSize - 1) / perpWallDist);
-
-		//calculate lowest and highest pixel to fill in current stripe
-		printf("lineHeight: %d\n", lineHeight);
-		int drawStart = -lineHeight / 2 + (mapHeight * cellSize - 1) / 2;
-		printf("drawStart: %d\n", drawStart);
-		// return (0);
-		if (drawStart < 0)
-		{
-			drawStart = 0;
-		}
-		int drawEnd = lineHeight / 2 + (mapHeight * cellSize - 1) / 2;
-		if (drawEnd >= (mapHeight * cellSize - 1))
-		{
-			drawEnd = (mapHeight * cellSize - 1) - 1;
-		}
-		printf("drawEnd: %d\n", drawEnd);
-		int color = 0x000000;
-
-		if (map[mapY][mapX] == 0)
-		{
-			printf("WRORK1\n");
-			color = 0x00FF00;
-		}
-		else if (map[mapY][mapX] == 1)
-		{
-			printf("WRORK2\n");
-			color = 0xFFFFFF;
-		}
-
-		// give x and y sides different brightness
-		if (side == 1) {
-			color = color / 2;
-		}
-
-		//draw the pixels of the stripe as a vertical line
-		draw_vertical_stripe(x, drawStart, drawEnd, color, &game);
-		x++;
-	}
 	mlx_hook(game.mlx.win_ptr, 2, (1L << 0), handle_keyboard, &game);
+	// mlx_loop_hook(game.mlx.ptr, render_next_frame, &game);
 	mlx_loop(game.mlx.ptr);
 }
