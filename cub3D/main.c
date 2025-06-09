@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rzvir <rzvir@student.42.fr>                +#+  +:+       +#+        */
+/*   By: rmzvr <rmzvr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/22 16:12:09 by rmzvr             #+#    #+#             */
-/*   Updated: 2025/06/06 20:38:04 by rzvir            ###   ########.fr       */
+/*   Updated: 2025/06/09 10:47:12 by rmzvr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -731,11 +731,27 @@ void	init_draw_line(char map[mapHeight][mapWidth], t_game *game)
 	draw_line(game, game->vector_x_start, game->vector_y_start, game->vector_x_end, game->vector_y_end);
 }
 
+void	draw_vertical_stripe(int x, int y_start, int y_end, int color, t_game *game)
+{
+
+	if (y_start > y_end)
+	{
+		int temp = y_start;
+		y_start = y_end;
+		y_end = temp;
+	}
+	for (int y = y_start; y <= y_end; y++)
+	{
+		// printf("x: %d, y: %d\n", x, y);
+		my_mlx_pixel_put(&game->mlx.img, x, y, color);
+	}
+}
+
 int	main(void)
 {
 	t_game	game;
 	char	map[mapHeight][mapWidth] =
-	{
+	{  //0,1,2,3,4,5,6,7,8,9,1,1,2
 		{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
 		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
 		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
@@ -748,7 +764,7 @@ int	main(void)
 		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
 		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
 		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,0,0,0,0,0,0,0,0,0,0,0,'S',0,0,0,0,0,0,0,0,0,0,0,1},
+		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
 		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
 		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
 		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
@@ -762,12 +778,163 @@ int	main(void)
 		{1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
 		{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1}
 	};
+	(void) map;
+
+	int		x = 0;
+	double	posX = 12.0, posY = 5.0;  //x and y start position
+	double	dirX = 0.0, dirY = 1.0; //initial direction vector
+	double	planeX = 0.0, planeY = 0.66; //the 2d raycaster version of camera plane
 
 	init_project(&game.mlx);
 	init_game(&game);
-	draw_map(map, &game);
-	draw_player(&game.mlx.img, &game);
-	init_draw_line(map, &game);
+	// draw_map(map, &game);
+	// draw_player(&game.mlx.img, &game);
+	// init_draw_line(map, &game);
+	while (x < mapWidth * cellSize - 1)
+	{
+		//calculate ray position and direction
+		double cameraX = 2 * x / (double)(mapWidth * cellSize) - 1; //x-coordinate in camera space
+		double rayDirX = dirX + planeX * cameraX;
+		double rayDirY = dirY + planeY * cameraX;
+		printf("cameraX: %f, rayDirX: %f, rayDirY: %f\n", cameraX, rayDirX, rayDirY);
+
+		//which box of the map we're in
+		int mapX = (int)(posX);
+		int mapY = (int)(posY);
+		// printf("mapX: %d, mapY: %d\n", mapX, mapY);
+
+		//length of ray from current position to next x or y-side
+		double sideDistX = 0.0;
+		double sideDistY = 0.0;
+
+		//length of ray from one x or y-side to next x or y-side
+		double deltaDistX = (rayDirX == 0) ? INFINITY : fabs(1.0 / rayDirX);
+		double deltaDistY = (rayDirY == 0) ? INFINITY : fabs(1.0 / rayDirY);
+
+		printf("deltaDistX: %f, deltaDistY: %f\n", deltaDistX, deltaDistY);
+		double perpWallDist = 0.0;
+
+		//what direction to step in x or y-direction (either +1 or -1)
+		int stepX = 0.0;
+		int stepY = 0.0;
+
+		int hit = 0; //was there a wall hit?
+		int side = 0; //was a NS or a EW wall hit?
+		//calculate step and initial sideDist
+		if (rayDirX < 0.0)
+		{
+			stepX = -1;
+			sideDistX = (posX - mapX) * deltaDistX;
+		}
+		else
+		{
+			stepX = 1;
+			sideDistX = (mapX + 1.0 - posX) * deltaDistX;
+		}
+		if (rayDirY < 0.0)
+		{
+			stepY = -1;
+			sideDistY = (posY - mapY) * deltaDistY;
+		}
+		else
+		{
+			stepY = 1;
+			sideDistY = (mapY + 1.0 - posY) * deltaDistY;
+		}
+
+		// printf("posX: %f, posY: %f\n", posX, posY);
+		// printf("stepX: %d, stepY: %d\n", stepX, stepY);
+		// printf("sideDistX: %f, sideDistY: %f\n", sideDistX, sideDistY);
+
+		//perform DDA
+		printf("BEFORE DDA => sideDistX: %f, deltaDistX: %f\n", sideDistX, deltaDistX);
+		printf(	"BEFORE DDA => sideDistY: %f, deltaDistY: %f\n", sideDistY, deltaDistY);
+		while (hit == 0)
+		{
+			printf("DDA\n");
+			//jump to next map square, either in x-direction, or in y-direction
+			if (sideDistX < sideDistY)
+			{
+				sideDistX += deltaDistX;
+				mapX += stepX;
+				side = 0;
+				printf("X IN DDA => sideDistX: %f, deltaDistX: %f\n", sideDistX, deltaDistX);
+				printf("sideDistY: %f, deltaDistY: %f\n", sideDistY, deltaDistY);
+				printf("X mapX: %d, mapY: %d\n", mapX, mapY);
+			}
+			else
+			{
+				sideDistY += deltaDistY;
+				mapY += stepY;
+				side = 1;
+				printf("Y IN DDA => sideDistY: %f, deltaDistY: %f\n", sideDistY, deltaDistY);
+				printf("sideDistX: %f, deltaDistX: %f\n", sideDistX, deltaDistX);
+				printf("Y mapX: %d, mapY: %d\n", mapX, mapY);
+			}
+			//Check if ray has hit a wall
+			if (map[mapY][mapX] > 0)
+			{
+				printf("HIT\n");
+				hit = 1;
+			}
+		}
+		printf("mapX: %d, mapY: %d\n", mapX, mapY);
+
+
+		//Calculate distance projected on camera direction (Euclidean distance would give fisheye effect!)
+		printf("side: %d\n", side);
+		if (side == 0)
+		{
+			printf("sideDistX: %f, deltaDistX: %f\n", sideDistX, deltaDistX);
+			perpWallDist = (sideDistX - deltaDistX);
+		}
+		else
+		{
+			// printf("perpWallDist: %f\n", perpWallDist);
+			perpWallDist = (sideDistY - deltaDistY);
+		}
+
+		//Calculate height of line to draw on screen
+		printf("perpWallDist: %f\n", perpWallDist);
+		int lineHeight = (int)((mapHeight * cellSize - 1) / perpWallDist);
+
+		//calculate lowest and highest pixel to fill in current stripe
+		printf("lineHeight: %d\n", lineHeight);
+		int drawStart = -lineHeight / 2 + (mapHeight * cellSize - 1) / 2;
+		printf("drawStart: %d\n", drawStart);
+		// return (0);
+		if (drawStart < 0)
+		{
+			drawStart = 0;
+		}
+		int drawEnd = lineHeight / 2 + (mapHeight * cellSize - 1) / 2;
+		if (drawEnd >= (mapHeight * cellSize - 1))
+		{
+			drawEnd = (mapHeight * cellSize - 1) - 1;
+		}
+		printf("drawEnd: %d\n", drawEnd);
+		int color = 0x000000;
+
+		if (map[mapY][mapX] == 0)
+		{
+			printf("WRORK1\n");
+			color = 0x00FF00;
+		}
+		else if (map[mapY][mapX] == 1)
+		{
+			printf("WRORK2\n");
+			color = 0xFFFFFF;
+		}
+
+		// give x and y sides different brightness
+		if (side == 1) {
+			color = color / 2;
+		}
+
+		//draw the pixels of the stripe as a vertical line
+		draw_vertical_stripe(x, drawStart, drawEnd, color, &game);
+		x++;
+	}
 	mlx_hook(game.mlx.win_ptr, 2, (1L << 0), handle_keyboard, &game);
 	mlx_loop(game.mlx.ptr);
 }
