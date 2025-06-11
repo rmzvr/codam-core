@@ -3,14 +3,43 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rzvir <rzvir@student.42.fr>                +#+  +:+       +#+        */
+/*   By: rmzvr <rmzvr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/22 16:12:09 by rmzvr             #+#    #+#             */
-/*   Updated: 2025/06/09 16:30:23 by rzvir            ###   ########.fr       */
+/*   Updated: 2025/06/10 16:28:00 by rmzvr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "main.h"
+
+char map[mapHeight][mapWidth] =
+{
+    {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
+    {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+    {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+    {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+    {1,0,0,0,0,0,1,1,1,1,1,0,0,0,0,1,0,1,0,1,0,0,0,0,1},
+    {1,0,0,0,0,0,1,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+    {1,0,0,0,0,0,1,0,0,0,1,0,0,0,0,1,0,0,0,1,0,0,0,0,1},
+    {1,0,0,0,0,0,1,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+    {1,0,0,0,0,0,1,1,0,1,1,0,0,0,0,1,0,1,0,1,0,0,0,0,1},
+    {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+    {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+    {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+    {1,0,0,0,0,0,0,0,0,0,0,0,'E',0,0,0,0,0,0,0,0,0,0,0,1},
+    {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+    {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+    {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+    {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+    {1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+    {1,1,0,1,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+    {1,1,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+    {1,1,0,1,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+    {1,1,0,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+    {1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+    {1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+    {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1}
+};
 
 void	my_mlx_pixel_put(t_img *data, int x, int y, int color)
 {
@@ -161,6 +190,17 @@ void	draw_line_vertical(int x0, int y0, int x1, int y1, t_game *game, int color)
 	}
 }
 
+void    draw_background(t_game *game, int color)
+{
+    // Faster way to clear the entire image with a solid color
+    // This assumes 32-bit color (4 bytes per pixel)
+    for (int i = 0; i < screenSize * game->mlx.img.ll / 4; i++) {
+        ((unsigned int *)game->mlx.img.pixels_addr)[i] = color;
+    }
+    // Or for plain black, assuming bpp is 32:
+    // memset(game->img.addr, 0, WINDOW_WIDTH * WINDOW_HEIGHT * (game->img.bpp / 8));
+}
+
 void	draw_line(t_game *game, int x0, int y0, int x1, int y1, int color)
 {
 	if (abs(x1 - x0) > abs(y1 - y0))
@@ -171,6 +211,11 @@ void	draw_line(t_game *game, int x0, int y0, int x1, int y1, int color)
 	{
 		draw_line_vertical(x0, y0, x1, y1, game, color);
 	}
+}
+
+void	clear_image(t_game *game)
+{
+	memset(game->mlx.img.pixels_addr, 0, screenSize * screenSize * (game->mlx.img.bpp / 8));
 }
 
 void	cleanup(t_mlx *mlx, unsigned int with_exit)
@@ -229,11 +274,6 @@ void	init_game(t_game *game)
 	game->dir_y = 0;
 	game->plane_x = 0.0;
 	game->plane_y = 0.66;
-	game->time = 0;
-	game->old_time = 0;
-	game->frame_time = 0;
-	game->move_speed = 0;
-	game->rot_speed = 0;
 }
 
 void	draw_player(t_img *img, t_game *game)
@@ -311,35 +351,6 @@ int	check_wall(t_direction direction, t_game *game)
 
 	int		curr_cell_x_index = get_cell_index(game->player_position.cell_x);
 	int		sibling_cell_x_index = get_cell_index(game->player_position.cell_x + stepSize);
-	
-	char	map[mapHeight][mapWidth] =
-	{
-		{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
-		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,0,0,0,0,0,1,1,1,1,1,0,0,0,0,1,0,1,0,1,0,0,0,0,1},
-		{1,0,0,0,0,0,1,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,0,0,0,0,0,1,0,0,0,1,0,0,0,0,1,0,'E',0,1,0,0,0,0,1},
-		{1,0,0,0,0,0,1,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,0,0,0,0,0,1,1,0,1,1,0,0,0,0,1,0,1,0,1,0,0,0,0,1},
-		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,1,0,1,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,1,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,1,0,1,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,1,0,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1}
-	};
 
 	if (direction == TOP)
 	{
@@ -380,30 +391,6 @@ int	check_wall(t_direction direction, t_game *game)
 	return (0);
 }
 
-void	clear_image(t_img *img, int width, int height)
-{
-	int	x, y;
-
-	for (y = 0; y < height; y++)
-	{
-		for (x = 0; x < width; x++)
-		{
-			// Fill with black (0x000000), or any background color
-			my_mlx_pixel_put(img, x, y, 0x000000);
-		}
-	}
-}
-
-long	get_current_time_in_milliseconds(void)
-{
-	struct timeval	current_time;
-	long			milliseconds;
-
-	gettimeofday(&current_time, NULL);
-	milliseconds = (current_time.tv_sec * 1000) + (current_time.tv_usec / 1000);
-	return (milliseconds);
-}
-
 void	draw_dda(char map[mapHeight][mapWidth], t_game *game)
 {
 	int		x = 0;
@@ -417,6 +404,8 @@ void	draw_dda(char map[mapHeight][mapWidth], t_game *game)
 		double rayDirX = dirX + game->plane_x * cameraX;
 		double rayDirY = dirY + game->plane_y * cameraX;
 
+		// printf("rayDirX: %f, rayDirY: %f,\n", rayDirX, rayDirY);
+
 		//which box of the map we're in
 		int mapX = posX;
 		int mapY = posY;
@@ -428,6 +417,8 @@ void	draw_dda(char map[mapHeight][mapWidth], t_game *game)
 		//length of ray from one x or y-side to next x or y-side
 		double deltaDistX = (rayDirX == 0) ? INFINITY : fabs(1 / rayDirX);
 		double deltaDistY = (rayDirY == 0) ? INFINITY : fabs(1 / rayDirY);
+
+		// printf("deltaDistX: %f, deltaDistY: %f,\n", deltaDistX, deltaDistY);
 
 		double perpWallDist = 0.0;
 
@@ -459,6 +450,8 @@ void	draw_dda(char map[mapHeight][mapWidth], t_game *game)
 			sideDistY = (mapY + 1 - posY) * deltaDistY;
 		}
 
+		// printf("sideDistX: %f, sideDistY: %f,\n", sideDistX, sideDistY);
+
 		//perform DDA
 		while (hit == 0)
 		{
@@ -469,7 +462,7 @@ void	draw_dda(char map[mapHeight][mapWidth], t_game *game)
 				mapX += stepX;
 				side = 0;
 			}
-			else
+			else if (sideDistX > sideDistY)
 			{
 				sideDistY += deltaDistY;
 				mapY += stepY;
@@ -493,6 +486,9 @@ void	draw_dda(char map[mapHeight][mapWidth], t_game *game)
 			perpWallDist = (sideDistY - deltaDistY);
 		}
 
+		// printf("perpWallDist: %f\n", perpWallDist);
+
+
 		//Calculate height of line to draw on screen
 		int lineHeight = (int)(screenSize / perpWallDist);
 
@@ -509,7 +505,7 @@ void	draw_dda(char map[mapHeight][mapWidth], t_game *game)
 		}
 		int color = 0x000000;
 
-		if (map[mapY][mapX] == 1)
+		if (map[mapY][mapX] > 0)
 		{
 			color = 0xFF0000;
 		}
@@ -528,113 +524,72 @@ void	draw_dda(char map[mapHeight][mapWidth], t_game *game)
 
 static int	handle_keyboard(int keysym, t_game *game)
 {
-	char	map[mapHeight][mapWidth] =
-	{
-		{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
-		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,0,0,0,0,0,1,1,1,1,1,0,0,0,0,1,0,1,0,1,0,0,0,0,1},
-		{1,0,0,0,0,0,1,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,0,0,0,0,0,1,0,0,0,1,0,0,0,0,1,0,'E',0,1,0,0,0,0,1},
-		{1,0,0,0,0,0,1,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,0,0,0,0,0,1,1,0,1,1,0,0,0,0,1,0,1,0,1,0,0,0,0,1},
-		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,1,0,1,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,1,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,1,0,1,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,1,0,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1}
-	};
-
-	game->old_time = game->time;
-	game->time = get_current_time_in_milliseconds();
-	game->frame_time = (game->time - game->old_time) / 1000.0;
-	game->move_speed = game->frame_time * 5.0;
-	game->rot_speed = game->frame_time * 3.0;
-	printf("before pos_x: %f, dir_x %f, move_speed: %f\n", game->pos_x, game->dir_x, game->move_speed);
 	if (keysym == XK_Escape)
 	{
 		cleanup(&game->mlx, 1);
 	}
 	else if (keysym == XK_w)
 	{
-		if (map[(int)(game->pos_x + game->dir_x * game->move_speed)][(int)(game->pos_y)] == 1)
-		{
-			game->pos_x += game->dir_x * game->move_speed;
-		}
-		if (map[(int)(game->pos_x)][(int)(game->pos_y + game->dir_y * game->move_speed)] == 1)
-		{
-			game->pos_y += game->dir_y * game->move_speed;
-		}
+		// int		curr_cell_y_index = get_cell_index(game->player_position.cell_y);
+		// int		sibling_cell_y_index = get_cell_index(game->player_position.cell_y + stepSize);
+
+		// int		curr_cell_x_index = get_cell_index(game->player_position.cell_x);
+		// int		sibling_cell_x_index = get_cell_index(game->player_position.cell_x + stepSize);
+
+
+		// int	prev_cell_y_index = get_cell_index(game->player_position.cell_y - stepSize);
+		// if (map[prev_cell_y_index][curr_cell_x_index] == WALL
+		// 	|| map[prev_cell_y_index][sibling_cell_x_index] == WALL)
+		// {
+		// 	return (1);
+		// }
+		printf("before pos_x: %d, pos_y: %d\n", (int)game->pos_x, (int)game->pos_y);
+		// printf("next pos_x: %f\n", game->dir_x * stepSize / 10);
+		// printf("next pos_y: %f\n", game->dir_y * stepSize / 10);
+		game->pos_x += game->dir_x * stepSize / 10;
+		game->pos_y += game->dir_y * stepSize / 10;
+		printf("after pos_x: %d, pos_y: %d\n", (int)game->pos_x, (int)game->pos_y);
+		printf("tail %d\n", map[(int)(game->pos_y - game->dir_y * stepSize / 10)][(int)(game->pos_x - game->dir_x * stepSize / 10) + 1]);
 	}
 	else if (keysym == XK_s)
 	{
-		if (map[(int)(game->pos_x - game->dir_x * game->move_speed)][(int)(game->pos_y)] == 1)
-		{
-			game->pos_x -= game->dir_x * game->move_speed;
-		}
-		if (map[(int)(game->pos_x)][(int)(game->pos_y - game->dir_y * game->move_speed)] == 1)
-		{
-			game->pos_y -= game->dir_y * game->move_speed;
-		}
+		printf("before pos_x: %d, pos_y: %d\n", (int)game->pos_x - 1, (int)game->pos_y - 1);
+		game->pos_x -= game->dir_x * stepSize / 10;
+		game->pos_y -= game->dir_y * stepSize / 10;
+		printf("pos_x: %d, pos_y: %d\n", (int)(game->pos_x - game->dir_x * stepSize / 10), (int)(game->pos_y - game->dir_y * stepSize / 10));
+		printf("tail %d\n", map[(int)(game->pos_y - game->dir_y * stepSize / 10)][(int)(game->pos_x - game->dir_x * stepSize / 10)]);
 	}
 	else if (keysym == XK_a)
 	{
-		if (map[(int)(game->pos_x + game->dir_x * game->move_speed)][(int)(game->pos_y)] == 1)
-		{
-			game->pos_x += game->dir_x * game->move_speed;
-		}
-		if (map[(int)(game->pos_x)][(int)(game->pos_y + game->dir_y * game->move_speed)] == 1)
-		{
-			game->pos_y += game->dir_y * game->move_speed;
-		}
+		game->pos_x += game->dir_y * stepSize / 10;
+		game->pos_y -= game->dir_x * stepSize / 10;
 	}
-	// else if (keysym == XK_d)
-	// {
-	// 	if (check_wall(RIGHT, game))
-	// 		return (0);
-	// 	game->shiftX += stepSize;
-	// 	game->vector_x_start += stepSize;
-	// 	game->vector_x_end += stepSize;
-	// }
+	else if (keysym == XK_d)
+	{
+		game->pos_x -= game->dir_y * stepSize / 10;
+		game->pos_y += game->dir_x * stepSize / 10;
+	}
 	else if (keysym == XK_Left)
 	{
 		double oldDirX = game->dir_x;
-		game->dir_x = game->dir_x * cos(-game->rot_speed) - game->dir_y * sin(-game->rot_speed);
-		game->dir_y = oldDirX * sin(-game->rot_speed) + game->dir_y * cos(-game->rot_speed);
+		game->dir_x = game->dir_x * cos(-M_PI / 6) - game->dir_y * sin(-M_PI / 6);
+		game->dir_y = oldDirX * sin(-M_PI / 6) + game->dir_y * cos(-M_PI / 6);
 		double oldPlaneX = game->plane_x;
-		game->plane_x = game->plane_x * cos(-game->rot_speed) - game->plane_y * sin(-game->rot_speed);
-		game->plane_y = oldPlaneX * sin(-game->rot_speed) + game->plane_y * cos(-game->rot_speed);
+		game->plane_x = game->plane_x * cos(-M_PI / 6) - game->plane_y * sin(-M_PI / 6);
+		game->plane_y = oldPlaneX * sin(-M_PI / 6) + game->plane_y * cos(-M_PI / 6);
 	}
 	else if (keysym == XK_Right)
 	{
 		double oldDirX = game->dir_x;
-		game->dir_x = game->dir_x * cos(game->rot_speed) - game->dir_y * sin(game->rot_speed);
-		game->dir_y = oldDirX * sin(game->rot_speed) + game->dir_y * cos(game->rot_speed);
+		game->dir_x = game->dir_x * cos(M_PI / 6) - game->dir_y * sin(M_PI / 6);
+		game->dir_y = oldDirX * sin(M_PI / 6) + game->dir_y * cos(M_PI / 6);
 		double oldPlaneX = game->plane_x;
-		game->plane_x = game->plane_x * cos(game->rot_speed) - game->plane_y * sin(game->rot_speed);
-		game->plane_y = oldPlaneX * sin(game->rot_speed) + game->plane_y * cos(game->rot_speed);
+		game->plane_x = game->plane_x * cos(M_PI / 6) - game->plane_y * sin(M_PI / 6);
+		game->plane_y = oldPlaneX * sin(M_PI / 6) + game->plane_y * cos(M_PI / 6);
 	}
-	// Clear or reset image
-	// mlx_destroy_image(game->mlx.ptr, game->mlx.img.ptr);
-	// game->mlx.img.ptr = mlx_new_image(game->mlx.ptr, screenSize, screenSize);
-	// game->mlx.img.pixels_addr = mlx_get_data_addr(game->mlx.img.ptr, &game->mlx.img.bpp, &game->mlx.img.ll, &game->mlx.img.endian);
-	clear_image(&game->mlx.img, screenSize, screenSize);
-	// Draw your scene: walls, floor, etc.
-	draw_dda(map, game); // or whatever your raycasting function is
-
-	// Display the final image on screen
+	// clear_image(game);
+	draw_background(game, 0x000000);
+	draw_dda(map, game);
 	mlx_put_image_to_window(game->mlx.ptr, game->mlx.win_ptr, game->mlx.img.ptr, 0, 0);
 	return (0);
 }
@@ -769,63 +724,18 @@ void	init_player_direction(char map[mapHeight][mapWidth], t_game *game)
 		game->dir_x = 1;
 }
 
-
-
-// int	render_next_frame(void *game)
-// {
-// 	t_game	*store;
-// 	store = (t_game *)game;
-// 	store->old_time = store->time;
-// 	store->time = get_current_time_in_milliseconds();
-// 	store->frame_time = (store->time - store->old_time) / 1000.0;
-// 	store->move_speed = store->frame_time * 25.0;
-// 	store->rot_speed = store->frame_time * 23.0;
-// 	printf("before pos_x: %f, dir_x %f, move_speed: %f\n", store->pos_x, store->dir_x, store->move_speed);
-// 	return (0);
-// }
-
 int	main(void)
 {
 	t_game	game;
-	char	map[mapHeight][mapWidth] =
-	{
-		{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
-		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,0,0,0,0,0,1,1,1,1,1,0,0,0,0,1,0,1,0,1,0,0,0,0,1},
-		{1,0,0,0,0,0,1,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,0,0,0,0,0,1,0,0,0,1,0,0,0,0,1,0,'E',0,1,0,0,0,0,1},
-		{1,0,0,0,0,0,1,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,0,0,0,0,0,1,1,0,1,1,0,0,0,0,1,0,1,0,1,0,0,0,0,1},
-		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,1,0,1,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,1,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,1,0,1,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,1,0,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1}
-	};
-	(void) map;
 
 	init_project(&game.mlx);
 	init_game(&game);
 	init_player_position(map, &game);
 	init_player_direction(map, &game);
 	draw_dda(map, &game);
-	// draw_map(map, &game);
+	draw_map(map, &game);
 	// draw_player(&game.mlx.img, &game);
 	// init_draw_line(map, &game);
-	mlx_hook(game.mlx.win_ptr, 2, (1L << 0), handle_keyboard, &game);
-	// mlx_loop_hook(game.mlx.ptr, render_next_frame, &game);
+	mlx_hook(game.mlx.win_ptr, 2, 1L << 0, handle_keyboard, &game);
 	mlx_loop(game.mlx.ptr);
 }

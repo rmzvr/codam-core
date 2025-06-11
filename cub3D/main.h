@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.h                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rzvir <rzvir@student.42.fr>                +#+  +:+       +#+        */
+/*   By: rmzvr <rmzvr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/09 14:06:23 by rzvir             #+#    #+#             */
-/*   Updated: 2025/06/09 15:36:41 by rzvir            ###   ########.fr       */
+/*   Updated: 2025/06/10 15:30:05 by rmzvr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,6 +97,9 @@ typedef struct s_game
 
 	double				move_speed;
 	double				rot_speed;
+
+	double				player_velocity_x;
+	double				player_velocity_y;
 	t_mlx	mlx;
 }	t_game;
 
