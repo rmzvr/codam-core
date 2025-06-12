@@ -6,7 +6,7 @@
 /*   By: rmzvr <rmzvr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/22 16:12:09 by rmzvr             #+#    #+#             */
-/*   Updated: 2025/06/10 16:28:00 by rmzvr            ###   ########.fr       */
+/*   Updated: 2025/06/12 13:04:52 by rmzvr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -530,42 +530,37 @@ static int	handle_keyboard(int keysym, t_game *game)
 	}
 	else if (keysym == XK_w)
 	{
-		// int		curr_cell_y_index = get_cell_index(game->player_position.cell_y);
-		// int		sibling_cell_y_index = get_cell_index(game->player_position.cell_y + stepSize);
-
-		// int		curr_cell_x_index = get_cell_index(game->player_position.cell_x);
-		// int		sibling_cell_x_index = get_cell_index(game->player_position.cell_x + stepSize);
-
-
-		// int	prev_cell_y_index = get_cell_index(game->player_position.cell_y - stepSize);
-		// if (map[prev_cell_y_index][curr_cell_x_index] == WALL
-		// 	|| map[prev_cell_y_index][sibling_cell_x_index] == WALL)
-		// {
-		// 	return (1);
-		// }
-		printf("before pos_x: %d, pos_y: %d\n", (int)game->pos_x, (int)game->pos_y);
-		// printf("next pos_x: %f\n", game->dir_x * stepSize / 10);
-		// printf("next pos_y: %f\n", game->dir_y * stepSize / 10);
+		int	x = game->pos_x + game->dir_x * stepSize / 10;
+		int	y = game->pos_y + game->dir_y * stepSize / 10;
+		if (map[y][x] != 0 && map[y][x] != 69)
+			return (0);
 		game->pos_x += game->dir_x * stepSize / 10;
 		game->pos_y += game->dir_y * stepSize / 10;
-		printf("after pos_x: %d, pos_y: %d\n", (int)game->pos_x, (int)game->pos_y);
-		printf("tail %d\n", map[(int)(game->pos_y - game->dir_y * stepSize / 10)][(int)(game->pos_x - game->dir_x * stepSize / 10) + 1]);
 	}
 	else if (keysym == XK_s)
 	{
-		printf("before pos_x: %d, pos_y: %d\n", (int)game->pos_x - 1, (int)game->pos_y - 1);
+		int	x = game->pos_x - game->dir_x * stepSize / 10;
+		int	y = game->pos_y - game->dir_y * stepSize / 10;
+		if (map[y][x] != 0 && map[y][x] != 69)
+			return (0);
 		game->pos_x -= game->dir_x * stepSize / 10;
 		game->pos_y -= game->dir_y * stepSize / 10;
-		printf("pos_x: %d, pos_y: %d\n", (int)(game->pos_x - game->dir_x * stepSize / 10), (int)(game->pos_y - game->dir_y * stepSize / 10));
-		printf("tail %d\n", map[(int)(game->pos_y - game->dir_y * stepSize / 10)][(int)(game->pos_x - game->dir_x * stepSize / 10)]);
 	}
 	else if (keysym == XK_a)
 	{
+		int	x = game->pos_x + game->dir_y * stepSize / 10;
+		int	y = game->pos_y - game->dir_x * stepSize / 10;
+		if (map[y][x] != 0 && map[y][x] != 69)
+			return (0);
 		game->pos_x += game->dir_y * stepSize / 10;
 		game->pos_y -= game->dir_x * stepSize / 10;
 	}
 	else if (keysym == XK_d)
 	{
+		int	x = game->pos_x - game->dir_y * stepSize / 10;
+		int	y = game->pos_y + game->dir_x * stepSize / 10;
+		if (map[y][x] != 0 && map[y][x] != 69)
+			return (0);
 		game->pos_x -= game->dir_y * stepSize / 10;
 		game->pos_y += game->dir_x * stepSize / 10;
 	}
@@ -587,7 +582,6 @@ static int	handle_keyboard(int keysym, t_game *game)
 		game->plane_x = game->plane_x * cos(M_PI / 6) - game->plane_y * sin(M_PI / 6);
 		game->plane_y = oldPlaneX * sin(M_PI / 6) + game->plane_y * cos(M_PI / 6);
 	}
-	// clear_image(game);
 	draw_background(game, 0x000000);
 	draw_dda(map, game);
 	mlx_put_image_to_window(game->mlx.ptr, game->mlx.win_ptr, game->mlx.img.ptr, 0, 0);
@@ -701,6 +695,7 @@ void	init_player_position(char map[mapHeight][mapWidth], t_game *game)
 		{
 			if (map[y][x] == 'N' || map[y][x] == 'S' || map[y][x] == 'W' || map[y][x] == 'E')
 			{
+				printf("x: %d, y: %d\n", x, y);
 				game->pos_x = (double)(get_cell_x_head_addr(x) + playerSize) / cellSize;
 				game->pos_y = (double)(get_cell_y_head_addr(y) + playerSize) / cellSize;
 			}
@@ -734,8 +729,8 @@ int	main(void)
 	init_player_direction(map, &game);
 	draw_dda(map, &game);
 	draw_map(map, &game);
-	// draw_player(&game.mlx.img, &game);
-	// init_draw_line(map, &game);
+	draw_player(&game.mlx.img, &game);
+	init_draw_line(map, &game);
 	mlx_hook(game.mlx.win_ptr, 2, 1L << 0, handle_keyboard, &game);
 	mlx_loop(game.mlx.ptr);
 }
