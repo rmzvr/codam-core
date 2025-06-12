@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.h                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rmzvr <rmzvr@student.42.fr>                +#+  +:+       +#+        */
+/*   By: rzvir <rzvir@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/09 14:06:23 by rzvir             #+#    #+#             */
-/*   Updated: 2025/06/12 11:57:28 by rmzvr            ###   ########.fr       */
+/*   Updated: 2025/06/12 17:16:02 by rzvir            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,12 +24,22 @@
 # define M_PI 3.14159265358979323846
 #endif
 
-# define mapWidth 25
-# define mapHeight 25
-# define cellSize 30
-# define playerSize 10
-# define stepSize cellSize / 6
-# define screenSize mapWidth * cellSize
+# define MAP_WIDTH 25
+# define MAP_HEIGHT 25
+
+# define WINDOW_WIDTH (MAP_WIDTH * TAIL_SIZE)
+# define WINDOW_HEIGHT (MAP_HEIGHT * TAIL_SIZE)
+
+# define WINDOW_MIN_X 0
+# define WINDOW_MAX_X (WINDOW_WIDTH - 1)
+
+# define WINDOW_MIN_Y 0
+# define WINDOW_MAX_Y (WINDOW_HEIGHT - 1)
+
+# define TAIL_SIZE 30
+# define PLAYER_SIZE 10
+# define STEP_SIZE (TAIL_SIZE / 6)
+
 
 typedef enum	e_element {
 	FLOOR,
@@ -83,8 +93,14 @@ typedef struct s_game
 	int					vector_y_end;
 	t_player_position	player_position;
 
-	double				pos_x;
-	double				pos_y;
+	double				player_position_x_double;
+	double				player_position_y_double;
+
+	int					player_position_x_int_rounded;
+	int					player_position_y_int_rounded;
+
+	int					player_position_x_px;
+	int					player_position_y_px;
 
 	double				dir_x;
 	double				dir_y;
@@ -100,6 +116,14 @@ typedef struct s_game
 
 	double				player_velocity_x;
 	double				player_velocity_y;
+
+	double				delta_vector_x;
+	double				delta_vector_y;
+
+	double				unit_delta_vector_x;
+	double				unit_delta_vector_y;
+
+	
 	t_mlx	mlx;
 }	t_game;
 
