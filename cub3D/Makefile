@@ -6,8 +6,20 @@ LIBFT_NAME := $(LIBFT_DIR)/libft.a
 MLX_LINUX_DIR := ./mlx_linux
 MLX_LINUX_NAME := $(MLX_LINUX_DIR)/libmlx_Linux.a
 
-SOURCES :=         \
-	main.c          \
+SOURCES := \
+	main.c \
+	sources/line.c \
+	sources/map_data.c \
+	sources/helpers.c \
+	sources/controls.c \
+	sources/cleaners.c \
+	sources/initializers.c \
+	sources/minimap/player.c \
+	sources/raycasting/dda.c \
+	sources/raycasting/ray.c \
+	sources/raycasting/wall.c \
+	sources/raycasting/draw.c \
+	sources/raycasting/init.c \
 
 OBJECTS := $(SOURCES:%.c=%.o)
 CFLAGS := -Wall -Wextra -Werror -I/usr/include -fPIE -Imlx_linux -I$(LIBFT_DIR) -O3
