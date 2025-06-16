@@ -6,7 +6,7 @@
 /*   By: rzvir <rzvir@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/16 13:03:54 by rzvir             #+#    #+#             */
-/*   Updated: 2025/06/16 13:16:56 by rzvir            ###   ########.fr       */
+/*   Updated: 2025/06/16 17:53:59 by rzvir            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 void	clear_image(t_game *game)
 {
-	memset(game->mlx.img.pixels_addr, 0, screenSize * screenSize * (game->mlx.img.bpp / 8));
+	memset(game->mlx.img.pixels_addr, 0, WINDOW_WIDTH * WINDOW_HEIGHT * (game->mlx.img.bpp / 8));
 }
 
 void	cleanup(t_mlx *mlx, unsigned int with_exit)

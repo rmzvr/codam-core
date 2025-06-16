@@ -6,7 +6,7 @@
 /*   By: rzvir <rzvir@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/16 17:06:49 by rzvir             #+#    #+#             */
-/*   Updated: 2025/06/16 17:07:09 by rzvir            ###   ########.fr       */
+/*   Updated: 2025/06/16 18:00:15 by rzvir            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,15 +53,15 @@ void	calc_wall_height(
 {
 	int	wall_height;
 
-	wall_height = (int)(screenSize / dda_data->distance_to_wall);
-	dda_data->wall_start = -wall_height / 2 + screenSize / 2;
+	wall_height = (int)(WINDOW_HEIGHT / dda_data->distance_to_wall);
+	dda_data->wall_start = -wall_height / 2 + WINDOW_HEIGHT / 2;
 	if (dda_data->wall_start < 0)
 	{
 		dda_data->wall_start = 0;
 	}
-	dda_data->wall_end = wall_height / 2 + screenSize / 2;
-	if (dda_data->wall_end >= screenSize)
+	dda_data->wall_end = wall_height / 2 + WINDOW_HEIGHT / 2;
+	if (dda_data->wall_end >= WINDOW_HEIGHT)
 	{
-		dda_data->wall_end = screenSize - 1;
+		dda_data->wall_end = MAX_WINDOW_Y;
 	}
 }

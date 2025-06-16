@@ -6,7 +6,7 @@
 /*   By: rzvir <rzvir@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/16 12:55:10 by rzvir             #+#    #+#             */
-/*   Updated: 2025/06/16 13:03:14 by rzvir            ###   ########.fr       */
+/*   Updated: 2025/06/16 18:03:02 by rzvir            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,17 +24,17 @@ void	draw_elements(t_img *img, int cell_x, int cell_y, int x, int y)
 	}
 }
 
-void	draw_borders(int mapWidthPx, int mapHeightPx, t_img *img, int cell_x, int cell_y, int x, int y)
+void	draw_borders(t_img *img, int cell_x, int cell_y, int x, int y)
 {
 	if (
 		cell_x == x
 		|| cell_y == y
-		|| cell_x == mapWidthPx - 1
-		|| cell_y == mapHeightPx - 1
+		|| cell_x == MAX_WINDOW_X
+		|| cell_y == MAX_WINDOW_Y
 		|| cell_x == get_cell_x_head_addr(x)
-		|| cell_x == get_cell_x_tail_addr(x)
+		|| cell_x == get_cell_x_tile_addr(x)
 		|| cell_y == get_cell_y_head_addr(y)
-		|| cell_y == get_cell_y_tail_addr(y)
+		|| cell_y == get_cell_y_tile_addr(y)
 	)
 	{
 		my_mlx_pixel_put(img, cell_x, cell_y, 0xAAAAAA);
@@ -44,14 +44,14 @@ void	draw_borders(int mapWidthPx, int mapHeightPx, t_img *img, int cell_x, int c
 int	check_wall(t_direction direction, t_game *game)
 {
 	int		curr_cell_y_index = get_cell_index(game->player_position.cell_y);
-	int		sibling_cell_y_index = get_cell_index(game->player_position.cell_y + stepSize);
+	int		sibling_cell_y_index = get_cell_index(game->player_position.cell_y + STEP_SIZE);
 
 	int		curr_cell_x_index = get_cell_index(game->player_position.cell_x);
-	int		sibling_cell_x_index = get_cell_index(game->player_position.cell_x + stepSize);
+	int		sibling_cell_x_index = get_cell_index(game->player_position.cell_x + STEP_SIZE);
 
 	if (direction == TOP)
 	{
-		int	prev_cell_y_index = get_cell_index(game->player_position.cell_y - stepSize);
+		int	prev_cell_y_index = get_cell_index(game->player_position.cell_y - STEP_SIZE);
 		if (map[prev_cell_y_index][curr_cell_x_index] == WALL
 			|| map[prev_cell_y_index][sibling_cell_x_index] == WALL)
 		{
@@ -60,7 +60,7 @@ int	check_wall(t_direction direction, t_game *game)
 	}
 	else if (direction == RIGHT)
 	{
-		int	next_cell_x_index = get_cell_index(game->player_position.cell_x + stepSize - 1 + playerSize);
+		int	next_cell_x_index = get_cell_index(game->player_position.cell_x + STEP_SIZE - 1 + PLAYER_SIZE);
 		if (map[curr_cell_y_index][next_cell_x_index] == WALL
 			|| map[sibling_cell_y_index][next_cell_x_index] == WALL)
 		{
@@ -69,7 +69,7 @@ int	check_wall(t_direction direction, t_game *game)
 	}
 	else if (direction == BOTTOM)
 	{
-		int	next_cell_y_index = get_cell_index(game->player_position.cell_y + stepSize - 1 + playerSize);
+		int	next_cell_y_index = get_cell_index(game->player_position.cell_y + STEP_SIZE - 1 + PLAYER_SIZE);
 		if (map[next_cell_y_index][curr_cell_x_index] == WALL
 			|| map[next_cell_y_index][sibling_cell_x_index] == WALL)
 		{
@@ -78,7 +78,7 @@ int	check_wall(t_direction direction, t_game *game)
 	}
 	else if (direction == LEFT)
 	{
-		int	prev_cell_x_index = get_cell_index(game->player_position.cell_x - stepSize);
+		int	prev_cell_x_index = get_cell_index(game->player_position.cell_x - STEP_SIZE);
 		if (map[curr_cell_y_index][prev_cell_x_index] == WALL
 			|| map[sibling_cell_y_index][prev_cell_x_index] == WALL)
 		{
@@ -94,10 +94,10 @@ void	draw_map(t_game *game)
 	int	cell_y;
 
 	game->y = 0;
-	while (game->y < mapHeight)
+	while (game->y < MAP_HEIGHT)
 	{
 		game->x = 0;
-		while (game->x < mapWidth)
+		while (game->x < MAP_WIDTH)
 		{
 			cell_y = get_cell_y_head_addr(game->y);
 			if (map[game->y][game->x] == 'N' || map[game->y][game->x] == 'S' || map[game->y][game->x] == 'W' || map[game->y][game->x] == 'E')
@@ -105,13 +105,13 @@ void	draw_map(t_game *game)
 				game->init_cell_pos_x = game->x;
 				game->init_cell_pos_y = game->y;
 			}
-			while (cell_y <= get_cell_y_tail_addr(game->y))
+			while (cell_y <= get_cell_y_tile_addr(game->y))
 			{
 				cell_x = get_cell_x_head_addr(game->x);
-				while (cell_x <= get_cell_x_tail_addr(game->x))
+				while (cell_x <= get_cell_x_tile_addr(game->x))
 				{
 					draw_elements(&game->mlx.img, cell_x, cell_y, game->x, game->y);
-					draw_borders(game->mapWidthPx, game->mapHeightPx, &game->mlx.img, cell_x, cell_y, game->x, game->y);
+					draw_borders(&game->mlx.img, cell_x, cell_y, game->x, game->y);
 					cell_x++;
 				}
 				cell_y++;

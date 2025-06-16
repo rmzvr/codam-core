@@ -6,7 +6,7 @@
 /*   By: rzvir <rzvir@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/16 13:00:27 by rzvir             #+#    #+#             */
-/*   Updated: 2025/06/16 14:19:54 by rzvir            ###   ########.fr       */
+/*   Updated: 2025/06/16 17:57:18 by rzvir            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,8 +40,6 @@ void	init_game(t_game *game)
 {
 	game->x = 0;
 	game->y = 0;
-	game->mapWidthPx = mapWidth * cellSize;
-	game->mapHeightPx = mapHeight * cellSize;
 	game->shiftX = 0;
 	game->shiftY = 0;
 	game->init_cell_pos_x = 0;

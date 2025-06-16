@@ -6,7 +6,7 @@
 /*   By: rzvir <rzvir@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/16 17:10:07 by rzvir             #+#    #+#             */
-/*   Updated: 2025/06/16 17:10:31 by rzvir            ###   ########.fr       */
+/*   Updated: 2025/06/16 18:03:02 by rzvir            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,10 +36,10 @@ void	initialize_ray_trace_data(
 )
 {
 	ray_trace_data->hit = FALSE;
-	ray_trace_data->current_tail_x = game->pos_x;
-	ray_trace_data->current_tail_y = game->pos_y;
+	ray_trace_data->current_tile_x = game->pos_x;
+	ray_trace_data->current_tile_y = game->pos_y;
 	ray_trace_data->ray_distance_x = calc_ray_distance(dda_data->ray_direction_x);
 	ray_trace_data->ray_distance_y = calc_ray_distance(dda_data->ray_direction_y);
-	ray_trace_data->total_ray_distance_x = calc_total_ray_distance(dda_data->ray_direction_x, ray_trace_data->ray_distance_x, game->pos_x, ray_trace_data->current_tail_x);
-	ray_trace_data->total_ray_distance_y = calc_total_ray_distance(dda_data->ray_direction_y, ray_trace_data->ray_distance_y, game->pos_y, ray_trace_data->current_tail_y);
+	ray_trace_data->total_ray_distance_x = calc_total_ray_distance(dda_data->ray_direction_x, ray_trace_data->ray_distance_x, game->pos_x, ray_trace_data->current_tile_x);
+	ray_trace_data->total_ray_distance_y = calc_total_ray_distance(dda_data->ray_direction_y, ray_trace_data->ray_distance_y, game->pos_y, ray_trace_data->current_tile_y);
 }

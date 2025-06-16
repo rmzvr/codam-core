@@ -6,7 +6,7 @@
 /*   By: rzvir <rzvir@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/09 14:06:23 by rzvir             #+#    #+#             */
-/*   Updated: 2025/06/16 17:20:34 by rzvir            ###   ########.fr       */
+/*   Updated: 2025/06/16 18:04:59 by rzvir            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,19 +17,23 @@
 # include "libft.h"
 # include <math.h>
 # include <stdio.h>
-# include <sys/time.h>
 # include <X11/keysym.h>
 
 #ifndef M_PI
 # define M_PI 3.14159265358979323846
 #endif
 
-# define mapWidth 25
-# define mapHeight 25
-# define cellSize 30
-# define playerSize 10
-# define stepSize cellSize / 6
-# define screenSize mapWidth * cellSize
+# define MAP_WIDTH 25
+# define MAP_HEIGHT 25
+# define CELL_SIZE 30
+# define PLAYER_SIZE 10
+# define STEP_SIZE CELL_SIZE / 6
+# define WINDOW_WIDTH (MAP_WIDTH * CELL_SIZE)
+# define WINDOW_HEIGHT (MAP_HEIGHT * CELL_SIZE)
+# define MIN_WINDOW_X 0
+# define MAX_WINDOW_X (WINDOW_WIDTH - 1)
+# define MIN_WINDOW_Y 0
+# define MAX_WINDOW_Y (WINDOW_HEIGHT - 1)
 # define CAMERA_PLANE_X 0.0
 # define CAMERA_PLANE_Y 0.66
 
@@ -66,8 +70,8 @@ typedef struct s_ray_trace_data
 {
 	t_bool	hit;
 
-	int		current_tail_x;
-	int		current_tail_y;
+	int		current_tile_x;
+	int		current_tile_y;
 
 	double	ray_distance_x;
 	double	ray_distance_y;
@@ -76,7 +80,7 @@ typedef struct s_ray_trace_data
 	double	total_ray_distance_y;
 }	t_ray_trace_data;
 
-extern char map[mapHeight][mapWidth];
+extern char map[MAP_HEIGHT][MAP_WIDTH];
 
 typedef enum	e_element {
 	FLOOR,
@@ -116,14 +120,10 @@ typedef struct s_game
 {
 	int					x;
 	int					y;
-	int					mapWidthPx;
-	int					mapHeightPx;
 	int					shiftX;
 	int					shiftY;
 	int					init_cell_pos_x;
 	int					init_cell_pos_y;
-	double				bx;
-	double				by;
 	double				vector_x_start;
 	double				vector_y_start;
 	int					vector_x_end;
@@ -138,15 +138,6 @@ typedef struct s_game
 
 	double				camera_plane_x;
 	double				camera_plane_y;
-	double				time;
-	double				old_time;
-	double				frame_time;
-
-	double				move_speed;
-	double				rot_speed;
-
-	double				player_velocity_x;
-	double				player_velocity_y;
 	t_mlx	mlx;
 }	t_game;
 
@@ -167,16 +158,16 @@ void	init_game(t_game *game);
 void	render_frame_with_ray_casting(t_game *game);
 
 int		get_cell_x_head_addr(int x);
-int		get_cell_x_tail_addr(int x);
+int		get_cell_x_tile_addr(int x);
 int		get_cell_y_head_addr(int y);
-int		get_cell_y_tail_addr(int y);
+int		get_cell_y_tile_addr(int y);
 int		get_cell_index(int position);
 
 void	draw_line(t_game *game, int x0, int y0, int x1, int y1, int color);
 
 // ray calculations
 int	calc_step_direction(double ray_direction);
-double	calc_total_ray_distance(double ray_direction, double ray_distance, double player_position, int current_tail);
+double	calc_total_ray_distance(double ray_direction, double ray_distance, double player_position, int current_tile);
 double	calc_ray_distance(double ray_direction);
 double	calc_ray_direction(double player_direction, double camera_plane, int x);
 

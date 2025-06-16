@@ -6,7 +6,7 @@
 /*   By: rzvir <rzvir@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/16 17:08:24 by rzvir             #+#    #+#             */
-/*   Updated: 2025/06/16 17:08:41 by rzvir            ###   ########.fr       */
+/*   Updated: 2025/06/16 17:54:21 by rzvir            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,9 +30,9 @@ static void	draw_floor(
 	t_game *game
 )
 {
-	if (wall_end < screenSize)
+	if (wall_end < WINDOW_WIDTH)
 	{
-		draw_line(game, x, wall_end, x, screenSize, 0x4B3621);
+		draw_line(game, x, wall_end, x, WINDOW_WIDTH, 0x4B3621);
 	}
 }
 
