@@ -1,30 +1,28 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   cleaners.c                                         :+:      :+:    :+:   */
+/*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: rzvir <rzvir@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/06/16 13:03:54 by rzvir             #+#    #+#             */
-/*   Updated: 2025/06/17 14:12:09 by rzvir            ###   ########.fr       */
+/*   Created: 2025/05/22 16:12:09 by rmzvr             #+#    #+#             */
+/*   Updated: 2025/06/17 15:43:30 by rzvir            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "main.h"
 
-void	clear_image(t_game *game)
+int	main(void)
 {
-	memset(game->mlx.img.pixels_addr, 0, WINDOW_WIDTH * WINDOW_HEIGHT * (game->mlx.img.bpp / 8));
-}
+	t_game	game;
 
-void	cleanup(t_mlx *mlx, unsigned int with_exit)
-{
-	if (mlx->img.ptr != NULL)
-		mlx_destroy_image(mlx->ptr, mlx->img.ptr);
-	if (mlx->win_ptr != NULL)
-		mlx_destroy_window(mlx->ptr, mlx->win_ptr);
-	mlx_destroy_display(mlx->ptr);
-	free(mlx->ptr);
-	if (with_exit > 0)
-		exit(1);
+	init_project(&game.mlx);
+	init_game(&game);
+	init_player(&game);
+	render_frame_with_ray_casting(&game);
+	// draw_map(&game);
+	// draw_player(&game.mlx.img, &game);
+	// init_draw_line(&game);
+	mlx_hook(game.mlx.win_ptr, 2, 1L << 0, handle_keyboard, &game);
+	mlx_loop(game.mlx.ptr);
 }

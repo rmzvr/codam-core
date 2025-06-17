@@ -6,47 +6,11 @@
 /*   By: rzvir <rzvir@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/16 12:58:49 by rzvir             #+#    #+#             */
-/*   Updated: 2025/06/16 17:52:56 by rzvir            ###   ########.fr       */
+/*   Updated: 2025/06/17 14:20:38 by rzvir            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../main.h"
-
-void	init_player_position(t_game *game)
-{
-	int	x;
-	int	y;
-
-	y = 0;
-	while (y < MAP_HEIGHT)
-	{
-		x = 0;
-		while (x < MAP_WIDTH)
-		{
-			if (map[y][x] == 'N' || map[y][x] == 'S' || map[y][x] == 'W' || map[y][x] == 'E')
-			{
-				game->pos_x = x + (double)PLAYER_SIZE / CELL_SIZE;
-				game->pos_y = y + (double)PLAYER_SIZE / CELL_SIZE;
-			}
-			x++;
-		}
-		y++;
-	}
-}
-
-void	init_player_direction(t_game *game)
-{
-	game->dir_x = 0;
-	game->dir_y = 0;
-	if (map[(int)game->pos_y][(int)game->pos_x] == 'N')
-		game->dir_y = -1;
-	else if (map[(int)game->pos_y][(int)game->pos_x] == 'S')
-		game->dir_y = 1;
-	else if (map[(int)game->pos_y][(int)game->pos_x] == 'W')
-		game->dir_x = -1;
-	else if (map[(int)game->pos_y][(int)game->pos_x] == 'E')
-		game->dir_x = 1;
-}
+#include "main.h"
 
 void	draw_player(t_img *img, t_game *game)
 {

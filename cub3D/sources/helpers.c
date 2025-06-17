@@ -6,11 +6,11 @@
 /*   By: rzvir <rzvir@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/16 13:03:35 by rzvir             #+#    #+#             */
-/*   Updated: 2025/06/16 18:03:02 by rzvir            ###   ########.fr       */
+/*   Updated: 2025/06/17 14:12:09 by rzvir            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../main.h"
+#include "main.h"
 
 void	my_mlx_pixel_put(t_img *data, int x, int y, int color)
 {

@@ -1,51 +1,67 @@
 NAME := cub3D
 
-LIBFT_DIR := ./libft
-LIBFT_NAME := $(LIBFT_DIR)/libft.a
+INCLUDES_PATH =	includes/
+SOURCES_PATH =	sources/
 
-MLX_LINUX_DIR := ./mlx_linux
-MLX_LINUX_NAME := $(MLX_LINUX_DIR)/libmlx_Linux.a
+BUILD_PATH =	build/
+LIBS_PATH =		libs/
 
-SOURCES := \
+LIBFT_PATH =	$(LIBS_PATH)libft
+LIBFT =			$(LIBFT_PATH)/libft.a
+
+MLX_LINUX_PATH := $(LIBS_PATH)mlx_linux
+MLX_LINUX := $(MLX_LINUX_PATH)/libmlx_Linux.a
+
+SRCS := \
 	main.c \
-	sources/line.c \
-	sources/map_data.c \
-	sources/helpers.c \
-	sources/controls.c \
-	sources/cleaners.c \
-	sources/initializers.c \
-	sources/minimap/player.c \
-	sources/raycasting/dda.c \
-	sources/raycasting/ray.c \
-	sources/raycasting/wall.c \
-	sources/raycasting/draw.c \
-	sources/raycasting/init.c \
+	line.c \
+	player.c \
+	map_data.c \
+	helpers.c \
+	controls.c \
+	cleaners.c \
+	initializers.c \
+	minimap/player.c \
+	raycasting/dda.c \
+	raycasting/ray.c \
+	raycasting/wall.c \
+	raycasting/draw.c \
+	raycasting/init.c \
 
-OBJECTS := $(SOURCES:%.c=%.o)
-CFLAGS := -Wall -Wextra -Werror -I/usr/include -fPIE -Imlx_linux -I$(LIBFT_DIR) -O3
+OBJS :=		$(SRCS:.c=.o)
 
-all: $(NAME)
+SOURCES = 		$(addprefix $(SOURCES_PATH), $(SRCS))
+OBJECTS = 		$(addprefix $(BUILD_PATH), $(OBJS))
 
-$(NAME): $(LIBFT_NAME) $(MLX_LINUX_NAME) $(OBJECTS)
-	$(CC) $(OBJECTS) $(LIBFT_NAME) -Lmlx_linux -lmlx_Linux -L/usr/lib -Imlx_linux -lXext -lX11 -lm -lz -o $@
+CFLAGS :=	-Wall -Wextra -Werror -I/usr/include -fPIE -I$(MLX_LINUX_PATH) -I$(INCLUDES_PATH) -I$(LIBFT_PATH) -O3
 
-$(LIBFT_NAME):
-	make -C $(LIBFT_DIR)
+all: $(LIBFT) $(NAME)
 
-$(MLX_LINUX_NAME):
-	make -C $(MLX_LINUX_DIR)
+$(NAME): $(LIBFT) $(MLX_LINUX) $(OBJECTS)
+	$(CC) $(OBJECTS) $(LIBFT) -L$(MLX_LINUX_PATH) -lmlx_Linux -L/usr/lib -lXext -lX11 -lm -lz -o $@
 
-%.o: %.c
+$(BUILD_PATH)%.o: $(SOURCES_PATH)%.c
+	@mkdir -p $(dir $@)
 	$(CC) $(CFLAGS) -c $< -o $@
 
+$(LIBFT):
+	@$(MAKE) -C $(LIBFT_PATH)
+	@$(MAKE) -C $(LIBFT_PATH) clean
+
+$(MLX_LINUX):
+	make -C $(MLX_LINUX_PATH)
+
+# %.o: %.c
+# 	$(CC) $(CFLAGS) -c $< -o $@
+
 clean:
-	rm -rf $(OBJECTS)
-	make -C $(LIBFT_DIR) clean
-	make -C $(MLX_LINUX_DIR) clean
+	rm -rf $(BUILD_PATH)
+	@$(MAKE) -C $(LIBFT_PATH) clean
+	@mkdir $(BUILD_PATH)
 
 fclean: clean
 	rm -rf $(NAME)
-	make -C $(LIBFT_DIR) fclean
+	@$(MAKE) -C $(LIBFT_PATH) fclean
 
 re: fclean all
 

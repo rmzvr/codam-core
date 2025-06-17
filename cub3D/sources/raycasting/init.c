@@ -6,11 +6,11 @@
 /*   By: rzvir <rzvir@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/16 17:10:07 by rzvir             #+#    #+#             */
-/*   Updated: 2025/06/16 18:03:02 by rzvir            ###   ########.fr       */
+/*   Updated: 2025/06/17 14:12:09 by rzvir            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../main.h"
+#include "main.h"
 
 void	initialize_dda_data(
 	int x,

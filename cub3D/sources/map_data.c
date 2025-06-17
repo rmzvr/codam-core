@@ -6,11 +6,11 @@
 /*   By: rzvir <rzvir@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/16 13:21:20 by rzvir             #+#    #+#             */
-/*   Updated: 2025/06/16 17:52:41 by rzvir            ###   ########.fr       */
+/*   Updated: 2025/06/17 14:12:09 by rzvir            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../main.h"
+#include "main.h"
 
 char map[MAP_HEIGHT][MAP_WIDTH] =
 {

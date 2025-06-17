@@ -6,11 +6,11 @@
 /*   By: rzvir <rzvir@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/16 13:00:27 by rzvir             #+#    #+#             */
-/*   Updated: 2025/06/16 17:57:18 by rzvir            ###   ########.fr       */
+/*   Updated: 2025/06/17 14:12:09 by rzvir            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../main.h"
+#include "main.h"
 
 static void	init_mlx_window_and_image(t_mlx *mlx)
 {

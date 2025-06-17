@@ -6,7 +6,7 @@
 /*   By: rzvir <rzvir@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/16 12:55:10 by rzvir             #+#    #+#             */
-/*   Updated: 2025/06/16 18:03:02 by rzvir            ###   ########.fr       */
+/*   Updated: 2025/06/17 15:04:32 by rzvir            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,7 +94,7 @@ void	draw_map(t_game *game)
 	int	cell_y;
 
 	game->y = 0;
-	while (game->y < MAP_HEIGHT)
+	while (game->y < 2)
 	{
 		game->x = 0;
 		while (game->x < MAP_WIDTH)

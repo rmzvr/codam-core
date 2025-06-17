@@ -6,11 +6,11 @@
 /*   By: rzvir <rzvir@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/16 13:06:00 by rzvir             #+#    #+#             */
-/*   Updated: 2025/06/16 13:13:56 by rzvir            ###   ########.fr       */
+/*   Updated: 2025/06/17 14:12:09 by rzvir            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../main.h"
+#include "main.h"
 
 void	draw_line_horizontal(int x0, int y0, int x1, int y1, t_game *game, int color)
 {
