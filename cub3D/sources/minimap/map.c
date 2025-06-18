@@ -6,7 +6,7 @@
 /*   By: rzvir <rzvir@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/16 12:55:10 by rzvir             #+#    #+#             */
-/*   Updated: 2025/06/18 16:31:00 by rzvir            ###   ########.fr       */
+/*   Updated: 2025/06/18 17:41:18 by rzvir            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,52 +41,52 @@ void	draw_borders(t_img *img, int cell_x, int cell_y, int x, int y)
 	}
 }
 
-// int	check_wall(t_direction direction, t_game *game)
-// {
-// 	int		curr_cell_y_index = get_cell_index(game->player_position.cell_y);
-// 	int		sibling_cell_y_index = get_cell_index(game->player_position.cell_y + STEP_SIZE);
+int	check_wall(t_direction direction, t_game *game)
+{
+	int		curr_cell_y_index = (int)(game->pos_y);
+	int		sibling_cell_y_index = (int)(game->pos_y + (STEP_SIZE / CELL_SIZE));
 
-// 	int		curr_cell_x_index = get_cell_index(game->player_position.cell_x);
-// 	int		sibling_cell_x_index = get_cell_index(game->player_position.cell_x + STEP_SIZE);
+	int		curr_cell_x_index = (int)game->pos_x;
+	int		sibling_cell_x_index = (int)(game->pos_x + (STEP_SIZE / CELL_SIZE));
 
-// 	if (direction == TOP)
-// 	{
-// 		int	prev_cell_y_index = get_cell_index(game->player_position.cell_y - STEP_SIZE);
-// 		if (map[prev_cell_y_index][curr_cell_x_index] == WALL
-// 			|| map[prev_cell_y_index][sibling_cell_x_index] == WALL)
-// 		{
-// 			return (1);
-// 		}
-// 	}
-// 	else if (direction == RIGHT)
-// 	{
-// 		int	next_cell_x_index = get_cell_index(game->player_position.cell_x + STEP_SIZE - 1 + PLAYER_SIZE);
-// 		if (map[curr_cell_y_index][next_cell_x_index] == WALL
-// 			|| map[sibling_cell_y_index][next_cell_x_index] == WALL)
-// 		{
-// 			return (1);
-// 		}
-// 	}
-// 	else if (direction == BOTTOM)
-// 	{
-// 		int	next_cell_y_index = get_cell_index(game->player_position.cell_y + STEP_SIZE - 1 + PLAYER_SIZE);
-// 		if (map[next_cell_y_index][curr_cell_x_index] == WALL
-// 			|| map[next_cell_y_index][sibling_cell_x_index] == WALL)
-// 		{
-// 			return (1);
-// 		}
-// 	}
-// 	else if (direction == LEFT)
-// 	{
-// 		int	prev_cell_x_index = get_cell_index(game->player_position.cell_x - STEP_SIZE);
-// 		if (map[curr_cell_y_index][prev_cell_x_index] == WALL
-// 			|| map[sibling_cell_y_index][prev_cell_x_index] == WALL)
-// 		{
-// 			return (1);
-// 		}
-// 	}
-// 	return (0);
-// }
+	if (direction == TOP)
+	{
+		int	prev_cell_y_index = (int)(game->pos_y - (STEP_SIZE / CELL_SIZE));
+		if (map[prev_cell_y_index][curr_cell_x_index] == WALL
+			|| map[prev_cell_y_index][sibling_cell_x_index] == WALL)
+		{
+			return (1);
+		}
+	}
+	// else if (direction == RIGHT)
+	// {
+	// 	int	next_cell_x_index = get_cell_index(game->player_position.cell_x + STEP_SIZE - 1 + PLAYER_SIZE);
+	// 	if (map[curr_cell_y_index][next_cell_x_index] == WALL
+	// 		|| map[sibling_cell_y_index][next_cell_x_index] == WALL)
+	// 	{
+	// 		return (1);
+	// 	}
+	// }
+	// else if (direction == BOTTOM)
+	// {
+	// 	int	next_cell_y_index = get_cell_index(game->player_position.cell_y + STEP_SIZE - 1 + PLAYER_SIZE);
+	// 	if (map[next_cell_y_index][curr_cell_x_index] == WALL
+	// 		|| map[next_cell_y_index][sibling_cell_x_index] == WALL)
+	// 	{
+	// 		return (1);
+	// 	}
+	// }
+	else if (direction == LEFT)
+	{
+		int	prev_cell_x_index = game->pos_x - (STEP_SIZE / CELL_SIZE);
+		if (map[curr_cell_y_index][prev_cell_x_index] == WALL
+			|| map[sibling_cell_y_index][prev_cell_x_index] == WALL)
+		{
+			return (1);
+		}
+	}
+	return (0);
+}
 
 void	draw_map(t_game *game)
 {

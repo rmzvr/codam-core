@@ -6,7 +6,7 @@
 /*   By: rzvir <rzvir@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/09 14:06:23 by rzvir             #+#    #+#             */
-/*   Updated: 2025/06/18 17:29:43 by rzvir            ###   ########.fr       */
+/*   Updated: 2025/06/18 17:41:59 by rzvir            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@
 # define MAP_HEIGHT 25
 # define CELL_SIZE 30
 # define PLAYER_SIZE 10
-# define STEP_SIZE CELL_SIZE / 6
+# define STEP_SIZE CELL_SIZE / 12
 # define WINDOW_WIDTH (MAP_WIDTH * CELL_SIZE)
 # define WINDOW_HEIGHT (MAP_HEIGHT * CELL_SIZE)
 # define MIN_WINDOW_X 0
@@ -162,6 +162,7 @@ void	init_game(t_game *game);
 
 void	render_frame_with_ray_casting(t_game *game);
 
+int		check_wall(t_direction direction, t_game *game);
 int		get_cell_x_head_addr(int x);
 int		get_cell_x_tile_addr(int x);
 int		get_cell_y_head_addr(int y);
