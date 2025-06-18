@@ -6,7 +6,7 @@
 /*   By: rzvir <rzvir@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/16 13:06:59 by rzvir             #+#    #+#             */
-/*   Updated: 2025/06/17 14:12:09 by rzvir            ###   ########.fr       */
+/*   Updated: 2025/06/18 16:38:40 by rzvir            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,6 +75,8 @@ int	handle_keyboard(int keysym, t_game *game)
 	clear_image(game);
 	render_frame_with_ray_casting(game);
 	// draw_map(game);
+	// draw_player(game);
+	// init_draw_line(game);
 	mlx_put_image_to_window(game->mlx.ptr, game->mlx.win_ptr, game->mlx.img.ptr, 0, 0);
 	return (0);
 }

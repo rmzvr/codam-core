@@ -6,7 +6,7 @@
 /*   By: rzvir <rzvir@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/16 12:58:39 by rzvir             #+#    #+#             */
-/*   Updated: 2025/06/16 17:59:00 by rzvir            ###   ########.fr       */
+/*   Updated: 2025/06/18 15:43:20 by rzvir            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,23 +14,13 @@
 
 void	init_draw_line(t_game *game)
 {
-	double	dx = 0;
-	double	dy = 0;
-	game->vector_x_start = game->player_position.cell_x + (PLAYER_SIZE / 2);
-	game->vector_y_start = game->player_position.cell_y + (PLAYER_SIZE / 2);
-	if (map[game->init_cell_pos_y][game->init_cell_pos_x] == 'N')
-		dy = -1;
-	else if (map[game->init_cell_pos_y][game->init_cell_pos_x] == 'S')
-		dy = 1;
-	else if (map[game->init_cell_pos_y][game->init_cell_pos_x] == 'W')
-		dx = -1;
-	else if (map[game->init_cell_pos_y][game->init_cell_pos_x] == 'E')
-		dx = 1;
+	game->vector_x_start = game->pos_x * (double)CELL_SIZE + (PLAYER_SIZE / 2);
+	game->vector_y_start = game->pos_y * (double)CELL_SIZE + (PLAYER_SIZE / 2);
 
 	double	tx1;
-	if (dx != 0)
+	if (game->dir_x != 0)
 	{
-		tx1 = (MIN_WINDOW_X - game->vector_x_start) / dx;
+		tx1 = (MIN_WINDOW_X - game->vector_x_start) / game->dir_x;
 	}
 	else
 	{
@@ -38,9 +28,9 @@ void	init_draw_line(t_game *game)
 	}
 
 	double	tx2;
-	if (dx != 0)
+	if (game->dir_x != 0)
 	{
-		tx2 = (MAX_WINDOW_X - game->vector_x_start) / dx;
+		tx2 = (MAX_WINDOW_X - game->vector_x_start) / game->dir_x;
 	}
 	else
 	{
@@ -48,9 +38,9 @@ void	init_draw_line(t_game *game)
 	}
 
 	double	ty1;
-	if (dy != 0)
+	if (game->dir_y != 0)
 	{
-		ty1 = (MIN_WINDOW_Y - game->vector_y_start) / dy;
+		ty1 = (MIN_WINDOW_Y - game->vector_y_start) / game->dir_y;
 	}
 	else
 	{
@@ -58,9 +48,9 @@ void	init_draw_line(t_game *game)
 	}
 
 	double	ty2;
-	if (dy != 0)
+	if (game->dir_y != 0)
 	{
-		ty2 = (MAX_WINDOW_Y - game->vector_y_start) / dy;
+		ty2 = (MAX_WINDOW_Y - game->vector_y_start) / game->dir_y;
 	}
 	else
 	{
@@ -95,7 +85,7 @@ void	init_draw_line(t_game *game)
 		printf("Ray points backwards or no exit ahead\n");
 	}
 
-	game->vector_x_end = game->vector_x_start + dx * tmax;
-	game->vector_y_end = game->vector_y_start + dy * tmax;
+	game->vector_x_end = game->vector_x_start + game->dir_x * tmax;
+	game->vector_y_end = game->vector_y_start + game->dir_y * tmax;
 	draw_line(game, game->vector_x_start, game->vector_y_start, game->vector_x_end, game->vector_y_end, 0x000000);
 }

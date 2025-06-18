@@ -6,7 +6,7 @@
 /*   By: rzvir <rzvir@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/16 17:08:24 by rzvir             #+#    #+#             */
-/*   Updated: 2025/06/17 17:31:43 by rzvir            ###   ########.fr       */
+/*   Updated: 2025/06/18 17:29:58 by rzvir            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,51 +36,73 @@ static void	draw_floor(
 	}
 }
 
+double	calc_hit_point_of_wall(t_ray *ray, t_game *game)
+{
+	double hit_point_x;
+
+	if (ray->hit_side == VERTICAL)
+		hit_point_x = game->pos_y + ray->length_to_wall * ray->direction_y;
+	else
+		hit_point_x = game->pos_x + ray->length_to_wall * ray->direction_x;
+	hit_point_x -= floor(hit_point_x);
+	return (hit_point_x);
+}
+
+int	calc_texture_flipped_value(int texture_column_x, int texture_width, t_ray *ray)
+{
+	if ((ray->hit_side == VERTICAL && ray->direction_x > 0)
+		|| (ray->hit_side == HORIZONTAL && ray->direction_y < 0))
+	{
+		texture_column_x = texture_width - texture_column_x - 1;
+	}
+	return (texture_column_x);
+}
+
+int	calc_texture_column_x(double hit_point_x, t_texture *texture, t_ray *ray)
+{
+	int	texture_column_x;
+
+	texture_column_x = (int)(hit_point_x * (double)texture->xpm.width);
+	texture_column_x = calc_texture_flipped_value(texture_column_x, texture->xpm.width, ray);
+	return (texture_column_x);
+}
+
+unsigned int	get_color_from_texture(int  texture_column_x, int tex_y, t_texture *texture_data)
+{
+	unsigned int color;
+
+	color = *(unsigned int *)(texture_data->img.pixels_addr + (tex_y * texture_data->img.line_length + texture_column_x * (texture_data->img.bytes_per_pixel / 8)));
+	return (color);
+}
+
 void	draw_textured_wall(
 	int x,
-	t_dda_data *dda,
+	t_ray *ray,
+	t_wall *wall,
 	t_game *game,
-	char *texture_data,
-	int tex_width,
-	int tex_height,
-	int bpp,
-	int tex_line_len
+	t_texture *texture_data
 )
 {
-	static int	counter;
+	int				y;
+	double			hit_point_x;
+	int				texture_column_x;
+	double			count_of_texture_pixels_in_line_pixels;
+	double			texture_position;
+	int				tex_y;
+	unsigned int	color;
 
-	counter = 0;
-	// printf("wall_start: %d, wall_end: %d\n", dda->wall_start, dda->wall_end);
-	// printf("tex_width: %d, tex_height: %d\n", tex_width, tex_height);
-	int y = dda->wall_start;
-	int line_height = dda->wall_end - dda->wall_start;
-	double wall_x;
-
-	// calculate where the wall was hit
-	// printf("wall_start: %d, wall_end: %d\n", dda->wall_start, dda->wall_end);
-	if (dda->hit_side == VERTICAL)
-		wall_x = game->pos_y + dda->distance_to_wall * dda->ray_direction_y;
-	else
-		wall_x = game->pos_x + dda->distance_to_wall * dda->ray_direction_x;
-	printf("%d. wall_x: %f\n", counter, wall_x);
-	wall_x -= floor(wall_x);
-
-	int tex_x = (int)(wall_x * (double)tex_width);
-	if ((dda->hit_side == VERTICAL && dda->ray_direction_x > 0) || (dda->hit_side == HORIZONTAL && dda->ray_direction_y < 0))
-		tex_x = tex_width - tex_x - 1;
-	counter++;
-
-	while (y < dda->wall_end)
+	y = wall->start;
+	hit_point_x = calc_hit_point_of_wall(ray, game);
+	texture_column_x = calc_texture_column_x(hit_point_x, texture_data, ray);
+	count_of_texture_pixels_in_line_pixels = 1.0 * texture_data->xpm.height / wall->height;
+	texture_position = (wall->start - WINDOW_HEIGHT / 2 + wall->height / 2) * count_of_texture_pixels_in_line_pixels;
+	while (y < wall->end)
 	{
-		// Calculate texture y
-		int d = y * 256 - WINDOW_HEIGHT * 128 + line_height * 128;
-		int tex_y = ((d * tex_height) / line_height) / 256;
+		tex_y = (int)texture_position & (texture_data->xpm.height - 1);
+		texture_position += count_of_texture_pixels_in_line_pixels;
+		color = get_color_from_texture(texture_column_x, tex_y, texture_data);
 
-		// Get color from texture
-		unsigned int color = *(unsigned int *)(texture_data + (tex_y * tex_line_len + tex_x * (bpp / 8)));
-
-		// Draw it to screen
-		my_mlx_pixel_put(&(game->mlx.img), x, y, color);
+		my_mlx_pixel_put(&game->mlx.img, x, y, color);
 		y++;
 	}
 }
@@ -88,27 +110,27 @@ void	draw_textured_wall(
 
 static void	draw_wall(
 	int x,
-	t_dda_data *dda_data,
+	t_ray *ray,
+	t_wall *wall,
 	t_game *game,
 	t_texture *texture_data
 )
 {
-	draw_textured_wall(x, dda_data, game, texture_data->wall_pixels_addr, texture_data->wall_img_width, texture_data->wall_img_height, texture_data->bpp, texture_data->line_len);
-	// draw_line(game, x, dda_data->wall_start, x, dda_data->wall_end, dda_data->wall_color);
+	draw_textured_wall(x, ray, wall, game, texture_data);
 }
 
 void	draw_vertical_stripe(
 	int x,
-	t_ray_trace_data *ray_trace_data,
-	t_dda_data *dda_data,
+	t_ray *ray,
+	t_wall *wall,
 	t_game *game,
 	t_texture *texture_data
 )
 {
-	calc_distance_to_wall(dda_data, ray_trace_data);
-	calc_wall_height(dda_data);
-	calc_wall_color(dda_data);
-	draw_ceiling(x, dda_data->wall_start, game);
-	draw_wall(x, dda_data, game, texture_data);
-	draw_floor(x, dda_data->wall_end, game);
+	calc_distance_to_wall(ray);
+	calc_wall_height(wall, ray->length_to_wall);
+	calc_wall_color(ray->hit_side, ray->step_direction_x, ray->step_direction_y, wall);
+	draw_ceiling(x, wall->start, game);
+	draw_wall(x, ray, wall, game, texture_data);
+	draw_floor(x, wall->end, game);
 }

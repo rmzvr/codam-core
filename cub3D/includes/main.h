@@ -6,7 +6,7 @@
 /*   By: rzvir <rzvir@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/09 14:06:23 by rzvir             #+#    #+#             */
-/*   Updated: 2025/06/17 16:58:34 by rzvir            ###   ########.fr       */
+/*   Updated: 2025/06/18 17:29:43 by rzvir            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,8 +39,8 @@
 
 typedef enum s_bool
 {
-	FALSE = 0,
-	TRUE = 1,
+	FALSE,
+	TRUE,
 }	t_bool;
 
 
@@ -49,48 +49,36 @@ typedef enum	e_hit_side {
 	HORIZONTAL,
 }	t_hit_side;
 
-typedef struct s_dda_data
+typedef struct s_wall
 {
+	int		start;
+	int		end;
+	int		color;
+	int		height;
+}	t_wall;
+
+typedef struct s_ray
+{
+	t_bool		hit;
 	t_hit_side	hit_side;
 
-	double	ray_direction_x;
-	double	ray_direction_y;
+	int			current_tile_x;
+	int			current_tile_y;
 
-	int		step_direction_x;
-	int		step_direction_y;
+	double		direction_x;
+	double		direction_y;
 
-	double	distance_to_wall;
-	int		wall_color;
-	int		wall_start;
-	int		wall_end;
-}	t_dda_data;
+	int			step_direction_x;
+	int			step_direction_y;
 
-typedef struct s_texture
-{
-	void	*wall_img;
-	char	*wall_pixels_addr;
-	int		bpp;
-	int		line_len;
-	int		endian;
-	char	*relative_path;
-	int		wall_img_width;
-	int		wall_img_height;
-	void	*screen_img;
-}	t_texture;
+	double		current_length_x;
+	double		current_length_y;
 
-typedef struct s_ray_trace_data
-{
-	t_bool	hit;
+	double		total_length_x;
+	double		total_length_y;
 
-	int		current_tile_x;
-	int		current_tile_y;
-
-	double	ray_distance_x;
-	double	ray_distance_y;
-
-	double	total_ray_distance_x;
-	double	total_ray_distance_y;
-}	t_ray_trace_data;
+	double		length_to_wall;
+}	t_ray;
 
 extern char map[MAP_HEIGHT][MAP_WIDTH];
 
@@ -106,20 +94,28 @@ typedef enum	e_direction {
 	LEFT,
 }	t_direction;
 
-typedef struct s_player_position
-{
-	int	cell_x;
-	int	cell_y;
-}	t_player_position;
-
 typedef struct s_img
 {
 	void	*ptr;
 	char	*pixels_addr;
-	int		bpp;
-	int		ll;
+	int		bytes_per_pixel;
+	int		line_length;
 	int		endian;
 }	t_img;
+
+typedef struct s_xpm
+{
+	char	*path;
+	int		width;
+	int		height;
+}	t_xpm;
+
+
+typedef struct s_texture
+{
+	t_xpm	xpm;
+	t_img	img;
+}	t_texture;
 
 typedef struct s_mlx
 {
@@ -130,17 +126,14 @@ typedef struct s_mlx
 
 typedef struct s_game
 {
-	int					x;
-	int					y;
 	int					shiftX;
 	int					shiftY;
-	int					init_cell_pos_x;
-	int					init_cell_pos_y;
+
 	double				vector_x_start;
 	double				vector_y_start;
+
 	int					vector_x_end;
 	int					vector_y_end;
-	t_player_position	player_position;
 
 	double				pos_x;
 	double				pos_y;
@@ -161,7 +154,8 @@ void	my_mlx_pixel_put(t_img *data, int x, int y, int color);
 int		handle_keyboard(int keysym, t_game *game);
 
 void	init_player(t_game *game);
-void	draw_player(t_img *img, t_game *game);
+void	draw_player(t_game *game);
+void	draw_map(t_game *game);
 
 void	init_project(t_mlx *mlx);
 void	init_game(t_game *game);
@@ -174,6 +168,7 @@ int		get_cell_y_head_addr(int y);
 int		get_cell_y_tile_addr(int y);
 int		get_cell_index(int position);
 
+void	init_draw_line(t_game *game);
 void	draw_line(t_game *game, int x0, int y0, int x1, int y1, int color);
 
 // ray calculations
@@ -183,15 +178,15 @@ double	calc_ray_distance(double ray_direction);
 double	calc_ray_direction(double player_direction, double camera_plane, int x);
 
 // wall calculations
-void	calc_distance_to_wall(t_dda_data *dda_data, t_ray_trace_data *ray_trace_data);
-void	calc_wall_color(t_dda_data *dda_data);
-void	calc_wall_height(t_dda_data *dda_data);
+void	calc_distance_to_wall(t_ray *ray);
+void	calc_wall_color(t_hit_side hit_side, int step_direction_x, int step_direction_y, t_wall *wall);
+void	calc_wall_height(t_wall *wall, double length_to_wall);
 
 // draw
-void	draw_vertical_stripe(int x, t_ray_trace_data *ray_trace_data, t_dda_data *dda_data, t_game *game, t_texture *texture_data);
+void	draw_vertical_stripe(int x, t_ray *ray, t_wall *wall, t_game *game, t_texture *texture_data);
 
 // init
-void	initialize_dda_data(int x, t_dda_data *dda_data, t_game *game);
-void	initialize_ray_trace_data(t_ray_trace_data *ray_trace_data, t_dda_data *dda_data, t_game *game);
+void	initialize_wall(t_wall *wall);
+void	initialize_ray(int x, t_ray *ray, t_game *game);
 
 #endif

@@ -21,6 +21,8 @@ SRCS := \
 	controls.c \
 	cleaners.c \
 	initializers.c \
+	minimap/map.c \
+	minimap/ray.c \
 	minimap/player.c \
 	raycasting/dda.c \
 	raycasting/ray.c \

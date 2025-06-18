@@ -6,40 +6,45 @@
 /*   By: rzvir <rzvir@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/16 17:10:07 by rzvir             #+#    #+#             */
-/*   Updated: 2025/06/17 14:12:09 by rzvir            ###   ########.fr       */
+/*   Updated: 2025/06/18 17:25:52 by rzvir            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "main.h"
 
-void	initialize_dda_data(
-	int x,
-	t_dda_data *dda_data,
-	t_game *game
+void	initialize_wall(
+	t_wall *wall
 )
 {
-	dda_data->hit_side = VERTICAL;
-	dda_data->ray_direction_x = calc_ray_direction(game->dir_x, game->camera_plane_x, x);
-	dda_data->ray_direction_y = calc_ray_direction(game->dir_y, game->camera_plane_y, x);
-	dda_data->step_direction_x = calc_step_direction(dda_data->ray_direction_x);
-	dda_data->step_direction_y = calc_step_direction(dda_data->ray_direction_y);
-	dda_data->distance_to_wall = 0.0;
-	dda_data->wall_color = 0;
-	dda_data->wall_start = 0;
-	dda_data->wall_end = 0;
+	wall->start = 0;
+	wall->end = 0;
+	wall->color = 0x000000;
+	wall->height = 0;
 }
 
-void	initialize_ray_trace_data(
-	t_ray_trace_data *ray_trace_data,
-	t_dda_data *dda_data,
+void	initialize_ray(
+	int x,
+	t_ray *ray,
 	t_game *game
 )
 {
-	ray_trace_data->hit = FALSE;
-	ray_trace_data->current_tile_x = game->pos_x;
-	ray_trace_data->current_tile_y = game->pos_y;
-	ray_trace_data->ray_distance_x = calc_ray_distance(dda_data->ray_direction_x);
-	ray_trace_data->ray_distance_y = calc_ray_distance(dda_data->ray_direction_y);
-	ray_trace_data->total_ray_distance_x = calc_total_ray_distance(dda_data->ray_direction_x, ray_trace_data->ray_distance_x, game->pos_x, ray_trace_data->current_tile_x);
-	ray_trace_data->total_ray_distance_y = calc_total_ray_distance(dda_data->ray_direction_y, ray_trace_data->ray_distance_y, game->pos_y, ray_trace_data->current_tile_y);
+	ray->hit = FALSE;
+	ray->hit_side = VERTICAL;
+
+	ray->current_tile_x = game->pos_x;
+	ray->current_tile_y = game->pos_y;
+
+	ray->direction_x = calc_ray_direction(game->dir_x, game->camera_plane_x, x);
+	ray->direction_y = calc_ray_direction(game->dir_y, game->camera_plane_y, x);
+
+	ray->step_direction_x = calc_step_direction(ray->direction_x);
+	ray->step_direction_y = calc_step_direction(ray->direction_y);
+
+	ray->current_length_x = calc_ray_distance(ray->direction_x);
+	ray->current_length_y = calc_ray_distance(ray->direction_y);
+
+	ray->total_length_x = calc_total_ray_distance(ray->direction_x, ray->current_length_x, game->pos_x, ray->current_tile_x);
+	ray->total_length_y = calc_total_ray_distance(ray->direction_y, ray->current_length_y, game->pos_y, ray->current_tile_y);
+
+	ray->length_to_wall = 0.0;
 }

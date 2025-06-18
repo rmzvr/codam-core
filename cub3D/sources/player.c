@@ -6,7 +6,7 @@
 /*   By: rzvir <rzvir@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/17 14:19:37 by rzvir             #+#    #+#             */
-/*   Updated: 2025/06/17 14:21:51 by rzvir            ###   ########.fr       */
+/*   Updated: 2025/06/18 15:40:26 by rzvir            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,8 +25,8 @@ static void	init_player_position(t_game *game)
 		{
 			if (map[y][x] == 'N' || map[y][x] == 'S' || map[y][x] == 'W' || map[y][x] == 'E')
 			{
-				game->pos_x = x + (double)PLAYER_SIZE / CELL_SIZE;
-				game->pos_y = y + (double)PLAYER_SIZE / CELL_SIZE;
+				game->pos_x = x + (double)PLAYER_SIZE / (double)CELL_SIZE;
+				game->pos_y = y + (double)PLAYER_SIZE / (double)CELL_SIZE;
 			}
 			x++;
 		}

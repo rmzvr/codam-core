@@ -6,62 +6,63 @@
 /*   By: rzvir <rzvir@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/16 17:06:49 by rzvir             #+#    #+#             */
-/*   Updated: 2025/06/17 14:12:09 by rzvir            ###   ########.fr       */
+/*   Updated: 2025/06/18 17:29:28 by rzvir            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "main.h"
 
 void	calc_distance_to_wall(
-	t_dda_data *dda_data,
-	t_ray_trace_data *ray_trace_data
+	t_ray *ray
 )
 {
-	if (dda_data->hit_side == VERTICAL)
+	if (ray->hit_side == VERTICAL)
 	{
-		dda_data->distance_to_wall = (ray_trace_data->total_ray_distance_x - ray_trace_data->ray_distance_x);
+		ray->length_to_wall = (ray->total_length_x - ray->current_length_x);
 	}
 	else
 	{
-		dda_data->distance_to_wall = (ray_trace_data->total_ray_distance_y - ray_trace_data->ray_distance_y);
+		ray->length_to_wall = (ray->total_length_y - ray->current_length_y);
 	}
 }
 
 void	calc_wall_color(
-	t_dda_data *dda_data
+	t_hit_side hit_side,
+	int step_direction_x,
+	int step_direction_y,
+	t_wall *wall
 )
 {
-	if (dda_data->hit_side == VERTICAL)
+	if (hit_side == VERTICAL)
 	{
-		if (dda_data->step_direction_x == 1)
-			dda_data->wall_color = 0xFF0000;
+		if (step_direction_x == 1)
+			wall->color = 0xFF0000;
 		else
-			dda_data->wall_color = 0x00FF00;
+			wall->color = 0x00FF00;
 	}
 	else
 	{
-		if (dda_data->step_direction_y == 1)
-			dda_data->wall_color = 0x0000FF;
+		if (step_direction_y == 1)
+			wall->color = 0x0000FF;
 		else
-			dda_data->wall_color = 0xFFFF00;
+			wall->color = 0xFFFF00;
 	}
 }
 
 void	calc_wall_height(
-	t_dda_data *dda_data
+	t_wall *wall,
+	double length_to_wall
 )
 {
-	int	wall_height;
-
-	wall_height = (int)(WINDOW_HEIGHT / dda_data->distance_to_wall);
-	dda_data->wall_start = -wall_height / 2 + WINDOW_HEIGHT / 2;
-	if (dda_data->wall_start < 0)
+	wall->height = (int)(WINDOW_HEIGHT / length_to_wall);
+	wall->start = -wall->height / 2 + WINDOW_HEIGHT / 2;
+	if (wall->start < 0)
 	{
-		dda_data->wall_start = 0;
+		wall->start = 0;
 	}
-	dda_data->wall_end = wall_height / 2 + WINDOW_HEIGHT / 2;
-	if (dda_data->wall_end >= WINDOW_HEIGHT)
+	wall->end = wall->height / 2 + WINDOW_HEIGHT / 2;
+	if (wall->end >= WINDOW_HEIGHT)
 	{
-		dda_data->wall_end = MAX_WINDOW_Y;
+		wall->end = MAX_WINDOW_Y;
 	}
 }
