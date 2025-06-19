@@ -6,7 +6,7 @@
 /*   By: rzvir <rzvir@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/09 14:06:23 by rzvir             #+#    #+#             */
-/*   Updated: 2025/06/18 17:41:59 by rzvir            ###   ########.fr       */
+/*   Updated: 2025/06/19 15:08:24 by rzvir            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 # include "libft.h"
 # include <math.h>
 # include <stdio.h>
+# include <sys/time.h>
 # include <X11/keysym.h>
 
 #ifndef M_PI
@@ -25,17 +26,19 @@
 
 # define MAP_WIDTH 25
 # define MAP_HEIGHT 25
-# define CELL_SIZE 30
+# define TILE_SIZE 30
 # define PLAYER_SIZE 10
-# define STEP_SIZE CELL_SIZE / 12
-# define WINDOW_WIDTH (MAP_WIDTH * CELL_SIZE)
-# define WINDOW_HEIGHT (MAP_HEIGHT * CELL_SIZE)
+# define STEP_SIZE (TILE_SIZE / 3)
+# define WINDOW_WIDTH (MAP_WIDTH * TILE_SIZE)
+# define WINDOW_HEIGHT (MAP_HEIGHT * TILE_SIZE)
 # define MIN_WINDOW_X 0
 # define MAX_WINDOW_X (WINDOW_WIDTH - 1)
 # define MIN_WINDOW_Y 0
 # define MAX_WINDOW_Y (WINDOW_HEIGHT - 1)
 # define CAMERA_PLANE_X 0.0
 # define CAMERA_PLANE_Y 0.66
+# define MOVE_TILE_PER_SECOND 3.0
+# define ROTATE_RADIAN_PER_SECOND 3.0
 
 typedef enum s_bool
 {
@@ -143,6 +146,17 @@ typedef struct s_game
 
 	double				camera_plane_x;
 	double				camera_plane_y;
+
+	int					move_forward;
+	int					move_backward;
+	int					move_left;
+	int					move_right;
+	int					turn_left;
+	int					turn_right;
+	double				last_time;
+
+	double				movement_speed;
+	double				rotation_speed;
 	t_mlx	mlx;
 }	t_game;
 

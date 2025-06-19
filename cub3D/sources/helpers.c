@@ -6,7 +6,7 @@
 /*   By: rzvir <rzvir@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/16 13:03:35 by rzvir             #+#    #+#             */
-/*   Updated: 2025/06/18 14:03:20 by rzvir            ###   ########.fr       */
+/*   Updated: 2025/06/19 13:58:38 by rzvir            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,25 +22,25 @@ void	my_mlx_pixel_put(t_img *data, int x, int y, int color)
 
 int	get_cell_x_head_addr(int x)
 {
-	return (x * CELL_SIZE);
+	return (x * TILE_SIZE);
 }
 
 int	get_cell_x_tile_addr(int x)
 {
-	return (x * CELL_SIZE + CELL_SIZE - 1);
+	return (x * TILE_SIZE + TILE_SIZE - 1);
 }
 
 int	get_cell_y_head_addr(int y)
 {
-	return (y * CELL_SIZE);
+	return (y * TILE_SIZE);
 }
 
 int	get_cell_y_tile_addr(int y)
 {
-	return (y * CELL_SIZE + CELL_SIZE - 1);
+	return (y * TILE_SIZE + TILE_SIZE - 1);
 }
 
 int get_cell_index(int position)
 {
-	return (position / CELL_SIZE);
+	return (position / TILE_SIZE);
 }

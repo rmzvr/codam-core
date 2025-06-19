@@ -6,7 +6,7 @@
 /*   By: rzvir <rzvir@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/16 12:58:39 by rzvir             #+#    #+#             */
-/*   Updated: 2025/06/18 15:43:20 by rzvir            ###   ########.fr       */
+/*   Updated: 2025/06/19 17:35:32 by rzvir            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,8 @@
 
 void	init_draw_line(t_game *game)
 {
-	game->vector_x_start = game->pos_x * (double)CELL_SIZE + (PLAYER_SIZE / 2);
-	game->vector_y_start = game->pos_y * (double)CELL_SIZE + (PLAYER_SIZE / 2);
+	game->vector_x_start = game->pos_x * (double)TILE_SIZE + (PLAYER_SIZE / 2);
+	game->vector_y_start = game->pos_y * (double)TILE_SIZE + (PLAYER_SIZE / 2);
 
 	double	tx1;
 	if (game->dir_x != 0)

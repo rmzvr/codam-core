@@ -6,7 +6,7 @@
 /*   By: rzvir <rzvir@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/16 13:00:27 by rzvir             #+#    #+#             */
-/*   Updated: 2025/06/18 16:31:40 by rzvir            ###   ########.fr       */
+/*   Updated: 2025/06/19 15:05:27 by rzvir            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,4 +50,13 @@ void	init_game(t_game *game)
 	game->dir_y = 0;
 	game->camera_plane_x = 0.0;
 	game->camera_plane_y = 0.66;
+	game->move_forward = 0;
+	game->move_backward = 0;
+	game->move_left = 0;
+	game->move_right = 0;
+	game->turn_left = 0;
+	game->turn_right = 0;
+	game->last_time = 0.0;
+	game->movement_speed = 0.0;
+	game->rotation_speed = 0.0;
 }
