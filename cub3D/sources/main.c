@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rmzvr <rmzvr@student.42.fr>                +#+  +:+       +#+        */
+/*   By: rzvir <rzvir@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/22 16:12:09 by rmzvr             #+#    #+#             */
-/*   Updated: 2025/06/20 12:58:05 by rmzvr            ###   ########.fr       */
+/*   Updated: 2025/06/20 18:56:10 by rzvir            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,10 +23,10 @@ int	handle_controls(
 	t_game *game
 )
 {
-	double	next_left_x;
-	double	next_left_y;
-	double	next_right_x;
-	double	next_right_y;
+	double	next_left_x = 0.0;
+	double	next_left_y = 0.0;
+	double	next_right_x = 0.0;
+	double	next_right_y = 0.0;
 
 	(void) next_left_x;
 	(void) next_left_y;
@@ -36,88 +36,96 @@ int	handle_controls(
 
 	if (game->move_forward == TRUE)
 	{
-		next_left_x = (game->pos_x + game->dir_x * game->movement_speed);
-		next_left_y = (game->pos_y + game->dir_y * game->movement_speed);
+		// next_left_x = (game->pos_x + game->dir_x * game->movement_speed);
+		// next_left_y = (game->pos_y - ((double)PLAYER_SIZE / (double)TILE_SIZE) + game->dir_y * game->movement_speed);
 
-		next_right_x = (game->pos_x + ((double)PLAYER_SIZE / (double)TILE_SIZE) + game->dir_x * game->movement_speed);
+		// next_right_x = (game->pos_x + ((double)PLAYER_SIZE / (double)TILE_SIZE) + game->dir_x * game->movement_speed);
+		// next_right_y = (game->pos_y - ((double)PLAYER_SIZE / (double)TILE_SIZE) + game->dir_y * game->movement_speed);
 
-		printf("current pos_x: %f, pos_y: %f\n", game->pos_x, game->pos_y);
-		printf("next_left_x: %f, next_left_y: %f, next_right_x: %f\n", next_left_x, next_left_y, next_right_x);
+		// printf("\e[1;1H\e[2J");
+		// printf("==top==\n");
+		// printf("current pos_x: %f, pos_y: %f\n", game->pos_x, game->pos_y);
+		// printf("next_left_x: %f, next_left_y: %f\n", next_left_x, next_left_y);
+		// printf("next_right_x: %f, next_right_y: %f\n", next_right_x, next_right_y);
+		// printf("diff x: %f, y: %f\n\n", next_left_x - game->pos_x, next_left_y - game->pos_y);
 
-		int	next_left_tile;
-		int	next_right_tile;
+		// int	next_left_tile;
+		// int	next_right_tile;
 
-		next_left_tile = map[(int)next_left_y][(int)next_left_x];
-		next_right_tile = map[(int)next_left_y][(int)next_right_x];
+		// next_left_tile = map[(int)next_left_y][(int)next_left_x];
+		// next_right_tile = map[(int)next_left_y][(int)next_right_x];
 
-		if (next_left_tile == 1 || next_right_tile == 1)
-			return (0);
+		// if (next_left_tile == 1 || next_right_tile == 1)
+		// 	return (0);
 
 		game->pos_x += game->dir_x * game->movement_speed;
 		game->pos_y += game->dir_y * game->movement_speed;
 	}
 	if (game->move_backward == TRUE)
 	{
-		next_left_x = (game->pos_x - game->dir_x * game->movement_speed);
-		next_left_y = (game->pos_y + ((double)PLAYER_SIZE / (double)TILE_SIZE) - game->dir_y * game->movement_speed);
+		// next_left_x = (game->pos_x - game->dir_x * game->movement_speed);
+		// next_left_y = ((game->pos_y + ((double)PLAYER_SIZE / (double)TILE_SIZE)) - game->dir_y * game->movement_speed);
 
-		next_right_x = (game->pos_x + ((double)PLAYER_SIZE / (double)TILE_SIZE) - game->dir_x * game->movement_speed);
+		// next_right_x = (game->pos_x + ((double)PLAYER_SIZE / (double)TILE_SIZE) - game->dir_x * game->movement_speed);
 
-		printf("current pos_x: %f, pos_y: %f\n", game->pos_x, game->pos_y);
-		printf("next_left_x: %f, next_left_y: %f, next_right_x: %f\n", next_left_x, next_left_y, next_right_x);
+		// printf("==bottom==\n");
+		// printf("current pos_x: %f, pos_y: %f\n", game->pos_x, game->pos_y);
+		// printf("next_left_x: %f, next_left_y: %f, next_right_x: %f\n\n", next_left_x, next_left_y, next_right_x);
 
-		int	next_left_tile;
-		int	next_right_tile;
+		// int	next_left_tile;
+		// int	next_right_tile;
 
-		next_left_tile = map[(int)next_left_y][(int)next_left_x];
-		next_right_tile = map[(int)next_left_y][(int)next_right_x];
+		// next_left_tile = map[(int)next_left_y][(int)next_left_x];
+		// next_right_tile = map[(int)next_left_y][(int)next_right_x];
 
-		if (next_left_tile == 1 || next_right_tile == 1)
-			return (0);
+		// if (next_left_tile == 1 || next_right_tile == 1)
+		// 	return (0);
 
 		game->pos_x -= game->dir_x * game->movement_speed;
 		game->pos_y -= game->dir_y * game->movement_speed;
 	}
 	if (game->move_left == TRUE)
 	{
-		next_left_x = (game->pos_x + game->dir_y * game->movement_speed);
-		next_left_y = (game->pos_y - game->dir_x * game->movement_speed);
+		// next_left_x = (game->pos_x + game->dir_y * game->movement_speed);
+		// next_left_y = (game->pos_y - game->dir_x * game->movement_speed);
 
-		next_right_y = (game->pos_y + ((double)PLAYER_SIZE / (double)TILE_SIZE) - game->dir_x * game->movement_speed);
+		// next_right_y = (game->pos_y + ((double)PLAYER_SIZE / (double)TILE_SIZE) - game->dir_x * game->movement_speed);
 
-		printf("current pos_x: %f, pos_y: %f\n", game->pos_x, game->pos_y);
-		printf("next_left_x: %f, next_left_y: %f, next_right_y: %f\n", next_left_x, next_left_y, next_right_y);
+		// printf("==left==\n");
+		// printf("current pos_x: %f, pos_y: %f\n", game->pos_x, game->pos_y);
+		// printf("next_left_x: %f, next_left_y: %f, next_right_y: %f\n\n", next_left_x, next_left_y, next_right_y);
 
-		int	next_left_tile;
-		int	next_right_tile;
+		// int	next_left_tile;
+		// int	next_right_tile;
 
-		next_left_tile = map[(int)next_left_y][(int)next_left_x];
-		next_right_tile = map[(int)next_right_y][(int)next_left_x];
+		// next_left_tile = map[(int)next_left_y][(int)next_left_x];
+		// next_right_tile = map[(int)next_right_y][(int)next_left_x];
 
-		if (next_left_tile == 1 || next_right_tile == 1)
-			return (0);
+		// if (next_left_tile == 1 || next_right_tile == 1)
+		// 	return (0);
 
 		game->pos_x += game->dir_y * game->movement_speed;
 		game->pos_y -= game->dir_x * game->movement_speed;
 	}
 	if (game->move_right == TRUE)
 	{
-		next_left_x = (game->pos_x + ((double)PLAYER_SIZE / (double)TILE_SIZE) - game->dir_y * game->movement_speed);
-		next_left_y = (game->pos_y + game->dir_x * game->movement_speed);
+		// next_left_x = (game->pos_x + ((double)PLAYER_SIZE / (double)TILE_SIZE) - game->dir_y * game->movement_speed);
+		// next_left_y = (game->pos_y + game->dir_x * game->movement_speed);
 
-		next_right_y = (game->pos_y + ((double)PLAYER_SIZE / (double)TILE_SIZE) + game->dir_x * game->movement_speed);
+		// next_right_y = (game->pos_y + ((double)PLAYER_SIZE / (double)TILE_SIZE) + game->dir_x * game->movement_speed);
 
-		printf("current pos_x: %f, pos_y: %f\n", game->pos_x, game->pos_y);
-		printf("next_left_x: %f, next_left_y: %f, next_right_y: %f\n", next_left_x, next_left_y, next_right_y);
+		// printf("==right==\n");
+		// printf("current pos_x: %f, pos_y: %f\n", game->pos_x, game->pos_y);
+		// printf("next_left_x: %f, next_left_y: %f, next_right_y: %f\n\n", next_left_x, next_left_y, next_right_y);
 
-		int	next_left_tile;
-		int	next_right_tile;
+		// int	next_left_tile;
+		// int	next_right_tile;
 
-		next_left_tile = map[(int)next_left_y][(int)next_left_x];
-		next_right_tile = map[(int)next_right_y][(int)next_left_x];
+		// next_left_tile = map[(int)next_left_y][(int)next_left_x];
+		// next_right_tile = map[(int)next_right_y][(int)next_left_x];
 
-		if (next_left_tile == 1 || next_right_tile == 1)
-			return (0);
+		// if (next_left_tile == 1 || next_right_tile == 1)
+		// 	return (0);
 
 		game->pos_x -= game->dir_y * game->movement_speed;
 		game->pos_y += game->dir_x * game->movement_speed;

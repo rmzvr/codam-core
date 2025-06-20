@@ -1,0 +1,63 @@
+E
+
+dir_x: 1.000000, dir_y: 0.000000
+
+=== RAY DEBUG INFO (x = 374) ===
+Player pos:         (12.33, 12.33)
+Ray direction:      (1.0000, -0.0018)
+Ray step direction: (1, -1)
+Current tile:       (24, 12)
+Initial distances:  X = 1.0000, Y = 568.1818
+Total distances:    X = 12.6667, Y = 189.3939
+Hit:                TRUE
+Hit side:           VERTICAL
+Length to wall:     0.0000
+================================
+
+E - ROT
+
+dir_x: -1.000000, dir_y: -0.000000
+
+=== RAY DEBUG INFO (x = 374) ===
+Player pos:         (12.33, 12.33)
+Ray direction:      (-1.0000, 0.0018)
+Ray step direction: (-1, 1)
+Current tile:       (0, 12)
+Initial distances:  X = 1.0000, Y = 568.1818
+Total distances:    X = 12.3333, Y = 378.7879
+Hit:                TRUE
+Hit side:           VERTICAL
+Length to wall:     0.0000
+================================
+
+W
+
+dir_x: -1.000000, dir_y: 0.000000
+
+=== RAY DEBUG INFO (x = 374) ===
+Player pos:         (12.33, 12.33)
+Ray direction:      (-1.0000, -0.0018)
+Ray step direction: (-1, -1)
+Current tile:       (0, 12)
+Initial distances:  X = 1.0000, Y = 568.1818
+Total distances:    X = 12.3333, Y = 189.3939
+Hit:                TRUE
+Hit side:           VERTICAL
+Length to wall:     0.0000
+================================
+
+W - ROT
+
+dir_x: 1.000000, dir_y: 0.000000
+
+=== RAY DEBUG INFO (x = 374) ===
+Player pos:         (12.33, 12.33)
+Ray direction:      (1.0000, 0.0018)
+Ray step direction: (1, 1)
+Current tile:       (24, 12)
+Initial distances:  X = 1.0000, Y = 568.1818
+Total distances:    X = 12.6667, Y = 378.7879
+Hit:                TRUE
+Hit side:           VERTICAL
+Length to wall:     0.0000
+================================
