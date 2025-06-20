@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.h                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rzvir <rzvir@student.42.fr>                +#+  +:+       +#+        */
+/*   By: rmzvr <rmzvr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/09 14:06:23 by rzvir             #+#    #+#             */
-/*   Updated: 2025/06/19 15:08:24 by rzvir            ###   ########.fr       */
+/*   Updated: 2025/06/20 11:26:57 by rmzvr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -157,6 +157,12 @@ typedef struct s_game
 
 	double				movement_speed;
 	double				rotation_speed;
+
+	t_texture			front_wall;
+	t_texture			back_wall;
+	t_texture			left_wall;
+	t_texture			right_wall;
+	t_texture			*texture_data;
 	t_mlx	mlx;
 }	t_game;
 

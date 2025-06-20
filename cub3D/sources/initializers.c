@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   initializers.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rzvir <rzvir@student.42.fr>                +#+  +:+       +#+        */
+/*   By: rmzvr <rmzvr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/16 13:00:27 by rzvir             #+#    #+#             */
-/*   Updated: 2025/06/19 15:05:27 by rzvir            ###   ########.fr       */
+/*   Updated: 2025/06/20 11:29:41 by rmzvr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,27 @@ void	init_project(t_mlx *mlx)
 	init_mlx_window_and_image(mlx);
 }
 
+void	init_texture_image(char *path, t_texture *texture, t_game *game)
+{
+	texture->xpm.path = path;
+	texture->img.ptr = mlx_xpm_file_to_image(
+		game->mlx.ptr,
+		texture->xpm.path,
+		&texture->xpm.width,
+		&texture->xpm.height
+	);
+	if (texture->img.ptr == NULL)
+	{
+		perror("Image load failed");
+	}
+	texture->img.pixels_addr = mlx_get_data_addr(
+		texture->img.ptr,
+		&texture->img.bytes_per_pixel,
+		&texture->img.line_length,
+		&texture->img.endian
+	);
+}
+
 void	init_game(t_game *game)
 {
 	game->shiftX = 0;
@@ -59,4 +80,8 @@ void	init_game(t_game *game)
 	game->last_time = 0.0;
 	game->movement_speed = 0.0;
 	game->rotation_speed = 0.0;
+	init_texture_image("textures/wall/front.xpm", &game->front_wall, game);
+	init_texture_image("textures/wall/back.xpm", &game->back_wall, game);
+	init_texture_image("textures/wall/left.xpm", &game->left_wall, game);
+	init_texture_image("textures/wall/right.xpm", &game->right_wall, game);
 }
