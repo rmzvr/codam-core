@@ -1,0 +1,8 @@
+.vscode
+debug_helpers.c
+minishell
+docs
+tests
+scripts
+build
+libft.a
