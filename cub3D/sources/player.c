@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   player.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rzvir <rzvir@student.42.fr>                +#+  +:+       +#+        */
+/*   By: rmzvr <rmzvr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/17 14:19:37 by rzvir             #+#    #+#             */
-/*   Updated: 2025/06/20 17:57:30 by rzvir            ###   ########.fr       */
+/*   Updated: 2025/06/23 20:49:23 by rmzvr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,6 @@ static void	init_player_direction(t_game *game)
 		game->camera_plane_x = 0;
 		game->camera_plane_y = 0.66;
 	}
-	printf("dir_x: %f, dir_y: %f\n", game->dir_x, game->dir_y);
 }
 
 void	init_player(t_game *game)

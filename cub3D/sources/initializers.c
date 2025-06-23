@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   initializers.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rzvir <rzvir@student.42.fr>                +#+  +:+       +#+        */
+/*   By: rmzvr <rmzvr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/16 13:00:27 by rzvir             #+#    #+#             */
-/*   Updated: 2025/06/23 14:42:15 by rzvir            ###   ########.fr       */
+/*   Updated: 2025/06/23 21:45:42 by rmzvr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,11 +23,16 @@ static void	init_mlx_window_and_image(t_mlx *mlx)
 	mlx->img.ptr = mlx_new_image(mlx->ptr, 750, 750);
 	if (mlx->img.ptr == NULL)
 		cleanup(mlx, 1);
-	mlx->img.pixels_addr = mlx_get_data_addr(mlx->img.ptr, &mlx->img.bytes_per_pixel,
-			&mlx->img.line_length, &mlx->img.endian);
+	mlx->img.pixels_addr = mlx_get_data_addr(
+			mlx->img.ptr,
+			&mlx->img.bytes_per_pixel,
+			&mlx->img.line_length,
+			&mlx->img.endian
+			);
 	if (mlx->img.pixels_addr == NULL)
 		cleanup(mlx, 1);
 }
+
 void	init_project(t_mlx *mlx)
 {
 	mlx->ptr = NULL;
@@ -40,21 +45,21 @@ void	init_texture_image(char *path, t_texture *texture, t_game *game)
 {
 	texture->xpm.path = path;
 	texture->img.ptr = mlx_xpm_file_to_image(
-		game->mlx.ptr,
-		texture->xpm.path,
-		&texture->xpm.width,
-		&texture->xpm.height
-	);
+			game->mlx.ptr,
+			texture->xpm.path,
+			&texture->xpm.width,
+			&texture->xpm.height
+			);
 	if (texture->img.ptr == NULL)
 	{
 		perror("Image load failed");
 	}
 	texture->img.pixels_addr = mlx_get_data_addr(
-		texture->img.ptr,
-		&texture->img.bytes_per_pixel,
-		&texture->img.line_length,
-		&texture->img.endian
-	);
+			texture->img.ptr,
+			&texture->img.bytes_per_pixel,
+			&texture->img.line_length,
+			&texture->img.endian
+			);
 }
 
 void	init_game(t_game *game)

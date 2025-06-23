@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   dda.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rzvir <rzvir@student.42.fr>                +#+  +:+       +#+        */
+/*   By: rmzvr <rmzvr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/16 13:01:46 by rzvir             #+#    #+#             */
-/*   Updated: 2025/06/23 14:47:43 by rzvir            ###   ########.fr       */
+/*   Updated: 2025/06/23 21:45:28 by rmzvr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,9 +57,9 @@ void	render_frame_with_ray_casting(
 	t_game *game
 )
 {
-	int					x;
-	t_ray				ray;
-	t_wall				wall;
+	int		x;
+	t_ray	ray;
+	t_wall	wall;
 
 	x = 0;
 	while (x < WINDOW_WIDTH)
