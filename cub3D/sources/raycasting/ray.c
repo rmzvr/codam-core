@@ -6,7 +6,7 @@
 /*   By: rzvir <rzvir@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/16 17:03:33 by rzvir             #+#    #+#             */
-/*   Updated: 2025/06/17 14:12:09 by rzvir            ###   ########.fr       */
+/*   Updated: 2025/06/23 14:49:26 by rzvir            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,17 +36,17 @@ double	calc_total_ray_distance(
 	int current_tile
 )
 {
-	double	total_ray_distance_x;
+	double	total_ray_distance;
 
 	if (ray_direction < 0)
 	{
-		total_ray_distance_x = (player_position - current_tile) * ray_distance;
+		total_ray_distance = (player_position - current_tile) * ray_distance;
 	}
 	else
 	{
-		total_ray_distance_x = (current_tile + 1 - player_position) * ray_distance;
+		total_ray_distance = (current_tile + 1 - player_position) * ray_distance;
 	}
-	return (total_ray_distance_x);
+	return (total_ray_distance);
 }
 
 double	calc_ray_distance(
@@ -72,7 +72,7 @@ double	calc_ray_direction(
 	double	normalized_screen_x;
 	double	ray_direction;
 
-	normalized_screen_x = (2 * x / (double)WINDOW_WIDTH )- 1;
+	normalized_screen_x = (2 * x / (double)WINDOW_WIDTH) - 1;
 	ray_direction = player_direction + camera_plane * normalized_screen_x;
 	return (ray_direction);
 }

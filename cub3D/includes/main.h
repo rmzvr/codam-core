@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.h                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rmzvr <rmzvr@student.42.fr>                +#+  +:+       +#+        */
+/*   By: rzvir <rzvir@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/09 14:06:23 by rzvir             #+#    #+#             */
-/*   Updated: 2025/06/20 11:26:57 by rmzvr            ###   ########.fr       */
+/*   Updated: 2025/06/23 14:52:40 by rzvir            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,9 +20,9 @@
 # include <sys/time.h>
 # include <X11/keysym.h>
 
-#ifndef M_PI
-# define M_PI 3.14159265358979323846
-#endif
+# ifndef M_PI
+#  define M_PI 3.14159265358979323846
+# endif
 
 # define MAP_WIDTH 25
 # define MAP_HEIGHT 25
@@ -46,8 +46,8 @@ typedef enum s_bool
 	TRUE,
 }	t_bool;
 
-
-typedef enum	e_hit_side {
+typedef enum e_hit_side
+{
 	VERTICAL,
 	HORIZONTAL,
 }	t_hit_side;
@@ -83,14 +83,16 @@ typedef struct s_ray
 	double		length_to_wall;
 }	t_ray;
 
-extern char map[MAP_HEIGHT][MAP_WIDTH];
+extern char	map[MAP_HEIGHT][MAP_WIDTH];
 
-typedef enum	e_element {
+typedef enum e_element
+{
 	FLOOR,
 	WALL,
 }	t_element;
 
-typedef enum	e_direction {
+typedef enum e_direction
+{
 	TOP,
 	RIGHT,
 	BOTTOM,
@@ -113,7 +115,6 @@ typedef struct s_xpm
 	int		height;
 }	t_xpm;
 
-
 typedef struct s_texture
 {
 	t_xpm	xpm;
@@ -129,9 +130,6 @@ typedef struct s_mlx
 
 typedef struct s_game
 {
-	int					shiftX;
-	int					shiftY;
-
 	double				vector_x_start;
 	double				vector_y_start;
 
@@ -163,15 +161,13 @@ typedef struct s_game
 	t_texture			left_wall;
 	t_texture			right_wall;
 	t_texture			*texture_data;
-	t_mlx	mlx;
+	t_mlx				mlx;
 }	t_game;
 
 void	clear_image(t_game *game);
 void	cleanup(t_mlx *mlx, unsigned int with_exit);
 
 void	my_mlx_pixel_put(t_img *data, int x, int y, int color);
-
-int		handle_keyboard(int keysym, t_game *game);
 
 void	init_player(t_game *game);
 void	draw_player(t_game *game);
@@ -182,7 +178,6 @@ void	init_game(t_game *game);
 
 void	render_frame_with_ray_casting(t_game *game);
 
-int		check_wall(t_direction direction, t_game *game);
 int		get_cell_x_head_addr(int x);
 int		get_cell_x_tile_addr(int x);
 int		get_cell_y_head_addr(int y);
@@ -193,7 +188,7 @@ void	init_draw_line(t_game *game);
 void	draw_line(t_game *game, int x0, int y0, int x1, int y1, int color);
 
 // ray calculations
-int	calc_step_direction(double ray_direction);
+int		calc_step_direction(double ray_direction);
 double	calc_total_ray_distance(double ray_direction, double ray_distance, double player_position, int current_tile);
 double	calc_ray_distance(double ray_direction);
 double	calc_ray_direction(double player_direction, double camera_plane, int x);

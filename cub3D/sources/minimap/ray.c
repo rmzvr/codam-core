@@ -6,62 +6,52 @@
 /*   By: rzvir <rzvir@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/16 12:58:39 by rzvir             #+#    #+#             */
-/*   Updated: 2025/06/19 17:35:32 by rzvir            ###   ########.fr       */
+/*   Updated: 2025/06/23 14:57:29 by rzvir            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "main.h"
 
+static void	swap_double(double *a, double *b)
+{
+	double	temp;
+
+	temp = *b;
+	*b = *a;
+	*a = temp;
+}
+
 void	init_draw_line(t_game *game)
 {
+	double	tx1;
+	double	tx2;
+	double	ty1;
+	double	ty2;
+
+	tx1 = -INFINITY;
+	tx2 = INFINITY;
+	ty1 = -INFINITY;
+	ty2 = INFINITY;
 	game->vector_x_start = game->pos_x * (double)TILE_SIZE + (PLAYER_SIZE / 2);
 	game->vector_y_start = game->pos_y * (double)TILE_SIZE + (PLAYER_SIZE / 2);
-
-	double	tx1;
 	if (game->dir_x != 0)
-	{
 		tx1 = (MIN_WINDOW_X - game->vector_x_start) / game->dir_x;
-	}
-	else
-	{
-		tx1 = -INFINITY;
-	}
 
-	double	tx2;
 	if (game->dir_x != 0)
-	{
 		tx2 = (MAX_WINDOW_X - game->vector_x_start) / game->dir_x;
-	}
-	else
-	{
-		tx2 = INFINITY;
-	}
 
-	double	ty1;
 	if (game->dir_y != 0)
-	{
 		ty1 = (MIN_WINDOW_Y - game->vector_y_start) / game->dir_y;
-	}
-	else
-	{
-		ty1 = -INFINITY;
-	}
 
-	double	ty2;
 	if (game->dir_y != 0)
-	{
 		ty2 = (MAX_WINDOW_Y - game->vector_y_start) / game->dir_y;
-	}
-	else
-	{
-		ty2 = INFINITY;
-	}
 
 	if (tx1 > tx2)
 	{
-		double	temp = tx1;
-		tx1 = tx2;
-		tx2 = temp;
+		swap_double(&tx1, &tx2);
+		// double	temp = tx1;
+		// tx1 = tx2;
+		// tx2 = temp;
 	}
 	if (ty1 > ty2)
 	{

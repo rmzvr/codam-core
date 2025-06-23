@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   initializers.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rmzvr <rmzvr@student.42.fr>                +#+  +:+       +#+        */
+/*   By: rzvir <rzvir@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/16 13:00:27 by rzvir             #+#    #+#             */
-/*   Updated: 2025/06/20 11:29:41 by rmzvr            ###   ########.fr       */
+/*   Updated: 2025/06/23 14:42:15 by rzvir            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,8 +59,6 @@ void	init_texture_image(char *path, t_texture *texture, t_game *game)
 
 void	init_game(t_game *game)
 {
-	game->shiftX = 0;
-	game->shiftY = 0;
 	game->vector_x_start = 0;
 	game->vector_y_start = 0;
 	game->vector_x_end = 0;

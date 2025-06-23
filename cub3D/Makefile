@@ -18,7 +18,6 @@ SRCS := \
 	player.c \
 	map_data.c \
 	helpers.c \
-	controls.c \
 	cleaners.c \
 	initializers.c \
 	minimap/map.c \
