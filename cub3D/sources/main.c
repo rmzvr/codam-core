@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rmzvr <rmzvr@student.42.fr>                +#+  +:+       +#+        */
+/*   By: rzvir <rzvir@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/22 16:12:09 by rmzvr             #+#    #+#             */
-/*   Updated: 2025/06/23 23:57:48 by rmzvr            ###   ########.fr       */
+/*   Updated: 2025/06/24 21:06:26 by rzvir            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,152 +25,129 @@ int	handle_controls(
 {
 	double	old_dir_x;
 	double	old_plane_x;
-
-	old_dir_x = 0.0;
-	old_plane_x = 0.0;
-	double	next_left_x = 0.0;
-	double	next_left_y = 0.0;
-	double	next_right_x = 0.0;
-	double	next_right_y = 0.0;
 	double	player_size = (double)PLAYER_SIZE / (double)TILE_SIZE;
 	double	next_dir_x = game->dir_x * game->movement_speed;
 	double	next_dir_y = game->dir_y * game->movement_speed;
 
-	(void) next_left_x;
-	(void) next_left_y;
-	(void) next_right_x;
-	(void) next_right_y;
+	old_dir_x = 0.0;
+	old_plane_x = 0.0;
 
 	if (game->move_forward == TRUE)
 	{
-		if (game->dir_x > 0 || game->dir_y > 0)
+		double	top_left_x = game->pos_x + next_dir_x;
+		double	top_left_y = game->pos_y + next_dir_y;
+
+		double	bottom_left_y = game->pos_y + player_size + next_dir_y;
+
+		double	top_right_x = game->pos_x + player_size + next_dir_x;
+		double	top_right_y = game->pos_y + next_dir_y;
+
+		double	bottom_right_y = game->pos_y + player_size + next_dir_y;
+
+		if (map[(int)game->pos_y][(int)top_left_x] != 1
+		&&  map[(int)(game->pos_y)][(int)top_right_x] != 1
+		&&  map[(int)(game->pos_y + player_size)][(int)top_left_x] != 1
+		&&  map[(int)(game->pos_y + player_size)][(int)top_right_x] != 1
+		)
 		{
-			next_right_x = game->pos_x + player_size + next_dir_x;
-			next_right_y = game->pos_y + player_size + next_dir_y;
+			game->pos_x += next_dir_x;
 		}
 
-		if (game->dir_x > 0)
+		if (map[(int)top_left_y][(int)game->pos_x] != 1
+		&&  map[(int)top_right_y][(int)(game->pos_x + player_size)] != 1
+		&&  map[(int)bottom_left_y][(int)(game->pos_x)] != 1
+		&&  map[(int)bottom_right_y][(int)(game->pos_x + player_size)] != 1
+		)
 		{
-			next_left_x = game->pos_x + player_size + next_dir_x;
-			next_left_y = game->pos_y + next_dir_y;
+			game->pos_y += next_dir_y;
 		}
-		else if (game->dir_y > 0)
-		{
-			next_left_x = game->pos_x + next_dir_x;
-			next_left_y = game->pos_y + player_size + next_dir_y;
-		}
-		else if (game->dir_x < 0)
-		{
-			next_left_x = game->pos_x + next_dir_x;
-			next_left_y = game->pos_y + next_dir_y;
-
-			next_right_x = game->pos_x + next_dir_x;
-			next_right_y = game->pos_y + player_size + next_dir_y;
-		}
-		else if (game->dir_y < 0)
-		{
-			next_left_x = game->pos_x + next_dir_x;
-			next_left_y = game->pos_y + next_dir_y;
-
-			next_right_x = game->pos_x + player_size + next_dir_x;
-			next_right_y = game->pos_y + next_dir_y;
-		}
-		// printf("hit side vertical: %d\n", game->ray->hit_side == VERTICAL);
-		// printf("hit side horizontal: %d\n", game->ray->hit_side == HORIZONTAL);
-		// printf("%d\n", game->ray->hit_side);
-		// next_left_x = game->pos_x + next_dir_x;
-		// next_left_y = game->pos_y + next_dir_y;
-
-		// next_right_x = game->pos_x + next_dir_x;
-		// next_right_y = game->pos_y - next_dir_y;
-
-		// printf("\e[1;1H\e[2J");
-		// printf("==top==\n");
-		// printf("current pos_x: %f, pos_y: %f\n", game->pos_x, game->pos_y);
-		// printf("next_left_x: %f, next_left_y: %f\n", next_left_x, next_left_y);
-		// printf("next_right_x: %f, next_right_y: %f\n", next_right_x, next_right_y);
-		// printf("diff x: %f, y: %f\n\n", next_left_x - game->pos_x, next_left_y - game->pos_y);
-
-		int	next_left_tile;
-		int	next_right_tile;
-
-		next_left_tile = map[(int)next_left_y][(int)next_left_x];
-		next_right_tile = map[(int)next_right_y][(int)next_right_x];
-
-		if (next_left_tile == 1 || next_right_tile == 1)
-			return (0);
-
-		game->pos_x += next_dir_x;
-		game->pos_y += next_dir_y;
 	}
 	if (game->move_backward == TRUE)
 	{
-		// next_left_x = (game->pos_x - next_dir_x;);
-		// next_left_y = ((game->pos_y + ((double)PLAYER_SIZE / (double)TILE_SIZE)) - next_dir_y);
+		double	top_left_x = game->pos_x - next_dir_x;
+		double	top_left_y = game->pos_y - next_dir_y;
 
-		// next_right_x = (game->pos_x + ((double)PLAYER_SIZE / (double)TILE_SIZE) - next_dir_x;);
+		double	bottom_left_y = game->pos_y + player_size - next_dir_y;
 
-		// printf("==bottom==\n");
-		// printf("current pos_x: %f, pos_y: %f\n", game->pos_x, game->pos_y);
-		// printf("next_left_x: %f, next_left_y: %f, next_right_x: %f\n\n", next_left_x, next_left_y, next_right_x);
+		double	top_right_x = game->pos_x + player_size - next_dir_x;
+		double	top_right_y = game->pos_y - next_dir_y;
 
-		// int	next_left_tile;
-		// int	next_right_tile;
+		double	bottom_right_y = game->pos_y + player_size - next_dir_y;
 
-		// next_left_tile = map[(int)next_left_y][(int)next_left_x];
-		// next_right_tile = map[(int)next_left_y][(int)next_right_x];
-
-		// if (next_left_tile == 1 || next_right_tile == 1)
-		// 	return (0);
-
-		game->pos_x -= next_dir_x;
-		game->pos_y -= next_dir_y;
+		if (map[(int)game->pos_y][(int)top_left_x] != 1
+		&&  map[(int)(game->pos_y)][(int)top_right_x] != 1
+		&&  map[(int)(game->pos_y + player_size)][(int)top_left_x] != 1
+		&&  map[(int)(game->pos_y + player_size)][(int)top_right_x] != 1
+		)
+		{
+			game->pos_x -= next_dir_x;
+		}
+		if (map[(int)top_left_y][(int)game->pos_x] != 1
+		&&  map[(int)top_right_y][(int)(game->pos_x + player_size)] != 1
+		&&  map[(int)bottom_left_y][(int)(game->pos_x)] != 1
+		&&  map[(int)bottom_right_y][(int)(game->pos_x + player_size)] != 1
+		)
+		{
+			game->pos_y -= next_dir_y;
+		}
 	}
 	if (game->move_left == TRUE)
 	{
-		// next_left_x = (game->pos_x + next_dir_y);
-		// next_left_y = (game->pos_y - next_dir_x;);
+		double	top_left_x = game->pos_x + next_dir_y;
+		double	top_left_y = game->pos_y - next_dir_x;
 
-		// next_right_y = (game->pos_y + ((double)PLAYER_SIZE / (double)TILE_SIZE) - next_dir_x;);
+		double	bottom_left_y = game->pos_y + player_size - next_dir_x;
 
-		// printf("==left==\n");
-		// printf("current pos_x: %f, pos_y: %f\n", game->pos_x, game->pos_y);
-		// printf("next_left_x: %f, next_left_y: %f, next_right_y: %f\n\n", next_left_x, next_left_y, next_right_y);
+		double	top_right_x = game->pos_x + player_size + next_dir_y;
+		double	top_right_y = game->pos_y - next_dir_x;
 
-		// int	next_left_tile;
-		// int	next_right_tile;
+		double	bottom_right_y = game->pos_y + player_size - next_dir_x;
 
-		// next_left_tile = map[(int)next_left_y][(int)next_left_x];
-		// next_right_tile = map[(int)next_right_y][(int)next_left_x];
-
-		// if (next_left_tile == 1 || next_right_tile == 1)
-		// 	return (0);
-
-		game->pos_x += next_dir_y;
-		game->pos_y -= next_dir_x;
+		if (map[(int)game->pos_y][(int)top_left_x] != 1
+		&&  map[(int)(game->pos_y)][(int)top_right_x] != 1
+		&&  map[(int)(game->pos_y + player_size)][(int)top_left_x] != 1
+		&&  map[(int)(game->pos_y + player_size)][(int)top_right_x] != 1
+		)
+		{
+			game->pos_x += next_dir_y;
+		}
+		if (map[(int)top_left_y][(int)game->pos_x] != 1
+		&&  map[(int)top_right_y][(int)(game->pos_x + player_size)] != 1
+		&&  map[(int)bottom_left_y][(int)(game->pos_x)] != 1
+		&&  map[(int)bottom_right_y][(int)(game->pos_x + player_size)] != 1
+		)
+		{
+			game->pos_y -= next_dir_x;
+		}
 	}
 	if (game->move_right == TRUE)
 	{
-		// next_left_x = (game->pos_x + ((double)PLAYER_SIZE / (double)TILE_SIZE) - next_dir_y);
-		// next_left_y = (game->pos_y + next_dir_x;);
+		double	top_left_x = game->pos_x - next_dir_y;
+		double	top_left_y = game->pos_y + next_dir_x;
 
-		// next_right_y = (game->pos_y + ((double)PLAYER_SIZE / (double)TILE_SIZE) + next_dir_x;);
+		double	bottom_left_y = game->pos_y + player_size + next_dir_x;
 
-		// printf("==right==\n");
-		// printf("current pos_x: %f, pos_y: %f\n", game->pos_x, game->pos_y);
-		// printf("next_left_x: %f, next_left_y: %f, next_right_y: %f\n\n", next_left_x, next_left_y, next_right_y);
+		double	top_right_x = game->pos_x + player_size - next_dir_y;
+		double	top_right_y = game->pos_y + next_dir_x;
 
-		// int	next_left_tile;
-		// int	next_right_tile;
+		double	bottom_right_y = game->pos_y + player_size + next_dir_x;
 
-		// next_left_tile = map[(int)next_left_y][(int)next_left_x];
-		// next_right_tile = map[(int)next_right_y][(int)next_left_x];
-
-		// if (next_left_tile == 1 || next_right_tile == 1)
-		// 	return (0);
-
-		game->pos_x -= next_dir_y;
-		game->pos_y += next_dir_x;
+		if (map[(int)game->pos_y][(int)top_left_x] != 1
+		&&  map[(int)(game->pos_y)][(int)top_right_x] != 1
+		&&  map[(int)(game->pos_y + player_size)][(int)top_left_x] != 1
+		&&  map[(int)(game->pos_y + player_size)][(int)top_right_x] != 1
+		)
+		{
+			game->pos_x -= next_dir_y;
+		}
+		if (map[(int)top_left_y][(int)game->pos_x] != 1
+		&&  map[(int)top_right_y][(int)(game->pos_x + player_size)] != 1
+		&&  map[(int)bottom_left_y][(int)(game->pos_x)] != 1
+		&&  map[(int)bottom_right_y][(int)(game->pos_x + player_size)] != 1
+		)
+		{
+			game->pos_y += next_dir_x;
+		}
 	}
 	if (game->turn_left == TRUE)
 	{
@@ -180,7 +157,6 @@ int	handle_controls(
 		old_plane_x = game->camera_plane_x;
 		game->camera_plane_x = game->camera_plane_x * cos(-game->rotation_speed) - game->camera_plane_y * sin(-game->rotation_speed);
 		game->camera_plane_y = old_plane_x * sin(-game->rotation_speed) + game->camera_plane_y * cos(-game->rotation_speed);
-		// printf("dir_x: %f, dir_y: %f\n", game->dir_x, game->dir_y);
 	}
 	if (game->turn_right == TRUE)
 	{
@@ -190,9 +166,7 @@ int	handle_controls(
 		old_plane_x = game->camera_plane_x;
 		game->camera_plane_x = game->camera_plane_x * cos(game->rotation_speed) - game->camera_plane_y * sin(game->rotation_speed);
 		game->camera_plane_y = old_plane_x * sin(game->rotation_speed) + game->camera_plane_y * cos(game->rotation_speed);
-		// printf("dir_x: %f, dir_y: %f\n", game->dir_x, game->dir_y);
 	}
-
 	return (0);
 }
 
