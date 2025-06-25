@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   player.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rmzvr <rmzvr@student.42.fr>                +#+  +:+       +#+        */
+/*   By: rzvir <rzvir@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/17 14:19:37 by rzvir             #+#    #+#             */
-/*   Updated: 2025/06/23 20:49:23 by rmzvr            ###   ########.fr       */
+/*   Updated: 2025/06/25 15:35:14 by rzvir            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,8 +29,8 @@ static void	init_player_position(t_game *game)
 				|| map[y][x] == 'E'
 			)
 			{
-				game->pos_x = x + (double)PLAYER_SIZE / (double)TILE_SIZE;
-				game->pos_y = y + (double)PLAYER_SIZE / (double)TILE_SIZE;
+				game->pos_x = x + (TILE_SIZE / TILE_SIZE / 2.0);
+				game->pos_y = y + (TILE_SIZE / TILE_SIZE / 2.0);
 			}
 			x++;
 		}

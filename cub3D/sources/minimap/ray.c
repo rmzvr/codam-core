@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ray.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rmzvr <rmzvr@student.42.fr>                +#+  +:+       +#+        */
+/*   By: rzvir <rzvir@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/16 12:58:39 by rzvir             #+#    #+#             */
-/*   Updated: 2025/06/23 20:44:04 by rmzvr            ###   ########.fr       */
+/*   Updated: 2025/06/25 15:29:00 by rzvir            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,8 +33,8 @@ void	init_draw_line(t_game *game)
 	tx2 = INFINITY;
 	ty1 = -INFINITY;
 	ty2 = INFINITY;
-	game->vector_x_start = game->pos_x * (double)TILE_SIZE + (PLAYER_SIZE / 2);
-	game->vector_y_start = game->pos_y * (double)TILE_SIZE + (PLAYER_SIZE / 2);
+	game->vector_x_start = game->pos_x * (double)TILE_SIZE;
+	game->vector_y_start = game->pos_y * (double)TILE_SIZE;
 	if (game->dir_x != 0)
 		tx1 = (MIN_WINDOW_X - game->vector_x_start) / game->dir_x;
 	if (game->dir_x != 0)

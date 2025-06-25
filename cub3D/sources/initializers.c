@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   initializers.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rmzvr <rmzvr@student.42.fr>                +#+  +:+       +#+        */
+/*   By: rzvir <rzvir@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/16 13:00:27 by rzvir             #+#    #+#             */
-/*   Updated: 2025/06/23 21:45:42 by rmzvr            ###   ########.fr       */
+/*   Updated: 2025/06/25 20:37:27 by rzvir            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,8 +78,8 @@ void	init_game(t_game *game)
 	game->move_backward = 0;
 	game->move_left = 0;
 	game->move_right = 0;
-	game->turn_left = 0;
-	game->turn_right = 0;
+	game->rotate_left = 0;
+	game->rotate_right = 0;
 	game->last_time = 0.0;
 	game->movement_speed = 0.0;
 	game->rotation_speed = 0.0;

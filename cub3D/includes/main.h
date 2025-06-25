@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.h                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rmzvr <rmzvr@student.42.fr>                +#+  +:+       +#+        */
+/*   By: rzvir <rzvir@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/09 14:06:23 by rzvir             #+#    #+#             */
-/*   Updated: 2025/06/23 21:45:31 by rmzvr            ###   ########.fr       */
+/*   Updated: 2025/06/25 20:37:27 by rzvir            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@
 # define MAP_WIDTH 25
 # define MAP_HEIGHT 25
 # define TILE_SIZE 30
-# define PLAYER_SIZE 10
+# define PLAYER_SIZE (double)(((double)10 / (double)TILE_SIZE) / 2.0)
 # define STEP_SIZE (TILE_SIZE / 3)
 # define WINDOW_WIDTH (MAP_WIDTH * TILE_SIZE)
 # define WINDOW_HEIGHT (MAP_HEIGHT * TILE_SIZE)
@@ -46,11 +46,11 @@ typedef enum s_bool
 	TRUE,
 }	t_bool;
 
-typedef enum e_hit_side
+typedef enum e_side
 {
 	VERTICAL,
 	HORIZONTAL,
-}	t_hit_side;
+}	t_side;
 
 typedef struct s_wall
 {
@@ -63,7 +63,7 @@ typedef struct s_wall
 typedef struct s_ray
 {
 	t_bool		hit;
-	t_hit_side	hit_side;
+	t_side	hit_side;
 
 	int			current_tile_x;
 	int			current_tile_y;
@@ -91,13 +91,19 @@ typedef enum e_element
 	WALL,
 }	t_element;
 
-typedef enum e_direction
+typedef enum e_move_direction
 {
-	TOP,
-	RIGHT,
-	BOTTOM,
-	LEFT,
-}	t_direction;
+	M_FORWARD,
+	M_BACKWARD,
+	M_LEFT,
+	M_RIGHT,
+}	t_move_direction;
+
+typedef enum e_rotate_direction
+{
+	R_LEFT,
+	R_RIGHT,
+}	t_rotate_direction;
 
 typedef struct s_img
 {
@@ -149,8 +155,8 @@ typedef struct s_game
 	int					move_backward;
 	int					move_left;
 	int					move_right;
-	int					turn_left;
-	int					turn_right;
+	int					rotate_left;
+	int					rotate_right;
 	double				last_time;
 
 	double				movement_speed;
@@ -195,7 +201,7 @@ double	calc_ray_direction(double player_direction, double camera_plane, int x);
 
 // wall calculations
 void	calc_distance_to_wall(t_ray *ray);
-void	calc_wall_color(t_hit_side hit_side, int step_direction_x, int step_direction_y, t_wall *wall);
+void	calc_wall_color(t_side hit_side, int step_direction_x, int step_direction_y, t_wall *wall);
 void	calc_wall_height(t_wall *wall, double length_to_wall);
 
 // draw

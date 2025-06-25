@@ -6,7 +6,7 @@
 /*   By: rzvir <rzvir@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/16 17:06:49 by rzvir             #+#    #+#             */
-/*   Updated: 2025/06/18 17:29:28 by rzvir            ###   ########.fr       */
+/*   Updated: 2025/06/25 18:30:51 by rzvir            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ void	calc_distance_to_wall(
 }
 
 void	calc_wall_color(
-	t_hit_side hit_side,
+	t_side hit_side,
 	int step_direction_x,
 	int step_direction_y,
 	t_wall *wall
