@@ -6,20 +6,11 @@
 /*   By: rzvir <rzvir@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/16 12:58:39 by rzvir             #+#    #+#             */
-/*   Updated: 2025/06/25 15:29:00 by rzvir            ###   ########.fr       */
+/*   Updated: 2025/06/26 15:43:10 by rzvir            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "main.h"
-
-static void	swap_double(double *a, double *b)
-{
-	double	temp;
-
-	temp = *a;
-	*a = *b;
-	*b = temp;
-}
 
 void	init_draw_line(t_game *game)
 {

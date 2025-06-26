@@ -15,10 +15,14 @@ MLX_LINUX := $(MLX_LINUX_PATH)/libmlx_Linux.a
 SRCS := \
 	main.c \
 	line.c \
+	utils.c \
 	player.c \
-	map_data.c \
 	helpers.c \
 	cleaners.c \
+	movement.c \
+	rotation.c \
+	map_data.c \
+	controls.c \
 	initializers.c \
 	minimap/map.c \
 	minimap/ray.c \

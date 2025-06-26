@@ -6,7 +6,7 @@
 /*   By: rzvir <rzvir@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/17 14:19:37 by rzvir             #+#    #+#             */
-/*   Updated: 2025/06/25 15:35:14 by rzvir            ###   ########.fr       */
+/*   Updated: 2025/06/26 15:37:43 by rzvir            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,29 +44,29 @@ static void	init_player_direction(t_game *game)
 	{
 		game->dir_x = 0.0;
 		game->dir_y = -1.0;
-		game->camera_plane_x = 0.66;
-		game->camera_plane_y = 0;
+		game->plane_x = 0.66;
+		game->plane_y = 0;
 	}
 	else if (map[(int)game->pos_y][(int)game->pos_x] == 'S')
 	{
 		game->dir_x = 0.0;
 		game->dir_y = 1.0;
-		game->camera_plane_x = -0.66;
-		game->camera_plane_y = 0;
+		game->plane_x = -0.66;
+		game->plane_y = 0;
 	}
 	else if (map[(int)game->pos_y][(int)game->pos_x] == 'W')
 	{
 		game->dir_x = -1.0;
 		game->dir_y = 0.0;
-		game->camera_plane_x = 0;
-		game->camera_plane_y = -0.66;
+		game->plane_x = 0;
+		game->plane_y = -0.66;
 	}
 	else if (map[(int)game->pos_y][(int)game->pos_x] == 'E')
 	{
 		game->dir_x = 1.0;
 		game->dir_y = 0.0;
-		game->camera_plane_x = 0;
-		game->camera_plane_y = 0.66;
+		game->plane_x = 0;
+		game->plane_y = 0.66;
 	}
 }
 

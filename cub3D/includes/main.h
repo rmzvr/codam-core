@@ -6,7 +6,7 @@
 /*   By: rzvir <rzvir@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/09 14:06:23 by rzvir             #+#    #+#             */
-/*   Updated: 2025/06/25 20:37:27 by rzvir            ###   ########.fr       */
+/*   Updated: 2025/06/26 17:50:35 by rzvir            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,6 @@
 # include "libft.h"
 # include <math.h>
 # include <stdio.h>
-# include <sys/time.h>
 # include <X11/keysym.h>
 
 # ifndef M_PI
@@ -85,11 +84,31 @@ typedef struct s_ray
 
 extern char	map[MAP_HEIGHT][MAP_WIDTH];
 
-typedef enum e_element
+typedef enum e_tile_type
 {
 	FLOOR,
 	WALL,
-}	t_element;
+}	t_tile_type;
+
+typedef struct s_hitbox
+{
+	int	left_x;
+	int	right_x;
+	int	top_y;
+	int	bottom_y;
+	int	next_left_x;
+	int	next_right_x;
+	int	next_top_y;
+	int	next_bottom_y;
+}	t_hitbox;
+
+typedef struct s_collision_tiles
+{
+	t_tile_type	top_left;
+	t_tile_type	top_right;
+	t_tile_type	bottom_left;
+	t_tile_type	bottom_right;
+}	t_collision_tiles;
 
 typedef enum e_move_direction
 {
@@ -148,8 +167,8 @@ typedef struct s_game
 	double				dir_x;
 	double				dir_y;
 
-	double				camera_plane_x;
-	double				camera_plane_y;
+	double				plane_x;
+	double				plane_y;
 
 	int					move_forward;
 	int					move_backward;
@@ -162,6 +181,9 @@ typedef struct s_game
 	double				movement_speed;
 	double				rotation_speed;
 
+	double				prev_x;
+	double				prev_y;
+
 	t_texture			front_wall;
 	t_texture			back_wall;
 	t_texture			left_wall;
@@ -173,7 +195,7 @@ typedef struct s_game
 void	clear_image(t_game *game);
 void	cleanup(t_mlx *mlx, unsigned int with_exit);
 
-void	my_mlx_pixel_put(t_img *data, int x, int y, int color);
+void	my_mlx_pixel_put(t_img *datvector_x_enda, int x, int y, int color);
 
 void	init_player(t_game *game);
 void	draw_player(t_game *game);
@@ -211,4 +233,16 @@ void	draw_vertical_stripe(int x, t_ray *ray, t_wall *wall, t_game *game, t_textu
 void	initialize_wall(t_wall *wall);
 void	initialize_ray(int x, t_ray *ray, t_game *game);
 
+void	move(t_move_direction move_direction, t_game *game);
+
+void	rotate(t_rotate_direction rotate_direction, t_game *game);
+
+int		handle_movement(t_game *game);
+int		handle_key_press(int keycode, t_game *game);
+int		handle_key_release(int keycode, t_game *game);
+int		handle_mouse_movement(int x, int y, t_game *game);
+
+double	get_time(void);
+void	swap_int(int *a, int *b);
+void	swap_double(double *a, double *b);
 #endif

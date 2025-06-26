@@ -6,7 +6,7 @@
 /*   By: rzvir <rzvir@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/16 13:00:27 by rzvir             #+#    #+#             */
-/*   Updated: 2025/06/25 20:37:27 by rzvir            ###   ########.fr       */
+/*   Updated: 2025/06/26 17:48:04 by rzvir            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,10 +17,10 @@ static void	init_mlx_window_and_image(t_mlx *mlx)
 	mlx->ptr = mlx_init();
 	if (mlx->ptr == NULL)
 		exit(1);
-	mlx->win_ptr = mlx_new_window(mlx->ptr, 750, 750, "cub3D");
+	mlx->win_ptr = mlx_new_window(mlx->ptr, WINDOW_WIDTH, WINDOW_HEIGHT, "cub3D");
 	if (mlx->win_ptr == NULL)
 		cleanup(mlx, 1);
-	mlx->img.ptr = mlx_new_image(mlx->ptr, 750, 750);
+	mlx->img.ptr = mlx_new_image(mlx->ptr, WINDOW_WIDTH, WINDOW_HEIGHT);
 	if (mlx->img.ptr == NULL)
 		cleanup(mlx, 1);
 	mlx->img.pixels_addr = mlx_get_data_addr(
@@ -72,8 +72,8 @@ void	init_game(t_game *game)
 	game->pos_y = 0;
 	game->dir_x = 0;
 	game->dir_y = 0;
-	game->camera_plane_x = 0.0;
-	game->camera_plane_y = 0.66;
+	game->plane_x = 0.0;
+	game->plane_y = 0.66;
 	game->move_forward = 0;
 	game->move_backward = 0;
 	game->move_left = 0;

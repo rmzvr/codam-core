@@ -3,23 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   line.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rmzvr <rmzvr@student.42.fr>                +#+  +:+       +#+        */
+/*   By: rzvir <rzvir@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/16 13:06:00 by rzvir             #+#    #+#             */
-/*   Updated: 2025/06/23 20:48:59 by rmzvr            ###   ########.fr       */
+/*   Updated: 2025/06/26 15:39:41 by rzvir            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "main.h"
-
-static void	swap_int(int *a, int *b)
-{
-	int	temp;
-
-	temp = *a;
-	*a = *b;
-	*b = temp;
-}
 
 void	draw_line_horizontal(
 	int x0,
