@@ -3,46 +3,39 @@
 /*                                                        :::      ::::::::   */
 /*   controls.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rmzvr <rmzvr@student.42.fr>                +#+  +:+       +#+        */
+/*   By: rzvir <rzvir@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/26 15:29:00 by rzvir             #+#    #+#             */
-/*   Updated: 2025/06/27 00:06:14 by rmzvr            ###   ########.fr       */
+/*   Updated: 2025/06/27 14:11:37 by rzvir            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "main.h"
 
-void	handle_mouse_rotation(t_game *game)
+static void	set_mouse_position(t_mlx *mlx, t_mouse *mouse)
 {
-	int		x;
-	int		y;
-	double	rotation_angle;
+	mlx_mouse_get_pos(mlx->ptr, mlx->win_ptr, &mouse->x, &mouse->y);
+}
+
+static t_bool	is_mouse_moving(t_game *game)
+{
 	double	delta_mouse_move;
 
-	rotation_angle = game->time_since_last_frame * ROTATE_RADIAN_PER_SECOND;
-
-	mlx_mouse_hide(game->mlx.ptr, game->mlx.win_ptr);
-	mlx_mouse_get_pos(game->mlx.ptr, game->mlx.win_ptr, &x, &y);
-
-	delta_mouse_move = x - WINDOW_X_CENTER;
-
-	if (delta_mouse_move != 0)
-		rotation_angle = rotation_angle * delta_mouse_move;
-
-	if (delta_mouse_move != 0)
-		rotate(rotation_angle, game);
-
-	if (x != WINDOW_X_CENTER)
-		mlx_mouse_move(game->mlx.ptr,game->mlx.win_ptr, WINDOW_X_CENTER, WINDOW_Y_CENTER);
+	delta_mouse_move = game->mouse.x - WINDOW_X_CENTER;
+	if (delta_mouse_move == 0)
+	{
+		return (FALSE);
+	}
+	return (TRUE);
 }
 
 int	handle_movement(t_game *game)
 {
-
 	double	rotation_angle;
 
 	rotation_angle = game->time_since_last_frame * ROTATE_RADIAN_PER_SECOND;
-
+	mlx_mouse_hide(game->mlx.ptr, game->mlx.win_ptr);
+	set_mouse_position(&game->mlx, &game->mouse);
 	if (game->move_forward == TRUE)
 		move(M_FORWARD, game);
 	if (game->move_backward == TRUE)
@@ -55,9 +48,11 @@ int	handle_movement(t_game *game)
 		rotate(-rotation_angle, game);
 	if (game->rotate_right == TRUE)
 		rotate(rotation_angle, game);
-	handle_mouse_rotation(game);
+	if (is_mouse_moving(game) == TRUE)
+		mouse_rotate(rotation_angle, game);
 	return (0);
 }
+
 int	handle_key_press(int keycode, t_game *game)
 {
 	if (keycode == XK_w)

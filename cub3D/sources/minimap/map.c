@@ -6,69 +6,81 @@
 /*   By: rzvir <rzvir@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/16 12:55:10 by rzvir             #+#    #+#             */
-/*   Updated: 2025/06/23 14:53:25 by rzvir            ###   ########.fr       */
+/*   Updated: 2025/06/27 15:15:32 by rzvir            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "main.h"
 
-void	draw_elements(t_img *img, int cell_x, int cell_y, int x, int y)
+static int	get_tile_start_position(int tile_index)
 {
-	if (map[y][x] == WALL)
+	return (tile_index * MINIMAP_TILE_SIZE);
+}
+
+static int	get_tile_end_position(int tile_index)
+{
+	return (tile_index * MINIMAP_TILE_SIZE + MINIMAP_TILE_SIZE - 1);
+}
+
+void	draw_elements(int window_x, int window_y, int tile_x, int tile_y, t_img *img)
+{
+	if (map[tile_y][tile_x] == WALL)
 	{
-		my_mlx_pixel_put(img, cell_x, cell_y, 0x008000);
+		my_mlx_pixel_put(
+			img, window_x + MINIMAP_OFFSET, window_y + MINIMAP_OFFSET, 0x008000);
 	}
 	else
 	{
-		my_mlx_pixel_put(img, cell_x, cell_y, 0x00BFFF);
+		my_mlx_pixel_put(
+			img, window_x + MINIMAP_OFFSET, window_y + MINIMAP_OFFSET, 0x00BFFF);
 	}
 }
 
-void	draw_borders(t_img *img, int cell_x, int cell_y, int x, int y)
+void	draw_borders(int window_x, int window_y, int tile_x, int tile_y, t_img *img)
 {
 	if (
-		cell_x == x
-		|| cell_y == y
-		|| cell_x == MAX_WINDOW_X
-		|| cell_y == MAX_WINDOW_Y
-		|| cell_x == get_cell_x_head_addr(x)
-		|| cell_x == get_cell_x_tile_addr(x)
-		|| cell_y == get_cell_y_head_addr(y)
-		|| cell_y == get_cell_y_tile_addr(y)
+		window_x == tile_x
+		|| window_y == tile_y
+		|| window_x == (MAX_WINDOW_X / 3)
+		|| window_y == (MAX_WINDOW_Y / 3)
+		|| window_x == get_tile_start_position(tile_x)
+		|| window_x == get_tile_end_position(tile_x)
+		|| window_y == get_tile_start_position(tile_y)
+		|| window_y == get_tile_end_position(tile_y)
 	)
 	{
-		my_mlx_pixel_put(img, cell_x, cell_y, 0xAAAAAA);
+		my_mlx_pixel_put(img, window_x + MINIMAP_OFFSET, window_y + MINIMAP_OFFSET, 0xAAAAAA);
 	}
 }
 
 void	draw_map(t_game *game)
 {
-	int	x;
-	int	y;
-	int	cell_x;
-	int	cell_y;
+	int	tile_x;
+	int	tile_y;
+	int	window_x;
+	int	window_y;
 
-	y = 0;
-	while (y < MAP_HEIGHT)
+	tile_y = 0;
+	while (tile_y < MAP_HEIGHT)
 	{
-		x = 0;
-		while (x < MAP_WIDTH)
+		tile_x = 0;
+		while (tile_x < MAP_WIDTH)
 		{
-			cell_y = get_cell_y_head_addr(y);
-			while (cell_y <= get_cell_y_tile_addr(y))
+			window_y = get_tile_start_position(tile_y);
+			while (window_y <= get_tile_end_position(tile_y))
 			{
-				cell_x = get_cell_x_head_addr(x);
-				while (cell_x <= get_cell_x_tile_addr(x))
+				window_x = get_tile_start_position(tile_x);
+				while (window_x <= get_tile_end_position(tile_x))
 				{
-					draw_elements(&game->mlx.img, cell_x, cell_y, x, y);
-					draw_borders(&game->mlx.img, cell_x, cell_y, x, y);
-					cell_x++;
+					draw_elements(window_x, window_y, tile_x, tile_y, &game->mlx.img);
+					draw_borders(window_x, window_y, tile_x, tile_y, &game->mlx.img);
+					window_x++;
 				}
-				cell_y++;
+				window_y++;
 			}
-			x++;
+			tile_x++;
 		}
-		y++;
+		tile_y++;
 	}
 	mlx_put_image_to_window(
 		game->mlx.ptr, game->mlx.win_ptr, game->mlx.img.ptr, 0, 0);

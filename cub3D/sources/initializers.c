@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   initializers.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rmzvr <rmzvr@student.42.fr>                +#+  +:+       +#+        */
+/*   By: rzvir <rzvir@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/16 13:00:27 by rzvir             #+#    #+#             */
-/*   Updated: 2025/06/26 22:25:51 by rmzvr            ###   ########.fr       */
+/*   Updated: 2025/06/27 15:24:59 by rzvir            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,8 @@ static void	init_mlx_window_and_image(t_mlx *mlx)
 	mlx->ptr = mlx_init();
 	if (mlx->ptr == NULL)
 		exit(1);
-	mlx->win_ptr = mlx_new_window(mlx->ptr, WINDOW_WIDTH, WINDOW_HEIGHT, "cub3D");
+	mlx->win_ptr = mlx_new_window(
+			mlx->ptr, WINDOW_WIDTH, WINDOW_HEIGHT, PROGRAM_NAME);
 	if (mlx->win_ptr == NULL)
 		cleanup(mlx, 1);
 	mlx->img.ptr = mlx_new_image(mlx->ptr, WINDOW_WIDTH, WINDOW_HEIGHT);
@@ -64,14 +65,10 @@ void	init_texture_image(char *path, t_texture *texture, t_game *game)
 
 void	init_game(t_game *game)
 {
-	game->vector_x_start = 0.0;
-	game->vector_y_start = 0.0;
-	game->vector_x_end = 0.0;
-	game->vector_y_end = 0.0;
-	game->pos_x = 0.0;
-	game->pos_y = 0.0;
-	game->dir_x = 0.0;
-	game->dir_y = 0.0;
+	game->players_position_x = 0.0;
+	game->players_position_y = 0.0;
+	game->player_direction_x = 0.0;
+	game->player_direction_y = 0.0;
 	game->move_forward = FALSE;
 	game->move_backward = FALSE;
 	game->move_left = FALSE;
@@ -79,11 +76,10 @@ void	init_game(t_game *game)
 	game->rotate_left = FALSE;
 	game->rotate_right = FALSE;
 	game->previous_time = 0.0;
-
 	init_texture_image("textures/wall/front.xpm", &game->front_wall, game);
 	init_texture_image("textures/wall/back.xpm", &game->back_wall, game);
 	init_texture_image("textures/wall/left.xpm", &game->left_wall, game);
 	init_texture_image("textures/wall/right.xpm", &game->right_wall, game);
-
-	mlx_mouse_move(game->mlx.ptr,game->mlx.win_ptr, WINDOW_X_CENTER, WINDOW_Y_CENTER);
+	mlx_mouse_move(
+		game->mlx.ptr, game->mlx.win_ptr, WINDOW_X_CENTER, WINDOW_Y_CENTER);
 }

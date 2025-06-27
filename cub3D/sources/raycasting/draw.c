@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   draw.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rmzvr <rmzvr@student.42.fr>                +#+  +:+       +#+        */
+/*   By: rzvir <rzvir@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/16 17:08:24 by rzvir             #+#    #+#             */
-/*   Updated: 2025/06/26 22:07:23 by rmzvr            ###   ########.fr       */
+/*   Updated: 2025/06/27 15:23:54 by rzvir            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,9 +41,9 @@ double	calc_hit_point_of_wall(t_ray *ray, t_game *game)
 	double	hit_point_x;
 
 	if (ray->hit_side == VERTICAL)
-		hit_point_x = game->pos_y + ray->length_to_wall * ray->direction_y;
+		hit_point_x = game->players_position_y + ray->length_to_wall * ray->direction_y;
 	else
-		hit_point_x = game->pos_x + ray->length_to_wall * ray->direction_x;
+		hit_point_x = game->players_position_x + ray->length_to_wall * ray->direction_x;
 	hit_point_x -= floor(hit_point_x);
 	return (hit_point_x);
 }

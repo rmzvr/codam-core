@@ -57,9 +57,6 @@ $(LIBFT):
 $(MLX_LINUX):
 	make -C $(MLX_LINUX_PATH)
 
-# %.o: %.c
-# 	$(CC) $(CFLAGS) -c $< -o $@
-
 clean:
 	rm -rf $(BUILD_PATH)
 	@$(MAKE) -C $(LIBFT_PATH) clean

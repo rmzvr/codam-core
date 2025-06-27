@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   rotation.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rmzvr <rmzvr@student.42.fr>                +#+  +:+       +#+        */
+/*   By: rzvir <rzvir@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/26 15:13:39 by rzvir             #+#    #+#             */
-/*   Updated: 2025/06/26 20:49:13 by rmzvr            ###   ########.fr       */
+/*   Updated: 2025/06/27 15:24:59 by rzvir            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,21 @@ void	rotate(
 
 	sin_angle = sin(rotation_angle);
 	cos_angle = cos(rotation_angle);
-	rotate_vector(&game->dir_x, &game->dir_y, sin_angle, cos_angle);
+	rotate_vector(&game->player_direction_x, &game->player_direction_y, sin_angle, cos_angle);
 	rotate_vector(&game->plane_x, &game->plane_y, sin_angle, cos_angle);
+}
+
+void	mouse_rotate(
+	double rotation_angle,
+	t_game *game
+)
+{
+	double	delta_mouse_move;
+
+	delta_mouse_move = game->mouse.x - WINDOW_X_CENTER;
+	rotation_angle = rotation_angle * delta_mouse_move * SENSITIVITY;
+	rotate(rotation_angle, game);
+	if (game->mouse.x != WINDOW_X_CENTER)
+		mlx_mouse_move(
+			game->mlx.ptr, game->mlx.win_ptr, WINDOW_X_CENTER, WINDOW_Y_CENTER);
 }

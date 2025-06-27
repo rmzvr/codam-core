@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.h                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rmzvr <rmzvr@student.42.fr>                +#+  +:+       +#+        */
+/*   By: rzvir <rzvir@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/09 14:06:23 by rzvir             #+#    #+#             */
-/*   Updated: 2025/06/26 22:24:44 by rmzvr            ###   ########.fr       */
+/*   Updated: 2025/06/27 15:24:59 by rzvir            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,11 +23,14 @@
 #  define M_PI 3.14159265358979323846
 # endif
 
+# define PROGRAM_NAME "cub3D"
 # define MAP_WIDTH 25
 # define MAP_HEIGHT 25
 # define TILE_SIZE 30
-# define PLAYER_SIZE (double)(((double)10 / (double)TILE_SIZE) / 2.0)
-# define STEP_SIZE (TILE_SIZE / 3)
+# define MINIMAP_TILE_SIZE (TILE_SIZE / 3)
+# define MINIMAP_OFFSET 10
+# define SENSITIVITY 0.1
+# define PLAYER_SIZE (((double)10 / (double)TILE_SIZE) / 2.0)
 # define WINDOW_WIDTH (MAP_WIDTH * TILE_SIZE)
 # define WINDOW_HEIGHT (MAP_HEIGHT * TILE_SIZE)
 # define WINDOW_X_CENTER (WINDOW_WIDTH / 2)
@@ -52,6 +55,28 @@ typedef enum e_side
 	VERTICAL,
 	HORIZONTAL,
 }	t_side;
+
+extern char	map[MAP_HEIGHT][MAP_WIDTH];
+
+typedef enum e_tile_type
+{
+	FLOOR,
+	WALL,
+}	t_tile_type;
+
+typedef enum e_move_direction
+{
+	M_FORWARD,
+	M_BACKWARD,
+	M_LEFT,
+	M_RIGHT,
+}	t_move_direction;
+
+typedef enum e_rotate_direction
+{
+	R_LEFT,
+	R_RIGHT,
+}	t_rotate_direction;
 
 typedef struct s_wall
 {
@@ -84,14 +109,6 @@ typedef struct s_ray
 	double		length_to_wall;
 }	t_ray;
 
-extern char	map[MAP_HEIGHT][MAP_WIDTH];
-
-typedef enum e_tile_type
-{
-	FLOOR,
-	WALL,
-}	t_tile_type;
-
 typedef struct s_hitbox
 {
 	int	left_x;
@@ -111,20 +128,6 @@ typedef struct s_collision_tiles
 	t_tile_type	bottom_left;
 	t_tile_type	bottom_right;
 }	t_collision_tiles;
-
-typedef enum e_move_direction
-{
-	M_FORWARD,
-	M_BACKWARD,
-	M_LEFT,
-	M_RIGHT,
-}	t_move_direction;
-
-typedef enum e_rotate_direction
-{
-	R_LEFT,
-	R_RIGHT,
-}	t_rotate_direction;
 
 typedef struct s_img
 {
@@ -155,19 +158,19 @@ typedef struct s_mlx
 	t_img	img;
 }	t_mlx;
 
+typedef struct s_mouse
+{
+	int	x;
+	int	y;
+}	t_mouse;
+
 typedef struct s_game
 {
-	double				vector_x_start;
-	double				vector_y_start;
+	double				players_position_x;
+	double				players_position_y;
 
-	int					vector_x_end;
-	int					vector_y_end;
-
-	double				pos_x;
-	double				pos_y;
-
-	double				dir_x;
-	double				dir_y;
+	double				player_direction_x;
+	double				player_direction_y;
 
 	double				plane_x;
 	double				plane_y;
@@ -178,9 +181,11 @@ typedef struct s_game
 	int					move_right;
 	int					rotate_left;
 	int					rotate_right;
-	double				previous_time;
 
+	double				previous_time;
 	double				time_since_last_frame;
+
+	t_mouse				mouse;
 
 	t_texture			front_wall;
 	t_texture			back_wall;
@@ -203,12 +208,6 @@ void	init_project(t_mlx *mlx);
 void	init_game(t_game *game);
 
 void	render_frame(t_game *game);
-
-int		get_cell_x_head_addr(int x);
-int		get_cell_x_tile_addr(int x);
-int		get_cell_y_head_addr(int y);
-int		get_cell_y_tile_addr(int y);
-int		get_cell_index(int position);
 
 void	init_draw_line(t_game *game);
 void	draw_line(t_game *game, int x0, int y0, int x1, int y1, int color);
@@ -243,4 +242,7 @@ void	swap_int(int *a, int *b);
 void	swap_double(double *a, double *b);
 
 void	set_time_since_last_frame(double *time_since_last_frame);
+
+void	mouse_rotate(double rotation_angle, t_game *game);
+
 #endif

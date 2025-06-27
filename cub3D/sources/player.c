@@ -6,7 +6,7 @@
 /*   By: rzvir <rzvir@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/17 14:19:37 by rzvir             #+#    #+#             */
-/*   Updated: 2025/06/26 15:37:43 by rzvir            ###   ########.fr       */
+/*   Updated: 2025/06/27 15:24:59 by rzvir            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,8 +29,8 @@ static void	init_player_position(t_game *game)
 				|| map[y][x] == 'E'
 			)
 			{
-				game->pos_x = x + (TILE_SIZE / TILE_SIZE / 2.0);
-				game->pos_y = y + (TILE_SIZE / TILE_SIZE / 2.0);
+				game->players_position_x = x + (TILE_SIZE / TILE_SIZE / 2.0);
+				game->players_position_y = y + (TILE_SIZE / TILE_SIZE / 2.0);
 			}
 			x++;
 		}
@@ -40,31 +40,31 @@ static void	init_player_position(t_game *game)
 
 static void	init_player_direction(t_game *game)
 {
-	if (map[(int)game->pos_y][(int)game->pos_x] == 'N')
+	if (map[(int)game->players_position_y][(int)game->players_position_x] == 'N')
 	{
-		game->dir_x = 0.0;
-		game->dir_y = -1.0;
+		game->player_direction_x = 0.0;
+		game->player_direction_y = -1.0;
 		game->plane_x = 0.66;
 		game->plane_y = 0;
 	}
-	else if (map[(int)game->pos_y][(int)game->pos_x] == 'S')
+	else if (map[(int)game->players_position_y][(int)game->players_position_x] == 'S')
 	{
-		game->dir_x = 0.0;
-		game->dir_y = 1.0;
+		game->player_direction_x = 0.0;
+		game->player_direction_y = 1.0;
 		game->plane_x = -0.66;
 		game->plane_y = 0;
 	}
-	else if (map[(int)game->pos_y][(int)game->pos_x] == 'W')
+	else if (map[(int)game->players_position_y][(int)game->players_position_x] == 'W')
 	{
-		game->dir_x = -1.0;
-		game->dir_y = 0.0;
+		game->player_direction_x = -1.0;
+		game->player_direction_y = 0.0;
 		game->plane_x = 0;
 		game->plane_y = -0.66;
 	}
-	else if (map[(int)game->pos_y][(int)game->pos_x] == 'E')
+	else if (map[(int)game->players_position_y][(int)game->players_position_x] == 'E')
 	{
-		game->dir_x = 1.0;
-		game->dir_y = 0.0;
+		game->player_direction_x = 1.0;
+		game->player_direction_y = 0.0;
 		game->plane_x = 0;
 		game->plane_y = 0.66;
 	}
