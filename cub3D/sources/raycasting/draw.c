@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   draw.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rzvir <rzvir@student.42.fr>                +#+  +:+       +#+        */
+/*   By: rmzvr <rmzvr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/16 17:08:24 by rzvir             #+#    #+#             */
-/*   Updated: 2025/06/23 14:47:06 by rzvir            ###   ########.fr       */
+/*   Updated: 2025/06/26 22:07:23 by rmzvr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,7 +111,7 @@ void	draw_textured_wall(
 	hit_point_x = calc_hit_point_of_wall(ray, game);
 	texture_column_x = calc_texture_column_x(hit_point_x, texture_data, ray);
 	count_of_texture_pixels_in_line_pixels = 1.0 * texture_data->xpm.height / wall->height;
-	texture_position = (wall->start - WINDOW_HEIGHT / 2 + wall->height / 2) * count_of_texture_pixels_in_line_pixels;
+	texture_position = (wall->start - WINDOW_Y_CENTER + wall->height / 2) * count_of_texture_pixels_in_line_pixels;
 	while (y < wall->end)
 	{
 		tex_y = (int)texture_position & (texture_data->xpm.height - 1);

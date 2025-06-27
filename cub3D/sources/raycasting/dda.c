@@ -6,7 +6,7 @@
 /*   By: rmzvr <rmzvr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/16 13:01:46 by rzvir             #+#    #+#             */
-/*   Updated: 2025/06/23 21:45:28 by rmzvr            ###   ########.fr       */
+/*   Updated: 2025/06/26 22:22:49 by rmzvr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,7 @@ void	trace_ray_to_wall(
 	}
 }
 
-void	render_frame_with_ray_casting(
+void	render_frame(
 	t_game *game
 )
 {

@@ -14,6 +14,7 @@ MLX_LINUX := $(MLX_LINUX_PATH)/libmlx_Linux.a
 
 SRCS := \
 	main.c \
+	fps.c \
 	line.c \
 	utils.c \
 	player.c \

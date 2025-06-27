@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   rotation.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rzvir <rzvir@student.42.fr>                +#+  +:+       +#+        */
+/*   By: rmzvr <rmzvr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/26 15:13:39 by rzvir             #+#    #+#             */
-/*   Updated: 2025/06/26 15:37:43 by rzvir            ###   ########.fr       */
+/*   Updated: 2025/06/26 20:49:13 by rmzvr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,17 +27,13 @@ static void	rotate_vector(
 }
 
 void	rotate(
-	t_rotate_direction rotate_direction,
+	double rotation_angle,
 	t_game *game
 )
 {
 	double	sin_angle;
 	double	cos_angle;
-	double	rotation_angle;
 
-	rotation_angle = game->rotation_speed;
-	if (rotate_direction == R_LEFT)
-		rotation_angle = game->rotation_speed * -1;
 	sin_angle = sin(rotation_angle);
 	cos_angle = cos(rotation_angle);
 	rotate_vector(&game->dir_x, &game->dir_y, sin_angle, cos_angle);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   wall.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rzvir <rzvir@student.42.fr>                +#+  +:+       +#+        */
+/*   By: rmzvr <rmzvr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/16 17:06:49 by rzvir             #+#    #+#             */
-/*   Updated: 2025/06/26 18:25:48 by rzvir            ###   ########.fr       */
+/*   Updated: 2025/06/26 22:07:23 by rmzvr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,12 +55,12 @@ void	calc_wall_height(
 )
 {
 	wall->height = (int)(WINDOW_HEIGHT / length_to_wall);
-	wall->start = -wall->height / 2 + WINDOW_HEIGHT / 2;
+	wall->start = -wall->height / 2 + WINDOW_Y_CENTER;
 	if (wall->start < 0)
 	{
 		wall->start = 0;
 	}
-	wall->end = wall->height / 2 + WINDOW_HEIGHT / 2;
+	wall->end = wall->height / 2 + WINDOW_Y_CENTER;
 	if (wall->end >= WINDOW_HEIGHT)
 	{
 		wall->end = MAX_WINDOW_Y;

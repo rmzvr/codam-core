@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.h                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rzvir <rzvir@student.42.fr>                +#+  +:+       +#+        */
+/*   By: rmzvr <rmzvr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/09 14:06:23 by rzvir             #+#    #+#             */
-/*   Updated: 2025/06/26 17:50:35 by rzvir            ###   ########.fr       */
+/*   Updated: 2025/06/26 22:24:44 by rmzvr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,8 @@
 # define STEP_SIZE (TILE_SIZE / 3)
 # define WINDOW_WIDTH (MAP_WIDTH * TILE_SIZE)
 # define WINDOW_HEIGHT (MAP_HEIGHT * TILE_SIZE)
+# define WINDOW_X_CENTER (WINDOW_WIDTH / 2)
+# define WINDOW_Y_CENTER (WINDOW_HEIGHT / 2)
 # define MIN_WINDOW_X 0
 # define MAX_WINDOW_X (WINDOW_WIDTH - 1)
 # define MIN_WINDOW_Y 0
@@ -176,13 +178,9 @@ typedef struct s_game
 	int					move_right;
 	int					rotate_left;
 	int					rotate_right;
-	double				last_time;
+	double				previous_time;
 
-	double				movement_speed;
-	double				rotation_speed;
-
-	double				prev_x;
-	double				prev_y;
+	double				time_since_last_frame;
 
 	t_texture			front_wall;
 	t_texture			back_wall;
@@ -204,7 +202,7 @@ void	draw_map(t_game *game);
 void	init_project(t_mlx *mlx);
 void	init_game(t_game *game);
 
-void	render_frame_with_ray_casting(t_game *game);
+void	render_frame(t_game *game);
 
 int		get_cell_x_head_addr(int x);
 int		get_cell_x_tile_addr(int x);
@@ -235,14 +233,14 @@ void	initialize_ray(int x, t_ray *ray, t_game *game);
 
 void	move(t_move_direction move_direction, t_game *game);
 
-void	rotate(t_rotate_direction rotate_direction, t_game *game);
+void	rotate(double rotation_angle, t_game *game);
 
 int		handle_movement(t_game *game);
 int		handle_key_press(int keycode, t_game *game);
 int		handle_key_release(int keycode, t_game *game);
-int		handle_mouse_movement(int x, int y, t_game *game);
 
-double	get_time(void);
 void	swap_int(int *a, int *b);
 void	swap_double(double *a, double *b);
+
+void	set_time_since_last_frame(double *time_since_last_frame);
 #endif

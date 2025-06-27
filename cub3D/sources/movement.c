@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   movement.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rzvir <rzvir@student.42.fr>                +#+  +:+       +#+        */
+/*   By: rmzvr <rmzvr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/26 15:12:10 by rzvir             #+#    #+#             */
-/*   Updated: 2025/06/26 15:13:09 by rzvir            ###   ########.fr       */
+/*   Updated: 2025/06/26 22:22:24 by rmzvr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -127,9 +127,11 @@ void	move(
 {
 	double	next_dir_x;
 	double	next_dir_y;
+	double	movement_speed;
 
-	next_dir_x = game->dir_x * game->movement_speed;
-	next_dir_y = game->dir_y * game->movement_speed;
+	movement_speed = game->time_since_last_frame * MOVE_TILE_PER_SECOND;
+	next_dir_x = game->dir_x * movement_speed;
+	next_dir_y = game->dir_y * movement_speed;
 	move_horizontally(move_direction, next_dir_x, next_dir_y, game);
 	move_vertically(move_direction, next_dir_x, next_dir_y, game);
 }

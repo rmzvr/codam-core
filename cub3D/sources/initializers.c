@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   initializers.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rzvir <rzvir@student.42.fr>                +#+  +:+       +#+        */
+/*   By: rmzvr <rmzvr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/16 13:00:27 by rzvir             #+#    #+#             */
-/*   Updated: 2025/06/26 17:48:04 by rzvir            ###   ########.fr       */
+/*   Updated: 2025/06/26 22:25:51 by rmzvr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,27 +64,26 @@ void	init_texture_image(char *path, t_texture *texture, t_game *game)
 
 void	init_game(t_game *game)
 {
-	game->vector_x_start = 0;
-	game->vector_y_start = 0;
-	game->vector_x_end = 0;
-	game->vector_y_end = 0;
-	game->pos_x = 0;
-	game->pos_y = 0;
-	game->dir_x = 0;
-	game->dir_y = 0;
-	game->plane_x = 0.0;
-	game->plane_y = 0.66;
-	game->move_forward = 0;
-	game->move_backward = 0;
-	game->move_left = 0;
-	game->move_right = 0;
-	game->rotate_left = 0;
-	game->rotate_right = 0;
-	game->last_time = 0.0;
-	game->movement_speed = 0.0;
-	game->rotation_speed = 0.0;
+	game->vector_x_start = 0.0;
+	game->vector_y_start = 0.0;
+	game->vector_x_end = 0.0;
+	game->vector_y_end = 0.0;
+	game->pos_x = 0.0;
+	game->pos_y = 0.0;
+	game->dir_x = 0.0;
+	game->dir_y = 0.0;
+	game->move_forward = FALSE;
+	game->move_backward = FALSE;
+	game->move_left = FALSE;
+	game->move_right = FALSE;
+	game->rotate_left = FALSE;
+	game->rotate_right = FALSE;
+	game->previous_time = 0.0;
+
 	init_texture_image("textures/wall/front.xpm", &game->front_wall, game);
 	init_texture_image("textures/wall/back.xpm", &game->back_wall, game);
 	init_texture_image("textures/wall/left.xpm", &game->left_wall, game);
 	init_texture_image("textures/wall/right.xpm", &game->right_wall, game);
+
+	mlx_mouse_move(game->mlx.ptr,game->mlx.win_ptr, WINDOW_X_CENTER, WINDOW_Y_CENTER);
 }

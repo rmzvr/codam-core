@@ -1,31 +1,34 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   utils.c                                            :+:      :+:    :+:   */
+/*   fps.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: rmzvr <rmzvr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/06/26 15:31:54 by rzvir             #+#    #+#             */
-/*   Updated: 2025/06/26 22:24:22 by rmzvr            ###   ########.fr       */
+/*   Created: 2025/06/26 22:23:22 by rmzvr             #+#    #+#             */
+/*   Updated: 2025/06/26 22:24:34 by rmzvr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <sys/time.h>
 #include "main.h"
 
-void	swap_int(int *a, int *b)
+static double	get_time(void)
 {
-	int	temp;
+	struct timeval	tv;
 
-	temp = *a;
-	*a = *b;
-	*b = temp;
+	gettimeofday(&tv, NULL);
+	return (tv.tv_sec + tv.tv_usec / 1000000.0);
 }
 
-void	swap_double(double *a, double *b)
+void	set_time_since_last_frame(
+	double *time_since_last_frame
+)
 {
-	double	temp;
+	static double	previous_time;
+	double			current_time;
 
-	temp = *a;
-	*a = *b;
-	*b = temp;
+	current_time = get_time();
+	*time_since_last_frame = current_time - previous_time;
+	previous_time = current_time;
 }
