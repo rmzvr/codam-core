@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   dda.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rmzvr <rmzvr@student.42.fr>                +#+  +:+       +#+        */
+/*   By: rzvir <rzvir@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/16 13:01:46 by rzvir             #+#    #+#             */
-/*   Updated: 2025/06/26 22:22:49 by rmzvr            ###   ########.fr       */
+/*   Updated: 2025/06/27 16:37:53 by rzvir            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,11 +41,9 @@ void	check_wall_hit(
 }
 
 void	trace_ray_to_wall(
-	t_ray *ray,
-	t_game *game
+	t_ray *ray
 )
 {
-	(void)game;
 	while (ray->hit == FALSE)
 	{
 		move_to_next_tile_side(ray);
@@ -66,7 +64,7 @@ void	render_frame(
 	{
 		initialize_ray(x, &ray, game);
 		initialize_wall(&wall);
-		trace_ray_to_wall(&ray, game);
+		trace_ray_to_wall(&ray);
 		if (ray.hit_side == VERTICAL)
 		{
 			if (ray.step_direction_x > 0)

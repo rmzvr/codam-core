@@ -6,7 +6,7 @@
 /*   By: rzvir <rzvir@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/09 14:06:23 by rzvir             #+#    #+#             */
-/*   Updated: 2025/06/27 15:24:59 by rzvir            ###   ########.fr       */
+/*   Updated: 2025/06/27 16:52:04 by rzvir            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@
 # define MAP_WIDTH 25
 # define MAP_HEIGHT 25
 # define TILE_SIZE 30
-# define MINIMAP_TILE_SIZE (TILE_SIZE / 3)
+# define MINIMAP_TILE_SIZE (TILE_SIZE / 2)
 # define MINIMAP_OFFSET 10
 # define SENSITIVITY 0.1
 # define PLAYER_SIZE (((double)10 / (double)TILE_SIZE) / 2.0)
@@ -185,6 +185,10 @@ typedef struct s_game
 	double				previous_time;
 	double				time_since_last_frame;
 
+	double				length_to_wall;
+	int					wall_hit_x;
+	int					wall_hit_y;
+
 	t_mouse				mouse;
 
 	t_texture			front_wall;
@@ -193,6 +197,7 @@ typedef struct s_game
 	t_texture			right_wall;
 	t_texture			*texture_data;
 	t_mlx				mlx;
+
 }	t_game;
 
 void	clear_image(t_game *game);

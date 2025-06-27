@@ -6,7 +6,7 @@
 /*   By: rzvir <rzvir@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/22 16:12:09 by rmzvr             #+#    #+#             */
-/*   Updated: 2025/06/27 15:16:02 by rzvir            ###   ########.fr       */
+/*   Updated: 2025/06/27 16:35:35 by rzvir            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ int	game_loop(
 	render_frame(game);
 	draw_map(game);
 	draw_player(game);
-	init_draw_line(game);
+	// init_draw_line(game);
 	return (0);
 }
 
