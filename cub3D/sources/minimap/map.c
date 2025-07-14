@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   map.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rzvir <rzvir@student.42.fr>                +#+  +:+       +#+        */
+/*   By: rmzvr <rmzvr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/16 12:55:10 by rzvir             #+#    #+#             */
-/*   Updated: 2025/06/27 17:54:29 by rzvir            ###   ########.fr       */
+/*   Updated: 2025/06/28 21:09:52 by rmzvr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,34 +53,53 @@ void	draw_borders(int window_x, int window_y, int tile_x, int tile_y, t_img *img
 	}
 }
 
+static void	draw_player(t_game *game)
+{
+	int	player_x_start;
+	int	player_y_start;
+	int	player_x_end;
+	int	player_y_end;
+
+	player_x_start = (6.0 - PLAYER_SIZE) * MINIMAP_TILE_SIZE;
+	player_y_start = (5.5 - PLAYER_SIZE) * MINIMAP_TILE_SIZE;
+	player_x_end = (6.0 + PLAYER_SIZE) * MINIMAP_TILE_SIZE;
+	player_y_end = (5.5 + PLAYER_SIZE) * MINIMAP_TILE_SIZE;
+	while (player_y_start < player_y_end)
+	{
+		player_x_start = (6.0 - PLAYER_SIZE) * MINIMAP_TILE_SIZE;
+		while (player_x_start < player_x_end)
+		{
+			my_mlx_pixel_put(
+				&game->mlx.img, player_x_start, player_y_start, 0x000000);
+			player_x_start++;
+		}
+		player_y_start++;
+	}
+}
+
 void	draw_map(t_game *game)
 {
 	double	tile_x;
 	double	tile_y;
 	int		window_x;
 	int		window_y;
-	// double	delta_x = (game->players_position_x + 5.0) - (game->players_position_x - 4.0);
-	// double	delta_y = (game->players_position_y + 5.0) - (game->players_position_y - 4.0);
 
 	double	start_x = 0.0;
 	double	start_y = 0.0;
 
-	tile_y = game->players_position_y - 4.0;
-	// printf("players_position_x: %f, players_position_y: %f\n", game->players_position_x, game->players_position_y);
-	// printf("delta_x: %f, delta_y: %f\n", delta_x, delta_y);
-	while (tile_y < game->players_position_y + 5.0)
+	tile_y = game->players_position_y - 5.5;
+	while (tile_y < game->players_position_y + 5.5)
 	{
-		tile_x = game->players_position_x - 4.0;
-		while (tile_x < game->players_position_x + 5.0)
+		tile_x = game->players_position_x - 5.5;
+		while (tile_x < game->players_position_x + 5.5)
 		{
-			// printf("tile_x: %f, tile_y: %f\n", tile_x, tile_y);
 			window_y = start_y * MINIMAP_TILE_SIZE;
 			while (window_y <= start_y * MINIMAP_TILE_SIZE + MINIMAP_TILE_SIZE - 1)
 			{
 				window_x = start_x * MINIMAP_TILE_SIZE;
 				while (window_x <= start_x * MINIMAP_TILE_SIZE + MINIMAP_TILE_SIZE - 1)
 				{
-					printf("window_x: %d, window_y: %d\n", window_x, window_y);
+					// printf("tile: %d\n", map[(int)tile_y][(int)tile_x]);
 					if (map[(int)tile_y][(int)tile_x] == WALL)
 						my_mlx_pixel_put(&game->mlx.img, window_x, window_y, 0x008000);
 					else
@@ -91,12 +110,14 @@ void	draw_map(t_game *game)
 				}
 				window_y++;
 			}
-			// start_x += 1.0;
-			tile_x += 1.0;
+			start_x += PLAYER_SIZE;
+			tile_x += PLAYER_SIZE;
 		}
-		start_y += 1.0;
-		tile_y += 1.0;
+		start_x = 0.0;
+		start_y += PLAYER_SIZE;
+		tile_y += PLAYER_SIZE;
 	}
+	draw_player(game);
 	mlx_put_image_to_window(
 		game->mlx.ptr, game->mlx.win_ptr, game->mlx.img.ptr, 0, 0);
 }

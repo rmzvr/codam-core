@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.h                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rzvir <rzvir@student.42.fr>                +#+  +:+       +#+        */
+/*   By: rmzvr <rmzvr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/09 14:06:23 by rzvir             #+#    #+#             */
-/*   Updated: 2025/06/27 16:52:04 by rzvir            ###   ########.fr       */
+/*   Updated: 2025/06/28 20:24:48 by rmzvr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -206,7 +206,7 @@ void	cleanup(t_mlx *mlx, unsigned int with_exit);
 void	my_mlx_pixel_put(t_img *datvector_x_enda, int x, int y, int color);
 
 void	init_player(t_game *game);
-void	draw_player(t_game *game);
+// void	draw_player(t_game *game);
 void	draw_map(t_game *game);
 
 void	init_project(t_mlx *mlx);

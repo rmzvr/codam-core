@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rzvir <rzvir@student.42.fr>                +#+  +:+       +#+        */
+/*   By: rmzvr <rmzvr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/22 16:12:09 by rmzvr             #+#    #+#             */
-/*   Updated: 2025/06/27 16:35:35 by rzvir            ###   ########.fr       */
+/*   Updated: 2025/06/28 20:24:42 by rmzvr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ int	game_loop(
 	handle_movement(game);
 	render_frame(game);
 	draw_map(game);
-	draw_player(game);
+	// draw_player(game);
 	// init_draw_line(game);
 	return (0);
 }
