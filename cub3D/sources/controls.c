@@ -6,7 +6,7 @@
 /*   By: rzvir <rzvir@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/26 15:29:00 by rzvir             #+#    #+#             */
-/*   Updated: 2025/06/27 14:11:37 by rzvir            ###   ########.fr       */
+/*   Updated: 2025/07/14 15:11:49 by rzvir            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,6 +55,8 @@ int	handle_movement(t_game *game)
 
 int	handle_key_press(int keycode, t_game *game)
 {
+	if (keycode == XK_Escape)
+		exit(0);
 	if (keycode == XK_w)
 		game->move_forward = TRUE;
 	if (keycode == XK_s)
