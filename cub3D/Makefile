@@ -16,7 +16,6 @@ SRCS := \
 	main.c \
 	fps.c \
 	line.c \
-	utils.c \
 	player.c \
 	helpers.c \
 	cleaners.c \
@@ -26,9 +25,10 @@ SRCS := \
 	controls.c \
 	initializers.c \
 	minimap/map.c \
-	minimap/ray.c \
-	minimap/player.c \
+	minimap/draw_tile.c \
+	minimap/draw_player.c \
 	raycasting/dda.c \
+	raycasting/textured_wall.c\
 	raycasting/ray.c \
 	raycasting/wall.c \
 	raycasting/draw.c \

@@ -6,7 +6,7 @@
 /*   By: rzvir <rzvir@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/26 15:12:10 by rzvir             #+#    #+#             */
-/*   Updated: 2025/06/27 15:24:59 by rzvir            ###   ########.fr       */
+/*   Updated: 2025/07/15 14:46:05 by rzvir            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,8 +37,8 @@ static double	get_horizontal_offset(
 
 static void	move_horizontally(
 	t_move_direction move_direction,
-	double next_player_direction_x,
-	double next_player_direction_y,
+	double next_direction_x,
+	double next_direction_y,
 	t_game *game
 )
 {
@@ -47,11 +47,11 @@ static void	move_horizontally(
 	double				horizontal_offset;
 
 	horizontal_offset = get_horizontal_offset(
-			move_direction, next_player_direction_x, next_player_direction_y);
-	hitbox.top_y = game->players_position_y - PLAYER_SIZE;
-	hitbox.bottom_y = game->players_position_y + PLAYER_SIZE;
-	hitbox.next_left_x = game->players_position_x - PLAYER_SIZE + horizontal_offset;
-	hitbox.next_right_x = game->players_position_x + PLAYER_SIZE + horizontal_offset;
+			move_direction, next_direction_x, next_direction_y);
+	hitbox.top_y = game->position_y - PLAYER_SIZE;
+	hitbox.bottom_y = game->position_y + PLAYER_SIZE;
+	hitbox.next_left_x = game->position_x - PLAYER_SIZE + horizontal_offset;
+	hitbox.next_right_x = game->position_x + PLAYER_SIZE + horizontal_offset;
 	collision_tiles.top_left = map[hitbox.top_y][hitbox.next_left_x];
 	collision_tiles.top_right = map[hitbox.top_y][hitbox.next_right_x];
 	collision_tiles.bottom_left = map[hitbox.bottom_y][hitbox.next_left_x];
@@ -62,7 +62,7 @@ static void	move_horizontally(
 		&& collision_tiles.bottom_right != WALL
 	)
 	{
-		game->players_position_x += horizontal_offset;
+		game->position_x += horizontal_offset;
 	}
 }
 
@@ -91,8 +91,8 @@ static double	get_vertical_offset(
 
 static void	move_vertically(
 	t_move_direction move_direction,
-	double next_player_direction_x,
-	double next_player_direction_y,
+	double next_direction_x,
+	double next_direction_y,
 	t_game *game
 )
 {
@@ -101,11 +101,11 @@ static void	move_vertically(
 	double				vertical_offset;
 
 	vertical_offset = get_vertical_offset(
-			move_direction, next_player_direction_x, next_player_direction_y);
-	hitbox.next_top_y = game->players_position_y - PLAYER_SIZE + vertical_offset;
-	hitbox.next_bottom_y = game->players_position_y + PLAYER_SIZE + vertical_offset;
-	hitbox.left_x = game->players_position_x - PLAYER_SIZE;
-	hitbox.right_x = game->players_position_x + PLAYER_SIZE;
+			move_direction, next_direction_x, next_direction_y);
+	hitbox.next_top_y = game->position_y - PLAYER_SIZE + vertical_offset;
+	hitbox.next_bottom_y = game->position_y + PLAYER_SIZE + vertical_offset;
+	hitbox.left_x = game->position_x - PLAYER_SIZE;
+	hitbox.right_x = game->position_x + PLAYER_SIZE;
 	collision_tiles.top_left = map[hitbox.next_top_y][hitbox.left_x];
 	collision_tiles.top_right = map[hitbox.next_top_y][hitbox.right_x];
 	collision_tiles.bottom_left = map[hitbox.next_bottom_y][hitbox.left_x];
@@ -116,7 +116,7 @@ static void	move_vertically(
 		&& collision_tiles.bottom_right != WALL
 	)
 	{
-		game->players_position_y += vertical_offset;
+		game->position_y += vertical_offset;
 	}
 }
 
@@ -125,13 +125,13 @@ void	move(
 	t_game *game
 )
 {
-	double	next_player_direction_x;
-	double	next_player_direction_y;
+	double	next_direction_x;
+	double	next_direction_y;
 	double	movement_speed;
 
 	movement_speed = game->time_since_last_frame * MOVE_TILE_PER_SECOND;
-	next_player_direction_x = game->player_direction_x * movement_speed;
-	next_player_direction_y = game->player_direction_y * movement_speed;
-	move_horizontally(move_direction, next_player_direction_x, next_player_direction_y, game);
-	move_vertically(move_direction, next_player_direction_x, next_player_direction_y, game);
+	next_direction_x = game->direction_x * movement_speed;
+	next_direction_y = game->direction_y * movement_speed;
+	move_horizontally(move_direction, next_direction_x, next_direction_y, game);
+	move_vertically(move_direction, next_direction_x, next_direction_y, game);
 }

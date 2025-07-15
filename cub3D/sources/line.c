@@ -6,109 +6,132 @@
 /*   By: rzvir <rzvir@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/16 13:06:00 by rzvir             #+#    #+#             */
-/*   Updated: 2025/06/26 15:39:41 by rzvir            ###   ########.fr       */
+/*   Updated: 2025/07/15 12:21:46 by rzvir            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "main.h"
 
-void	draw_line_horizontal(
-	int x0,
-	int y0,
-	int x1,
-	int y1,
+static void	swap_int(int *a, int *b)
+{
+	int	temp;
+
+	temp = *a;
+	*a = *b;
+	*b = temp;
+}
+
+static int	get_delta(int a, int b)
+{
+	return (b - a);
+}
+
+static void	draw_line_horizontal(
+	int x_start,
+	int y_start,
+	int x_end,
+	int y_end,
 	t_game *game,
 	int color
 )
 {
-	int	dx;
-	int	dy;
-	int	dir;
 	int	x;
 	int	y;
-	int	d;
+	int	delta_x;
+	int	delta_y;
+	int	direction;
+	int	decision_parameter;
 
-	if (x0 > x1)
+	if (x_start > x_end)
 	{
-		swap_int(&x0, &x1);
-		swap_int(&y0, &y1);
+		swap_int(&x_start, &x_end);
+		swap_int(&y_start, &y_end);
 	}
-	dx = x1 - x0;
-	dy = y1 - y0;
-	dir = 1;
-	if (dy < 0)
+	x = x_start;
+	y = y_start;
+	delta_x = get_delta(x_start, x_end);
+	delta_y = get_delta(y_start, y_end);
+	direction = 1;
+	decision_parameter = 0;
+	if (delta_y < 0)
 	{
-		dir = -1;
-		dy = dy * dir;
+		direction = -1;
+		delta_y = delta_y * direction;
 	}
-	if (dx != 0)
+	if (delta_x != 0)
 	{
-		x = x0;
-		y = y0;
-		d = (2 * dy) - dx;
-		while (x < x1)
+		decision_parameter = 2 * delta_y - delta_x;
+		while (x < x_end)
 		{
 			my_mlx_pixel_put(&game->mlx.img, x, y, color);
-			if (d >= 0)
+			if (decision_parameter >= 0)
 			{
-				y = y + dir;
-				d = d - (2 * dx);
+				y = y + direction;
+				decision_parameter = decision_parameter - 2 * delta_x;
 			}
-			d = d + 2 * dy;
+			decision_parameter = decision_parameter + 2 * delta_y;
 			x++;
 		}
 	}
 }
 
-void	draw_line_vertical(int x0, int y0, int x1, int y1, t_game *game, int color)
+static void	draw_line_vertical(
+	int x_start,
+	int y_start,
+	int x_end,
+	int y_end,
+	t_game *game,
+	int color
+)
 {
-	int	dx;
-	int	dy;
-	int	dir;
+	int	delta_x;
+	int	delta_y;
+	int	direction;
 	int	x;
 	int	y;
-	int	d;
+	int	decision_parameter;
 
-	if (y0 > y1)
+	if (y_start > y_end)
 	{
-		swap_int(&x0, &x1);
-		swap_int(&y0, &y1);
+		swap_int(&x_start, &x_end);
+		swap_int(&y_start, &y_end);
 	}
-	dx = x1 - x0;
-	dy = y1 - y0;
-	dir = 1;
-	if (dx < 0)
+	x = x_start;
+	y = y_start;
+	delta_x = get_delta(x_start, x_end);
+	delta_y = get_delta(y_start, y_end);
+	direction = 1;
+	decision_parameter = 0;
+	if (delta_x < 0)
 	{
-		dir = -1;
-		dx = dx * dir;
+		direction = -1;
+		delta_x = delta_x * direction;
 	}
-	if (dy != 0)
+	if (delta_y != 0)
 	{
-		x = x0;
-		y = y0;
-		d = (2 * dx) - dy;
-		while (y < y1)
+		decision_parameter = 2 * delta_x - delta_y;
+		while (y < y_end)
 		{
 			my_mlx_pixel_put(&game->mlx.img, x, y, color);
-			if (d >= 0)
+			if (decision_parameter >= 0)
 			{
-				x = x + dir;
-				d = d - (2 * dy);
+				x = x + direction;
+				decision_parameter = decision_parameter - (2 * delta_y);
 			}
-			d = d + 2 * dx;
+			decision_parameter = decision_parameter + 2 * delta_x;
 			y++;
 		}
 	}
 }
 
-void	draw_line(t_game *game, int x0, int y0, int x1, int y1, int color)
+void	draw_line(t_game *game, int x_start, int y_start, int x_end, int y_end, int color)
 {
-	if (abs(x1 - x0) > abs(y1 - y0))
+	if (abs(x_end - x_start) > abs(y_end - y_start))
 	{
-		draw_line_horizontal(x0, y0, x1, y1, game, color);
+		draw_line_horizontal(x_start, y_start, x_end, y_end, game, color);
 	}
 	else
 	{
-		draw_line_vertical(x0, y0, x1, y1, game, color);
+		draw_line_vertical(x_start, y_start, x_end, y_end, game, color);
 	}
 }

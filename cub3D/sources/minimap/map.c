@@ -6,144 +6,52 @@
 /*   By: rzvir <rzvir@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/16 12:55:10 by rzvir             #+#    #+#             */
-/*   Updated: 2025/07/14 18:17:27 by rzvir            ###   ########.fr       */
+/*   Updated: 2025/07/15 17:04:37 by rzvir            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "main.h"
 
-// static int	get_tile_start_position(int tile_index)
-// {
-// 	return (tile_index * TILE_SIZE);
-// }
-
-// static int	get_tile_end_position(int tile_index)
-// {
-// 	return (tile_index * TILE_SIZE + TILE_SIZE - 1);
-// }
-
-void	draw_elements(int window_x, int window_y, int tile_x, int tile_y, t_img *img)
+static void	set_start_tile(
+	int *tile,
+	double position
+)
 {
-	if (tile_x < 0 || tile_y < 0 || tile_x >= MAP_WIDTH || tile_y >= MAP_HEIGHT)
-	{
-		my_mlx_pixel_put(
-			img, window_x, window_y, 0x2C2D2D);
-	}
-	else if (map[tile_y][tile_x] == WALL)
-	{
-		my_mlx_pixel_put(
-			img, window_x, window_y, 0x008000);
-	}
-	else
-	{
-		my_mlx_pixel_put(
-			img, window_x, window_y, 0x00BFFF);
-	}
+	*tile = position - MINIMAP_RADIUS;
+	if (position - MINIMAP_RADIUS < 0.0)
+		*tile -= 1;
 }
 
-void	draw_borders(int window_x, int window_y, int tile_x, int tile_y, t_img *img)
+static void	initialize_minimap_data(
+	t_minimap *minimap,
+	t_game *game
+)
 {
-	(void) tile_x;
-	(void) tile_y;
-	if (
-		window_x == 0
-		|| window_y == 0
-		|| window_x == tile_x * TILE_SIZE + TILE_SIZE - 1
-		|| window_y == tile_y * TILE_SIZE + TILE_SIZE - 1
-	)
-	{
-		my_mlx_pixel_put(img, window_x, window_y, 0x000000);
-	}
+	minimap->window_tile_x = 0;
+	minimap->window_tile_y = 0;
+	set_start_tile(&minimap->map_tile_y, game->position_y);
+	set_start_tile(&minimap->map_tile_x, game->position_x);
 }
 
-// static void	draw_player(t_game *game)
-// {
-// 	int	player_x_start;
-// 	int	player_y_start;
-// 	int	player_x_end;
-// 	int	player_y_end;
-
-// 	player_x_start = (game->players_position_x - PLAYER_SIZE) * TILE_SIZE;
-// 	player_y_start = (game->players_position_y - PLAYER_SIZE) * TILE_SIZE;
-// 	player_x_end = (game->players_position_x + PLAYER_SIZE) * TILE_SIZE;
-// 	player_y_end = (game->players_position_y + PLAYER_SIZE) * TILE_SIZE;
-// 	while (player_y_start < player_y_end)
-// 	{
-// 		player_x_start = (game->players_position_x - PLAYER_SIZE) * TILE_SIZE;
-// 		while (player_x_start < player_x_end)
-// 		{
-// 			my_mlx_pixel_put(
-// 				&game->mlx.img, player_x_start, player_y_start, 0x000000);
-// 			player_x_start++;
-// 		}
-// 		player_y_start++;
-// 	}
-// }
-
-static void	draw_player(t_game *game)
+void	draw_map(
+	t_game *game
+)
 {
-	int	player_x_start;
-	int	player_y_start;
-	int	player_x_end;
-	int	player_y_end;
+	t_minimap	minimap;
 
-	player_x_start = (5 - PLAYER_SIZE + (game->players_position_x - (int)game->players_position_x)) * TILE_SIZE;
-	player_y_start = (5 - PLAYER_SIZE + (game->players_position_y - (int)game->players_position_y)) * TILE_SIZE;
-	player_x_end = (5 + PLAYER_SIZE + (game->players_position_x - (int)game->players_position_x)) * TILE_SIZE;
-	player_y_end = (5 + PLAYER_SIZE + (game->players_position_y - (int)game->players_position_y)) * TILE_SIZE;
-	while (player_y_start < player_y_end)
+	initialize_minimap_data(&minimap, game);
+	while (minimap.map_tile_y < game->position_y + MINIMAP_RADIUS)
 	{
-		player_x_start = (5 - PLAYER_SIZE + (game->players_position_x - (int)game->players_position_x)) * TILE_SIZE;
-		while (player_x_start < player_x_end)
+		minimap.window_tile_x = 0;
+		set_start_tile(&minimap.map_tile_x, game->position_x);
+		while (minimap.map_tile_x < game->position_x + MINIMAP_RADIUS)
 		{
-			my_mlx_pixel_put(&game->mlx.img, player_x_start, player_y_start, 0x000000);
-			player_x_start++;
+			draw_tile(&minimap, game);
+			minimap.map_tile_x += 1;
+			minimap.window_tile_x += 1;
 		}
-		player_y_start++;
-	}
-}
-
-void	draw_map(t_game *game)
-{
-	int		tile_x;
-	int		tile_y;
-	int		start_x = 0;
-	int		start_y = 0;
-	int		window_x;
-	int		window_y;
-
-	tile_y = game->players_position_y - 5;
-	if (game->players_position_y - 5 < 0.0)
-	{
-		tile_y -= 1;
-	}
-	while (tile_y < game->players_position_y + 5)
-	{
-		tile_x = game->players_position_x - 5;
-		if (game->players_position_x - 5 < 0.0)
-		{
-			tile_x -= 1;
-		}
-		while (tile_x < game->players_position_x + 5)
-		{
-			window_y = start_y * TILE_SIZE;
-			while (window_y <= start_y * TILE_SIZE + TILE_SIZE - 1)
-			{
-				window_x = start_x * TILE_SIZE;
-				while (window_x <= start_x * TILE_SIZE + TILE_SIZE - 1)
-				{
-					draw_elements(window_x, window_y, tile_x, tile_y, &game->mlx.img);
-					draw_borders(window_x, window_y, start_x, start_y, &game->mlx.img);
-					window_x++;
-				}
-				window_y++;
-			}
-			start_x += 1;
-			tile_x += 1;
-		}
-		start_x = 0;
-		start_y += 1;
-		tile_y += 1;
+		minimap.map_tile_y += 1;
+		minimap.window_tile_y += 1;
 	}
 	draw_player(game);
 	mlx_put_image_to_window(

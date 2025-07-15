@@ -6,7 +6,7 @@
 /*   By: rzvir <rzvir@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/17 14:19:37 by rzvir             #+#    #+#             */
-/*   Updated: 2025/06/27 15:24:59 by rzvir            ###   ########.fr       */
+/*   Updated: 2025/07/15 14:46:05 by rzvir            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,8 +29,8 @@ static void	init_player_position(t_game *game)
 				|| map[y][x] == 'E'
 			)
 			{
-				game->players_position_x = x + (TILE_SIZE / TILE_SIZE / 2.0);
-				game->players_position_y = y + (TILE_SIZE / TILE_SIZE / 2.0);
+				game->position_x = x + (TILE_SIZE / TILE_SIZE / 2.0);
+				game->position_y = y + (TILE_SIZE / TILE_SIZE / 2.0);
 			}
 			x++;
 		}
@@ -40,34 +40,31 @@ static void	init_player_position(t_game *game)
 
 static void	init_player_direction(t_game *game)
 {
-	if (map[(int)game->players_position_y][(int)game->players_position_x] == 'N')
+	char	tile;
+
+	tile = map[(int)game->position_y][(int)game->position_x];
+	if (tile == 'N')
 	{
-		game->player_direction_x = 0.0;
-		game->player_direction_y = -1.0;
-		game->plane_x = 0.66;
-		game->plane_y = 0;
+		game->direction_x = 0.0;
+		game->direction_y = -1.0;
 	}
-	else if (map[(int)game->players_position_y][(int)game->players_position_x] == 'S')
+	else if (tile == 'S')
 	{
-		game->player_direction_x = 0.0;
-		game->player_direction_y = 1.0;
-		game->plane_x = -0.66;
-		game->plane_y = 0;
+		game->direction_x = 0.0;
+		game->direction_y = 1.0;
 	}
-	else if (map[(int)game->players_position_y][(int)game->players_position_x] == 'W')
+	else if (tile == 'W')
 	{
-		game->player_direction_x = -1.0;
-		game->player_direction_y = 0.0;
-		game->plane_x = 0;
-		game->plane_y = -0.66;
+		game->direction_x = -1.0;
+		game->direction_y = 0.0;
 	}
-	else if (map[(int)game->players_position_y][(int)game->players_position_x] == 'E')
+	else if (tile == 'E')
 	{
-		game->player_direction_x = 1.0;
-		game->player_direction_y = 0.0;
-		game->plane_x = 0;
-		game->plane_y = 0.66;
+		game->direction_x = 1.0;
+		game->direction_y = 0.0;
 	}
+	game->plane_x = -game->direction_y * FOV;
+	game->plane_y = game->direction_x * FOV;
 }
 
 void	init_player(t_game *game)

@@ -6,7 +6,7 @@
 /*   By: rzvir <rzvir@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/26 15:13:39 by rzvir             #+#    #+#             */
-/*   Updated: 2025/06/27 15:24:59 by rzvir            ###   ########.fr       */
+/*   Updated: 2025/07/15 14:46:05 by rzvir            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,12 @@ void	rotate(
 
 	sin_angle = sin(rotation_angle);
 	cos_angle = cos(rotation_angle);
-	rotate_vector(&game->player_direction_x, &game->player_direction_y, sin_angle, cos_angle);
+	rotate_vector(
+		&game->direction_x,
+		&game->direction_y,
+		sin_angle,
+		cos_angle
+		);
 	rotate_vector(&game->plane_x, &game->plane_y, sin_angle, cos_angle);
 }
 
