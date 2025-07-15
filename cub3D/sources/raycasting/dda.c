@@ -6,7 +6,7 @@
 /*   By: rzvir <rzvir@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/16 13:01:46 by rzvir             #+#    #+#             */
-/*   Updated: 2025/06/27 16:37:53 by rzvir            ###   ########.fr       */
+/*   Updated: 2025/07/15 12:55:08 by rzvir            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,21 +65,8 @@ void	render_frame(
 		initialize_ray(x, &ray, game);
 		initialize_wall(&wall);
 		trace_ray_to_wall(&ray);
-		if (ray.hit_side == VERTICAL)
-		{
-			if (ray.step_direction_x > 0)
-				game->texture_data = &game->left_wall;
-			else
-				game->texture_data = &game->right_wall;
-		}
-		else
-		{
-			if (ray.step_direction_y > 0)
-				game->texture_data = &game->front_wall;
-			else
-				game->texture_data = &game->front_wall;
-		}
-		draw_vertical_stripe(x, &ray, &wall, game, game->texture_data);
+		initialize_textures(&ray, game);
+		draw_vertical_stripe(x, &ray, &wall, game);
 		x++;
 	}
 	mlx_put_image_to_window(

@@ -6,7 +6,7 @@
 /*   By: rzvir <rzvir@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/09 14:06:23 by rzvir             #+#    #+#             */
-/*   Updated: 2025/07/14 18:07:47 by rzvir            ###   ########.fr       */
+/*   Updated: 2025/07/15 17:05:13 by rzvir            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,8 +27,10 @@
 # define MAP_WIDTH 25
 # define MAP_HEIGHT 25
 # define TILE_SIZE 30
-# define MINIMAP_TILE_SIZE (TILE_SIZE / 2)
-# define MINIMAP_OFFSET 10
+# define FOV 0.66
+# define MINIMAP_RADIUS 5
+# define MINIMAP_OFFSET (TILE_SIZE / 2)
+# define MINIMAP_TILE_SIZE (TILE_SIZE / 1.5)
 # define SENSITIVITY 0.1
 # define PLAYER_SIZE (((double)10 / (double)TILE_SIZE) / 2.0)
 # define WINDOW_WIDTH (MAP_WIDTH * TILE_SIZE)
@@ -164,13 +166,29 @@ typedef struct s_mouse
 	int	y;
 }	t_mouse;
 
+typedef struct s_textured_wall
+{
+	double			hit_point_x;
+	int				texture_column_x;
+	double			pixels_in_line;
+	double			texture_position;
+}	t_textured_wall;
+
+typedef struct s_minimap
+{
+	int	map_tile_x;
+	int	map_tile_y;
+	int	window_tile_x;
+	int	window_tile_y;
+}	t_minimap;
+
 typedef struct s_game
 {
-	double				players_position_x;
-	double				players_position_y;
+	double				position_x;
+	double				position_y;
 
-	double				player_direction_x;
-	double				player_direction_y;
+	double				direction_x;
+	double				direction_y;
 
 	double				plane_x;
 	double				plane_y;
@@ -197,25 +215,23 @@ typedef struct s_game
 	t_texture			right_wall;
 	t_texture			*texture_data;
 	t_mlx				mlx;
-
 }	t_game;
 
 void	clear_image(t_game *game);
 void	cleanup(t_mlx *mlx, unsigned int with_exit);
 
-void	my_mlx_pixel_put(t_img *datvector_x_enda, int x, int y, int color);
+void	my_mlx_pixel_put(t_img *data, int x, int y, int color);
 
 void	init_player(t_game *game);
-// void	draw_player(t_game *game);
+
 void	draw_map(t_game *game);
+void	draw_player(t_game *game);
+void	draw_tile(t_minimap *minimap, t_game *game);
 
 void	init_project(t_mlx *mlx);
 void	init_game(t_game *game);
 
 void	render_frame(t_game *game);
-
-void	init_draw_line(t_game *game);
-void	draw_line(t_game *game, int x0, int y0, int x1, int y1, int color);
 
 // ray calculations
 int		calc_step_direction(double ray_direction);
@@ -229,25 +245,24 @@ void	calc_wall_color(t_side hit_side, int step_direction_x, int step_direction_y
 void	calc_wall_height(t_wall *wall, double length_to_wall);
 
 // draw
-void	draw_vertical_stripe(int x, t_ray *ray, t_wall *wall, t_game *game, t_texture *texture_data);
+void	draw_line(t_game *game, int x0, int y0, int x1, int y1, int color);
+void	draw_vertical_stripe(int x, t_ray *ray, t_wall *wall, t_game *game);
 
 // init
 void	initialize_wall(t_wall *wall);
+void	initialize_textures(t_ray *ray, t_game *game);
 void	initialize_ray(int x, t_ray *ray, t_game *game);
-
-void	move(t_move_direction move_direction, t_game *game);
+void	initialize_textured_wall(t_textured_wall *data, t_ray *ray, t_wall *wall, t_game *game);
 
 void	rotate(double rotation_angle, t_game *game);
+void	mouse_rotate(double rotation_angle, t_game *game);
+void	move(t_move_direction move_direction, t_game *game);
 
 int		handle_movement(t_game *game);
 int		handle_key_press(int keycode, t_game *game);
 int		handle_key_release(int keycode, t_game *game);
 
-void	swap_int(int *a, int *b);
-void	swap_double(double *a, double *b);
-
 void	set_time_since_last_frame(double *time_since_last_frame);
 
-void	mouse_rotate(double rotation_angle, t_game *game);
 
 #endif

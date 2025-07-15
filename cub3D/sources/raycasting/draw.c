@@ -6,7 +6,7 @@
 /*   By: rzvir <rzvir@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/16 17:08:24 by rzvir             #+#    #+#             */
-/*   Updated: 2025/06/27 16:37:25 by rzvir            ###   ########.fr       */
+/*   Updated: 2025/07/15 14:01:40 by rzvir            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,109 +36,58 @@ static void	draw_floor(
 	}
 }
 
-double	calc_hit_point_of_wall(t_ray *ray, t_game *game)
-{
-	double	hit_point_x;
-
-	if (ray->hit_side == VERTICAL)
-		hit_point_x = game->players_position_y + ray->length_to_wall * ray->direction_y;
-	else
-		hit_point_x = game->players_position_x + ray->length_to_wall * ray->direction_x;
-	hit_point_x -= floor(hit_point_x);
-	return (hit_point_x);
-}
-
-int	calc_texture_flipped_value(
-	int texture_column_x,
-	int texture_width,
-	t_ray *ray
-)
-{
-	if ((ray->hit_side == VERTICAL && ray->direction_x > 0)
-		|| (ray->hit_side == HORIZONTAL && ray->direction_y < 0))
-	{
-		texture_column_x = texture_width - texture_column_x - 1;
-	}
-	return (texture_column_x);
-}
-
-int	calc_texture_column_x(
-	double hit_point_x,
-	t_texture *texture,
-	t_ray *ray
-)
-{
-	int	texture_column_x;
-
-	texture_column_x = (int)(hit_point_x * (double)texture->xpm.width);
-	texture_column_x = calc_texture_flipped_value(
-			texture_column_x,
-			texture->xpm.width,
-			ray
-			);
-	return (texture_column_x);
-}
-
-unsigned int	get_color_from_texture(
+static unsigned int	get_color_from_texture(
 	int texture_column_x,
 	int tex_y,
 	t_texture *texture_data
 )
 {
 	unsigned int	color;
+	int				x_offset;
+	int				y_offset;
+	char			*pixel_address;
 
-	color = *(unsigned int *)(texture_data->img.pixels_addr + (tex_y * texture_data->img.line_length + texture_column_x * (texture_data->img.bytes_per_pixel / 8)));
+	x_offset = texture_column_x * (texture_data->img.bytes_per_pixel / 8);
+	y_offset = tex_y * texture_data->img.line_length;
+	pixel_address = texture_data->img.pixels_addr + x_offset + y_offset;
+	color = *(unsigned int *)pixel_address;
 	return (color);
 }
 
-void	draw_textured_wall(
+static void	draw_textured_wall(
 	int x,
 	t_ray *ray,
 	t_wall *wall,
-	t_game *game,
-	t_texture *texture_data
+	t_game *game
 )
 {
 	int				y;
-	double			hit_point_x;
-	int				texture_column_x;
-	double			count_of_texture_pixels_in_line_pixels;
-	double			texture_position;
 	int				tex_y;
 	unsigned int	color;
+	int				texture_height;
+	t_textured_wall	texture_data;
 
 	y = wall->start;
-	hit_point_x = calc_hit_point_of_wall(ray, game);
-	texture_column_x = calc_texture_column_x(hit_point_x, texture_data, ray);
-	count_of_texture_pixels_in_line_pixels = 1.0 * texture_data->xpm.height / wall->height;
-	texture_position = (wall->start - WINDOW_Y_CENTER + wall->height / 2) * count_of_texture_pixels_in_line_pixels;
+	tex_y = 0;
+	color = 0;
+	texture_height = game->texture_data->xpm.height - 1;
+	initialize_textured_wall(&texture_data, ray, wall, game);
 	while (y < wall->end)
 	{
-		tex_y = (int)texture_position & (texture_data->xpm.height - 1);
-		texture_position += count_of_texture_pixels_in_line_pixels;
-		color = get_color_from_texture(texture_column_x, tex_y, texture_data);
+		tex_y = (int)texture_data.texture_position & texture_height;
+		texture_data.texture_position += texture_data.pixels_in_line;
+		color = get_color_from_texture(
+				texture_data.texture_column_x, tex_y, game->texture_data);
 		my_mlx_pixel_put(&game->mlx.img, x, y, color);
 		y++;
 	}
-}
-
-static void	draw_wall(
-	int x,
-	t_ray *ray,
-	t_wall *wall,
-	t_game *game,
-	t_texture *texture_data
-)
-{
-	draw_textured_wall(x, ray, wall, game, texture_data);
 }
 
 void	draw_vertical_stripe(
 	int x,
 	t_ray *ray,
 	t_wall *wall,
-	t_game *game,
-	t_texture *texture_data
+	t_game *game
 )
 {
 	calc_distance_to_wall(ray);
@@ -150,6 +99,6 @@ void	draw_vertical_stripe(
 		wall
 		);
 	draw_ceiling(x, wall->start, game);
-	draw_wall(x, ray, wall, game, texture_data);
+	draw_textured_wall(x, ray, wall, game);
 	draw_floor(x, wall->end, game);
 }

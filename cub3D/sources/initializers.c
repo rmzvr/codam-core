@@ -6,7 +6,7 @@
 /*   By: rzvir <rzvir@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/16 13:00:27 by rzvir             #+#    #+#             */
-/*   Updated: 2025/06/27 15:24:59 by rzvir            ###   ########.fr       */
+/*   Updated: 2025/07/15 14:46:05 by rzvir            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,10 +65,10 @@ void	init_texture_image(char *path, t_texture *texture, t_game *game)
 
 void	init_game(t_game *game)
 {
-	game->players_position_x = 0.0;
-	game->players_position_y = 0.0;
-	game->player_direction_x = 0.0;
-	game->player_direction_y = 0.0;
+	game->position_x = 0.0;
+	game->position_y = 0.0;
+	game->direction_x = 0.0;
+	game->direction_y = 0.0;
 	game->move_forward = FALSE;
 	game->move_backward = FALSE;
 	game->move_left = FALSE;
