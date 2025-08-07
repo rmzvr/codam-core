@@ -5,13 +5,15 @@
 
 class PhoneBook {
 	public:
-		// Contact contacts[8];
+		Contact contacts[8];
 
 		PhoneBook( void );
 		~PhoneBook( void );
 
 		void	add(const Contact& contact);
 		void	print( void );
+	private:
+		int	index;
 };
 
 #endif
