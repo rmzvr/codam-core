@@ -3,29 +3,41 @@
 
 PhoneBook::PhoneBook( void ) : index(0)
 {
-	std::cout << "PhoneBook's constructor called" << std::endl;
+	// std::cout << "PhoneBook's constructor called" << std::endl;
 	return;
 }
 
 PhoneBook::~PhoneBook( void )
 {
-	std::cout << "PhoneBook's destructor called" << std::endl;
+	// std::cout << "PhoneBook's destructor called" << std::endl;
 	return;
 }
 
-void	PhoneBook::add(const Contact& contact)
+void	PhoneBook::addContact(const Contact& contact)
 {
 	Contact contact_copy = contact;
-	std::cout << this->index << std::endl;
 	contact_copy.index = this->index % 8;
 	this->contacts[contact_copy.index] = contact_copy;
 	this->index++;
 }
 
-void	PhoneBook::print( void )
+bool	PhoneBook::checkContactExistence(int index)
 {
-	for (size_t i = 0; i < 8; i++)
+	if (index < 0 || index > 7)
 	{
-		std::cout << "contact: " << this->contacts[i].firstName << std::endl;
+		std::cout << "Invalid contact's index. Try another one." << std::endl;
+		return (0);
 	}
+	else if (this->contacts[index].index == -1)
+	{
+		std::cout << "Contact not exist. Try another one." << std::endl;
+		return (0);
+	}
+	
+	return (1);
+}
+
+Contact	PhoneBook::getContact(int index)
+{
+	return (this->contacts[index]);
 }

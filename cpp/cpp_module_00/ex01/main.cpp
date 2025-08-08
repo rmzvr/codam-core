@@ -40,15 +40,70 @@ void	print_table_header()
 	print_table_row("Index", "First name", "Last name", "Nickname");
 }
 
-int	main(void)
+std::string	get_prompt(std::string message)
 {
 	std::string	prompt;
 
+	std::cout << message;
+	std::getline(std::cin, prompt);
+	while (prompt.empty() == true)
+	{
+		std::cout << "\nField can't be empty." << std::endl;
+		std::cout << message;
+		std::getline(std::cin, prompt);
+	}
+	return (prompt);
+}
+
+void	add_contact(PhoneBook& phoneBook)
+{
 	std::string	firstName;
 	std::string	lastName;
 	std::string	nickname;
 	std::string	phoneNumber;
 	std::string	darkestSecret;
+
+	std::cout << "Let's add new contact." << std::endl;
+
+	firstName = get_prompt("Enter first name: ");
+	lastName = get_prompt("Enter last name: ");
+	nickname = get_prompt("Enter nickname: ");
+	phoneNumber = get_prompt("Enter phone number: ");
+	darkestSecret = get_prompt("Enter darkest secret: ");
+
+	Contact	contact(firstName, lastName, nickname, phoneNumber, darkestSecret);
+	phoneBook.addContact(contact);
+	std::cout << "New contact has been added." << std::endl;
+}
+
+void	display_contacts_table(PhoneBook& phoneBook)
+{
+	print_table_header();
+	for (size_t i = 0; phoneBook.contacts[i].index != -1 && phoneBook.contacts[i].index < 8; i++)
+	{
+		print_table_row(
+			std::to_string(phoneBook.contacts[i].index),
+			phoneBook.contacts[i].firstName,
+			phoneBook.contacts[i].lastName,
+			phoneBook.contacts[i].nickname
+		);
+	}
+}
+
+void	display_contact_info(const Contact& contact)
+{
+	std::cout << "\nFirst name: " << contact.firstName << std::endl;
+	std::cout << "Last name: " << contact.lastName << std::endl;
+	std::cout << "Nickname: " << contact.nickname << std::endl;
+	std::cout << "Phone number: " << contact.phoneNumber << std::endl;
+	std::cout << "Darkest secret: " << contact.darkestSecret << std::endl;
+}
+
+int	main(void)
+{
+	std::string	prompt;
+	int			contactIndex;
+	Contact		currentContact;
 
 	PhoneBook	phoneBook;
 	std::cout << "Hi, it's crappy awesome phonebook!" << std::endl;
@@ -58,39 +113,26 @@ int	main(void)
 		std::getline(std::cin, prompt);
 		if (prompt.compare("ADD") == 0)
 		{
-			std::cout << "Let's add new contact." << std::endl;
-
-			std::cout << "Enter first name: ";
-			std::getline(std::cin, firstName);
-
-			std::cout << "Enter last name: ";
-			std::getline(std::cin, lastName);
-
-			std::cout << "Enter nickname: ";
-			std::getline(std::cin, nickname);
-
-			std::cout << "Enter phone number: ";
-			std::getline(std::cin, phoneNumber);
-
-			std::cout << "Enter darkest secret: ";
-			std::getline(std::cin, darkestSecret);
-
-			Contact	contact(firstName, lastName, nickname, phoneNumber, darkestSecret);
-			phoneBook.add(contact);
-			std::cout << "New contact has been added." << std::endl;
+			add_contact(phoneBook);
 		}
 		else if (prompt.compare("SEARCH") == 0)
 		{
-			print_table_header();
-			for (size_t i = 0; phoneBook.contacts[i].index != -1 && phoneBook.contacts[i].index < 8; i++)
+			display_contacts_table(phoneBook);
+			do
 			{
-				print_table_row(
-					std::to_string(phoneBook.contacts[i].index),
-					phoneBook.contacts[i].firstName,
-					phoneBook.contacts[i].lastName,
-					phoneBook.contacts[i].nickname
-				);
-			}
+				std::cout << "Enter contact index: ";
+				std::getline(std::cin, prompt);
+				// while (prompt.empty() == true)
+				// {
+				// 	std::cout << "Index invalid." << std::endl;
+				// 	std::cout << "Enter contact index: ";
+				// 	std::getline(std::cin, prompt);
+				// }
+				contactIndex = atoi(prompt.c_str());
+			} while (phoneBook.checkContactExistence(contactIndex) == false);
+			
+			currentContact = phoneBook.getContact(contactIndex);
+			display_contact_info(currentContact);
 		}
 	}
 	std::cout << "Bye!" << std::endl;

@@ -11,7 +11,7 @@ nickname(""),
 phoneNumber(""),
 darkestSecret("")
 {
-	std::cout << "Contact's default constructor called" << std::endl;
+	// std::cout << "Contact's default constructor called" << std::endl;
 	return;
 };
 
@@ -29,19 +29,19 @@ Contact::Contact(
 	phoneNumber(phoneNumber),
 	darkestSecret(darkestSecret)
 {
-	std::cout << "Contact's custom constructor called" << std::endl;
+	// std::cout << "Contact's custom constructor called" << std::endl;
 	return;
 }
 
 Contact::~Contact()
 {
-	std::cout << this->index << std::endl;
-	std::cout << this->firstName << std::endl;
-	std::cout << this->lastName << std::endl;
-	std::cout << this->nickname << std::endl;
-	std::cout << this->phoneNumber << std::endl;
-	std::cout << this->darkestSecret << std::endl;
-	std::cout << "Contact's destructor called" << std::endl;
+	// std::cout << this->index << std::endl;
+	// std::cout << this->firstName << std::endl;
+	// std::cout << this->lastName << std::endl;
+	// std::cout << this->nickname << std::endl;
+	// std::cout << this->phoneNumber << std::endl;
+	// std::cout << this->darkestSecret << std::endl;
+	// std::cout << "Contact's destructor called" << std::endl;
 	return;
 }
 

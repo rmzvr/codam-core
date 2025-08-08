@@ -10,8 +10,10 @@ class PhoneBook {
 		PhoneBook( void );
 		~PhoneBook( void );
 
-		void	add(const Contact& contact);
-		void	print( void );
+		void	addContact(const Contact& contact);
+		bool	checkContactExistence(int index);
+		Contact	getContact(int index);
+
 	private:
 		int	index;
 };
