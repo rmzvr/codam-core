@@ -23,17 +23,11 @@ void	PhoneBook::addContact(const Contact& contact)
 
 bool	PhoneBook::checkContactExistence(int index)
 {
-	if (index < 0 || index > 7)
-	{
-		std::cout << "Invalid contact's index. Try another one." << std::endl;
-		return (0);
-	}
-	else if (this->contacts[index].index == -1)
+	if (index < 0 || index > 7 || this->contacts[index].index == -1)
 	{
 		std::cout << "Contact not exist. Try another one." << std::endl;
 		return (0);
 	}
-	
 	return (1);
 }
 

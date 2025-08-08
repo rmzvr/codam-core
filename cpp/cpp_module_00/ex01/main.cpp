@@ -101,6 +101,7 @@ void	display_contact_info(const Contact& contact)
 
 int	main(void)
 {
+	char		*str_end;
 	std::string	prompt;
 	int			contactIndex;
 	Contact		currentContact;
@@ -122,17 +123,19 @@ int	main(void)
 			{
 				std::cout << "Enter contact index: ";
 				std::getline(std::cin, prompt);
-				// while (prompt.empty() == true)
-				// {
-				// 	std::cout << "Index invalid." << std::endl;
-				// 	std::cout << "Enter contact index: ";
-				// 	std::getline(std::cin, prompt);
-				// }
-				contactIndex = atoi(prompt.c_str());
+				contactIndex = strtol(prompt.c_str(), &str_end, 10);
+				while (*str_end != '\0' || prompt.empty())
+				{
+					std::cout << "Invalid index. Please enter available index from phonebook: ";
+					std::getline(std::cin, prompt);
+					contactIndex = strtol(prompt.c_str(), &str_end, 10);
+				}
 			} while (phoneBook.checkContactExistence(contactIndex) == false);
 			
 			currentContact = phoneBook.getContact(contactIndex);
 			display_contact_info(currentContact);
+			std::cout << "Waiting for command....." << std::endl;
+			std::getline(std::cin, prompt);
 		}
 	}
 	std::cout << "Bye!" << std::endl;
