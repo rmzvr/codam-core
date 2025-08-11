@@ -1,7 +1,16 @@
-#include "Contact.hpp"
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   Contact.cpp                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: rmzvr <rmzvr@student.42.fr>                +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/08/11 14:15:38 by rmzvr             #+#    #+#             */
+/*   Updated: 2025/08/11 14:15:40 by rmzvr            ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
-#ifndef CONTACT_HPP
-# define CONTACT_HPP
+#include "Contact.hpp"
 
 Contact::Contact() :
 index(-1),
@@ -35,14 +44,5 @@ Contact::Contact(
 
 Contact::~Contact()
 {
-	// std::cout << this->index << std::endl;
-	// std::cout << this->firstName << std::endl;
-	// std::cout << this->lastName << std::endl;
-	// std::cout << this->nickname << std::endl;
-	// std::cout << this->phoneNumber << std::endl;
-	// std::cout << this->darkestSecret << std::endl;
-	// std::cout << "Contact's destructor called" << std::endl;
 	return;
 }
-
-#endif

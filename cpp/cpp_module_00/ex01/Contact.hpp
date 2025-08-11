@@ -1,4 +1,19 @@
-#include <iostream>
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   Contact.hpp                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: rmzvr <rmzvr@student.42.fr>                +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/08/11 14:15:41 by rmzvr             #+#    #+#             */
+/*   Updated: 2025/08/11 14:15:42 by rmzvr            ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#ifndef CONTACT_HPP
+# define CONTACT_HPP
+
+# include <iostream>
 
 class Contact
 {
@@ -19,4 +34,7 @@ class Contact
 				const std::string&	darkestSecret
 				);
 		~Contact();
+		void	printFullInformation();
 };
+
+#endif

@@ -1,57 +1,33 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   main.cpp                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: rmzvr <rmzvr@student.42.fr>                +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/08/11 14:15:28 by rmzvr             #+#    #+#             */
+/*   Updated: 2025/08/11 14:19:59 by rmzvr            ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include <string>
 #include <iomanip>
+#include "UI.hpp"
 #include "PhoneBook.hpp"
-
-void	print_horizontal_separator()
-{
-	std::cout << std::setfill('-') << std::setw(45) << "" << std::setfill(' ') << std::endl;
-}
-
-void	print_table_row(
-	const std::string index,
-	const std::string firstName,
-	const std::string lastName,
-	const std::string nickname
-)
-{
-	std::string firstNameCopy = firstName;
-	if (firstNameCopy.size() > 10)
-	{
-		firstNameCopy = firstNameCopy.substr(0, 9);
-		firstNameCopy.append(".");
-	}
-	std::cout
-		<< '|'
-		<< std::setw(10) << std::right << index
-		<< '|'
-		<< std::setw(10) << std::right << firstNameCopy
-		<< '|'
-		<< std::setw(10) << std::right << lastName
-		<< '|'
-		<< std::setw(10) << std::right << nickname
-		<< '|'
-		<< std::endl;
-	print_horizontal_separator();
-}
-
-void	print_table_header()
-{
-	print_horizontal_separator();
-	print_table_row("Index", "First name", "Last name", "Nickname");
-}
 
 std::string	get_prompt(std::string message)
 {
 	std::string	prompt;
 
-	std::cout << message;
-	std::getline(std::cin, prompt);
-	while (prompt.empty() == true)
+	do
 	{
-		std::cout << "\nField can't be empty." << std::endl;
 		std::cout << message;
 		std::getline(std::cin, prompt);
-	}
+		if (prompt.empty() == true)
+		{
+			std::cout << "Field can't be empty." << std::endl;
+		}
+	} while (prompt.empty() == true);
 	return (prompt);
 }
 
@@ -73,44 +49,40 @@ void	add_contact(PhoneBook& phoneBook)
 
 	Contact	contact(firstName, lastName, nickname, phoneNumber, darkestSecret);
 	phoneBook.addContact(contact);
+
 	std::cout << "New contact has been added." << std::endl;
 }
 
-void	display_contacts_table(PhoneBook& phoneBook)
+int	get_contact_index()
 {
-	print_table_header();
-	for (size_t i = 0; phoneBook.contacts[i].index != -1 && phoneBook.contacts[i].index < 8; i++)
-	{
-		print_table_row(
-			std::to_string(phoneBook.contacts[i].index),
-			phoneBook.contacts[i].firstName,
-			phoneBook.contacts[i].lastName,
-			phoneBook.contacts[i].nickname
-		);
-	}
-}
+	std::string	prompt;
+	char		*str_end;
+	int			contactIndex;
 
-void	display_contact_info(const Contact& contact)
-{
-	std::cout << "\nFirst name: " << contact.firstName << std::endl;
-	std::cout << "Last name: " << contact.lastName << std::endl;
-	std::cout << "Nickname: " << contact.nickname << std::endl;
-	std::cout << "Phone number: " << contact.phoneNumber << std::endl;
-	std::cout << "Darkest secret: " << contact.darkestSecret << std::endl;
+	std::cout << "Please enter contact's index: ";
+	std::getline(std::cin, prompt);
+	contactIndex = strtol(prompt.c_str(), &str_end, 10);
+	if (prompt.empty() || *str_end != '\0')
+	{
+		std::cout << "Invalid index." << std::endl;
+		return (-1);
+	}
+	return (contactIndex);
 }
 
 int	main(void)
 {
-	char		*str_end;
+	UI			ui;
 	std::string	prompt;
+	Contact		*contacts;
+	Contact		*contact;
 	int			contactIndex;
-	Contact		currentContact;
 
 	PhoneBook	phoneBook;
-	std::cout << "Hi, it's crappy awesome phonebook!" << std::endl;
-	std::cout << "Waiting for command....." << std::endl;
+	std::cout << "Hi, it's a crappy awesome phonebook!" << std::endl;
 	while (prompt.compare("EXIT") != 0)
 	{
+		std::cout << "Waiting for command..." << std::endl;
 		std::getline(std::cin, prompt);
 		if (prompt.compare("ADD") == 0)
 		{
@@ -118,24 +90,16 @@ int	main(void)
 		}
 		else if (prompt.compare("SEARCH") == 0)
 		{
-			display_contacts_table(phoneBook);
-			do
-			{
-				std::cout << "Enter contact index: ";
-				std::getline(std::cin, prompt);
-				contactIndex = strtol(prompt.c_str(), &str_end, 10);
-				while (*str_end != '\0' || prompt.empty())
-				{
-					std::cout << "Invalid index. Please enter available index from phonebook: ";
-					std::getline(std::cin, prompt);
-					contactIndex = strtol(prompt.c_str(), &str_end, 10);
-				}
-			} while (phoneBook.checkContactExistence(contactIndex) == false);
-			
-			currentContact = phoneBook.getContact(contactIndex);
-			display_contact_info(currentContact);
-			std::cout << "Waiting for command....." << std::endl;
-			std::getline(std::cin, prompt);
+			contacts = phoneBook.getContacts();
+			if (contacts == nullptr)
+				continue ;
+			ui.printTable(contacts);
+			contactIndex = get_contact_index();
+			if (contactIndex == -1)
+				continue ;
+			contact = phoneBook.getContact(contactIndex);
+			if (contact != nullptr)
+				ui.printContactInfo(*contact);
 		}
 	}
 	std::cout << "Bye!" << std::endl;
