@@ -1,6 +1,6 @@
 NAME := ex02
 
-SOURCES := main.cpp
+SOURCES := Weapon.cpp HumanA.cpp HumanB.cpp main.cpp
 OBJECTS := $(SOURCES:.cpp=.o)
 
 CPPV := -std=c++20
