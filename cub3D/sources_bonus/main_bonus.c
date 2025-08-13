@@ -1,20 +1,20 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   main_bonus.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: rzvir <rzvir@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/22 16:12:09 by rmzvr             #+#    #+#             */
-/*   Updated: 2025/07/24 13:58:35 by rzvir            ###   ########.fr       */
+/*   Updated: 2025/07/24 14:00:33 by rzvir            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <errno.h>
 #include <string.h>
 
-#include "state.h"
-#include "parser/parser.h"
+#include "state_bonus.h"
+#include "parser/parser_bonus.h"
 
 static
 bool	initialize_run_game(t_game_state *state, t_root *root)
