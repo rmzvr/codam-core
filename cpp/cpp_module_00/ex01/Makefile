@@ -1,6 +1,6 @@
 NAME := my_awesome_phone_book
 
-SOURCES := main.cpp Contact.cpp PhoneBook.cpp UI.cpp
+SOURCES := Contact.cpp PhoneBook.cpp main.cpp
 OBJECTS := $(SOURCES:.cpp=.o)
 
 CPPFLAGS := -Wall -Wextra -Werror -std=c++20

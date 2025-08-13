@@ -6,13 +6,12 @@
 /*   By: rmzvr <rmzvr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/11 14:15:28 by rmzvr             #+#    #+#             */
-/*   Updated: 2025/08/11 14:19:59 by rmzvr            ###   ########.fr       */
+/*   Updated: 2025/08/13 11:24:53 by rmzvr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <string>
 #include <iomanip>
-#include "UI.hpp"
 #include "PhoneBook.hpp"
 
 std::string	get_prompt(std::string message)
@@ -22,7 +21,13 @@ std::string	get_prompt(std::string message)
 	do
 	{
 		std::cout << message;
-		std::getline(std::cin, prompt);
+		if (std::getline(std::cin, prompt).fail())
+		{
+			std::cin.clear();
+			clearerr(stdin);
+			std::cout << '\n';
+			continue;
+		}
 		if (prompt.empty() == true)
 		{
 			std::cout << "Field can't be empty." << std::endl;
@@ -59,31 +64,53 @@ int	get_contact_index()
 	char		*str_end;
 	int			contactIndex;
 
-	std::cout << "Please enter contact's index: ";
-	std::getline(std::cin, prompt);
-	contactIndex = strtol(prompt.c_str(), &str_end, 10);
-	if (prompt.empty() || *str_end != '\0')
+	std::cout << "Please enter available contact's index: ";
+	do
 	{
-		std::cout << "Invalid index." << std::endl;
-		return (-1);
-	}
+		if (std::getline(std::cin, prompt).fail())
+		{
+			std::cin.clear();
+			clearerr(stdin);
+			std::cout << '\n';
+			continue;
+		}
+		contactIndex = strtol(prompt.c_str(), &str_end, 10);
+		if (prompt.empty() || *str_end != '\0')
+		{
+			std::cout << "Invalid index. Please try again: ";
+		}
+		else if (std::to_string(contactIndex).length() != prompt.length())
+		{
+			std::cout << "Nice try... Please try again: ";
+		}
+	} while (std::to_string(contactIndex).length() != prompt.length() || prompt.empty() || *str_end != '\0');
 	return (contactIndex);
 }
 
 int	main(void)
 {
-	UI			ui;
 	std::string	prompt;
 	Contact		*contacts;
 	Contact		*contact;
 	int			contactIndex;
 
 	PhoneBook	phoneBook;
-	std::cout << "Hi, it's a crappy awesome phonebook!" << std::endl;
+	std::cout
+				<< "Hi, it's a crappy awesome phonebook!\n"
+				<< "ADD: save a new contact\n"
+				<< "SEARCH: display a specific contact\n"
+				<< "EXIT: exit:)\n"
+				<< std::endl;
 	while (prompt.compare("EXIT") != 0)
 	{
-		std::cout << "Waiting for command..." << std::endl;
-		std::getline(std::cin, prompt);
+		std::cout << "Please enter command: ";
+		if (std::getline(std::cin, prompt).fail())
+		{
+			std::cin.clear();
+			clearerr(stdin);
+			std::cout << '\n';
+			continue;
+		}
 		if (prompt.compare("ADD") == 0)
 		{
 			add_contact(phoneBook);
@@ -93,13 +120,11 @@ int	main(void)
 			contacts = phoneBook.getContacts();
 			if (contacts == nullptr)
 				continue ;
-			ui.printTable(contacts);
+			phoneBook.printTable();
 			contactIndex = get_contact_index();
-			if (contactIndex == -1)
-				continue ;
 			contact = phoneBook.getContact(contactIndex);
 			if (contact != nullptr)
-				ui.printContactInfo(*contact);
+				contact->printFullInformation();
 		}
 	}
 	std::cout << "Bye!" << std::endl;

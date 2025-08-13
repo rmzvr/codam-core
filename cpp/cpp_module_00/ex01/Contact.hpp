@@ -6,7 +6,7 @@
 /*   By: rmzvr <rmzvr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/11 14:15:41 by rmzvr             #+#    #+#             */
-/*   Updated: 2025/08/11 14:15:42 by rmzvr            ###   ########.fr       */
+/*   Updated: 2025/08/13 10:43:05 by rmzvr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,14 +17,14 @@
 
 class Contact
 {
+	private:
+		int			_index;
+		std::string	_firstName;
+		std::string	_lastName;
+		std::string	_nickname;
+		std::string	_phoneNumber;
+		std::string	_darkestSecret;
 	public:
-		int	index;
-		std::string	firstName;
-		std::string	lastName;
-		std::string	nickname;
-		std::string	phoneNumber;
-		std::string	darkestSecret;
-
 		Contact();
 		Contact(
 				const std::string&	firstName,
@@ -34,7 +34,12 @@ class Contact
 				const std::string&	darkestSecret
 				);
 		~Contact();
-		void	printFullInformation();
+		void			printFullInformation();
+		void			setIndex(int index);
+		int				getIndex();
+		std::string		getFirstName();
+		std::string		getLastName();
+		std::string		getNickname();
 };
 
 #endif
