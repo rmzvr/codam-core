@@ -1,4 +1,4 @@
-NAME := ex02
+NAME := ex03
 
 SOURCES := Weapon.cpp HumanA.cpp HumanB.cpp main.cpp
 OBJECTS := $(SOURCES:.cpp=.o)

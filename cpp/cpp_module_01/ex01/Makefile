@@ -1,4 +1,4 @@
-NAME := moar_brainz
+NAME := ex01
 
 SOURCES := Zombie.cpp zombieHorde.cpp main.cpp
 OBJECTS := $(SOURCES:.cpp=.o)
