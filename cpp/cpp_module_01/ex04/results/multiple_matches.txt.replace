@@ -1,0 +1,4 @@
+CreBte B progrBm thBt tBkes three pBrBmeters in the following order: B filenBme Bnd
+two strings, s1 Bnd s2.
+It must open the file <filenBme> Bnd copy its content into B new file
+<filenBme>.replBce, replBcing every occurrence of s1 with s2.

@@ -1,6 +1,6 @@
-NAME := ex04
+NAME := replace
 
-SOURCES := main.cpp
+SOURCES := Replace.cpp main.cpp
 OBJECTS := $(SOURCES:.cpp=.o)
 
 CPPV := -std=c++20

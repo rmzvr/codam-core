@@ -1,59 +1,30 @@
 #include <iostream>
 #include <fstream>
+#include "Replace.hpp"
 
-void	print(std::string message)
+void	validate_arguments(int argc)
 {
-	std::cout << '"' << message << '"' << std::endl;
+	if (argc != 4)
+	{
+		throw std::runtime_error("Invalid amount of arguments.\nUsage: ./replace [filename] [string_to_replace] [replacement_string]");
+	}
 }
 
 int	main(int argc, char **argv)
 {
-	if (argc != 4)
+	try
 	{
-		std::cout << "Invalid amount of arguments." << std::endl;
+		validate_arguments(argc);
+		std::string		fileName = argv[1];
+		std::string		stringToReplace = argv[2];
+		std::string		replacementString = argv[3];
+		Replace	searchAndReplace(fileName);
+		searchAndReplace.replace(stringToReplace, replacementString);
+	}
+	catch(const std::exception& e)
+	{
+		std::cerr << e.what() << '\n';
 		return 1;
 	}
-	std::ifstream	inFileStream;
-	std::ofstream	outFileStream;
-	std::string		line;
-	std::string		buffer;
-	std::string		fileContentLine;
-	std::string		fileName = argv[1];
-	std::string		s1 = argv[2];
-	std::string		s2 = argv[3];
-	// std::size_t		prevFoundIndex = 0;
-	std::size_t		currFoundIndex;
-
-	inFileStream.open(fileName);
-	if (inFileStream.fail())
-	{
-		std::perror("Error");
-		return 1;
-	}
-	outFileStream.open(fileName.append(".replace"));
-	if (outFileStream.fail())
-	{
-		std::perror("Error");
-		return 1;
-	}
-	do
-	{
-		if (!std::getline(inFileStream, line))
-			break;
-		line += '\n';
-		buffer += line;
-		currFoundIndex = buffer.find(s1);
-		while (currFoundIndex != std::string::npos)
-		{
-			std::string partBeforeFound = buffer.substr(0, currFoundIndex);
-			outFileStream << partBeforeFound;
-			buffer.erase(0, currFoundIndex + s1.length());
-			outFileStream << s2;
-			currFoundIndex = buffer.find(s1);
-		}
-	} while (true);
-	outFileStream << buffer;
-	inFileStream.close();
-	outFileStream.close();
 	return 0;
 }
