@@ -14,15 +14,15 @@ class Fixed
 		Fixed( int const int_number );
 		// Fixed( float const float_number );
 		~Fixed();
-		Fixed&	operator=( Fixed const &other );
+		Fixed&	operator=( Fixed const & other );
 
 		int		getRawBits( void ) const;
 		void	setRawBits( int const raw );
 		// float	toFloat( void ) const;
-		// int		toInt( void ) const;
+		int		toInt( void ) const;
 };
 
-
+std::ostream& operator<<( std::ostream& os, Fixed const & other );
 
 #endif
 
