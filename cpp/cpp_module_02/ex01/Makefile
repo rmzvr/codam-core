@@ -1,9 +1,9 @@
-NAME := replace
+NAME := ex01
 
-SOURCES := Replace.cpp main.cpp
+SOURCES := Fixed.cpp main.cpp
 OBJECTS := $(SOURCES:.cpp=.o)
 
-CPPV := -std=c++98
+CPPV := -std=c++20
 CPPFLAGS := -Wall -Wextra -Werror
 
 all: $(NAME)

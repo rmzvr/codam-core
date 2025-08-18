@@ -20,7 +20,7 @@ Replace::~Replace
 
 void Replace::_openInputFileStream()
 {
-	_inFileStream.open(_fileName);
+	_inFileStream.open(_fileName.c_str());
 	if (_inFileStream.fail())
 	{
 		throw std::runtime_error("Failed to open file.");
@@ -31,7 +31,7 @@ void Replace::_openOutputFileStream()
 {
 	std::string	newFileName = _fileName + _postfix;
 
-	_outFileStream.open(newFileName);
+	_outFileStream.open(newFileName.c_str());
 	if (_outFileStream.fail())
 	{
 		throw std::runtime_error("Failed to open file.");
@@ -52,12 +52,11 @@ void	Replace::replace(
 		if (!std::getline(_inFileStream, fileContentLine))
 		{
 			if (_inFileStream.eof() == false)
-			{
 				throw std::runtime_error("Failed to read file.");
-			}
 			break;
 		}
-		fileContentLine += '\n';
+		if (_inFileStream.eof() == false)
+			fileContentLine += '\n';
 		buffer += fileContentLine;
 		currentFoundIndex = buffer.find(stringToReplace);
 		while (currentFoundIndex != std::string::npos)

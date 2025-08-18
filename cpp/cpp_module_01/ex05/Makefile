@@ -1,6 +1,6 @@
-NAME := replace
+NAME := harl
 
-SOURCES := Replace.cpp main.cpp
+SOURCES := Harl.cpp main.cpp
 OBJECTS := $(SOURCES:.cpp=.o)
 
 CPPV := -std=c++98

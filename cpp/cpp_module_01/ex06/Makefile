@@ -1,6 +1,6 @@
-NAME := replace
+NAME := ex06
 
-SOURCES := Replace.cpp main.cpp
+SOURCES := Harl.cpp main.cpp
 OBJECTS := $(SOURCES:.cpp=.o)
 
 CPPV := -std=c++98
