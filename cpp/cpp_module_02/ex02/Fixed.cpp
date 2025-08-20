@@ -177,6 +177,19 @@ Fixed& Fixed::operator++( void )
 	return *this;
 }
 
+Fixed Fixed::operator--( int )
+{
+	Fixed fixed = *this;
+	this->setRawBits(this->getRawBits() - 1);
+	return fixed;
+}
+
+Fixed& Fixed::operator--( void )
+{
+	this->setRawBits(this->getRawBits() - 1);
+	return *this;
+}
+
 Fixed Fixed::operator++( int )
 {
 	Fixed fixed = *this;
