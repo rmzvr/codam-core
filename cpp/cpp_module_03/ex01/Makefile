@@ -1,6 +1,6 @@
 NAME := ex01
 
-SOURCES := ClapTrap.cpp main.cpp
+SOURCES := ClapTrap.cpp ScavTrap.cpp main.cpp
 OBJECTS := $(SOURCES:.cpp=.o)
 
 CPPV := -std=c++20
