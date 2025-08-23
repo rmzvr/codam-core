@@ -2,9 +2,11 @@
 
 ScavTrap::ScavTrap() : ClapTrap("scavTrap"), _isInGateKeeperMode(false)
 {
+	std::cout << "ScavTrap before - attackDamage: " << this->getAttackDamage() << std::endl;
 	this->setHitPoints(100);
 	this->setEnergyPoints(50);
 	this->setAttackDamage(20);
+	std::cout << "ScavTrap after - attackDamage: " << this->getAttackDamage() << std::endl;
 	std::cout << "ScavTrap default constructor called" << std::endl;
 }
 
@@ -71,7 +73,6 @@ void ScavTrap::attack(const std::string &target)
 				<< std::endl;
 		return;
 	}
-	
 	std::cout
 			<< "ScavTrap " << this->getName()
 			<< " attacks " << target
@@ -79,4 +80,23 @@ void ScavTrap::attack(const std::string &target)
 			<< " points of damage!"
 			<< std::endl;
 	this->setEnergyPoints(this->getEnergyPoints() - 1);
+}
+
+const int	ScavTrap::_defaultHitPoints = 100;
+const int	ScavTrap::_defaultEnergyPoints = 50;
+const int	ScavTrap::_defaultAttackDamage = 20;
+
+const int&	ScavTrap::getDefaultHitPoints()
+{
+	return ScavTrap::_defaultHitPoints;
+}
+
+const int&	ScavTrap::getDefaultEnergyPoints()
+{
+	return ScavTrap::_defaultEnergyPoints;
+}
+
+const int&	ScavTrap::getDefaultAttackDamage()
+{
+	return ScavTrap::_defaultAttackDamage;
 }

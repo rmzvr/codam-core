@@ -71,7 +71,6 @@ void ScavTrap::attack(const std::string &target)
 				<< std::endl;
 		return;
 	}
-	
 	std::cout
 			<< "ScavTrap " << this->getName()
 			<< " attacks " << target
