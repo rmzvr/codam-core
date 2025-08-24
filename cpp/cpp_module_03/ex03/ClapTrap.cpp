@@ -1,11 +1,42 @@
 #include "ClapTrap.hpp"
 
-ClapTrap::ClapTrap() : _name("clapTrap"), _hitPoints(10), _energyPoints(10), _attackDamage(0)
+const unsigned int	ClapTrap::_defaultHitPoints = 10;
+const unsigned int	ClapTrap::_defaultEnergyPoints = 10;
+const unsigned int	ClapTrap::_defaultAttackDamage = 0;
+
+const unsigned int&	ClapTrap::getDefaultHitPoints()
+{
+	return ClapTrap::_defaultHitPoints;
+}
+
+const unsigned int&	ClapTrap::getDefaultEnergyPoints()
+{
+	return ClapTrap::_defaultEnergyPoints;
+}
+
+const unsigned int&	ClapTrap::getDefaultAttackDamage()
+{
+	return ClapTrap::_defaultAttackDamage;
+}
+
+ClapTrap::ClapTrap
+() : 
+	_name("clapTrap"),
+	_hitPoints(this->getDefaultHitPoints()),
+	_energyPoints(this->getDefaultEnergyPoints()),
+	_attackDamage(this->getDefaultAttackDamage())
 {
 	std::cout << "ClapTrap default constructor called" << std::endl;
 }
 
-ClapTrap::ClapTrap( std::string name ) : _name(name), _hitPoints(10), _energyPoints(10), _attackDamage(0)
+ClapTrap::ClapTrap
+(
+	std::string name
+) : 
+	_name(name),
+	_hitPoints(this->getDefaultHitPoints()),
+	_energyPoints(this->getDefaultEnergyPoints()),
+	_attackDamage(this->getDefaultAttackDamage())
 {
 	std::cout << "ClapTrap parameterized constructor called" << std::endl;
 }

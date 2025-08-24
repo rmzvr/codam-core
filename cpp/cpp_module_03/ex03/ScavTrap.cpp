@@ -1,20 +1,37 @@
 #include "ScavTrap.hpp"
 
+const unsigned int	ScavTrap::_defaultHitPoints = 100;
+const unsigned int	ScavTrap::_defaultEnergyPoints = 50;
+const unsigned int	ScavTrap::_defaultAttackDamage = 20;
+
+const unsigned int&	ScavTrap::getDefaultHitPoints()
+{
+	return ScavTrap::_defaultHitPoints;
+}
+
+const unsigned int&	ScavTrap::getDefaultEnergyPoints()
+{
+	return ScavTrap::_defaultEnergyPoints;
+}
+
+const unsigned int&	ScavTrap::getDefaultAttackDamage()
+{
+	return ScavTrap::_defaultAttackDamage;
+}
+
 ScavTrap::ScavTrap() : ClapTrap("scavTrap"), _isInGateKeeperMode(false)
 {
-	std::cout << "ScavTrap before - attackDamage: " << this->getAttackDamage() << std::endl;
-	this->setHitPoints(100);
-	this->setEnergyPoints(50);
-	this->setAttackDamage(20);
-	std::cout << "ScavTrap after - attackDamage: " << this->getAttackDamage() << std::endl;
+	this->setHitPoints(this->getDefaultHitPoints());
+	this->setEnergyPoints(this->getDefaultEnergyPoints());
+	this->setAttackDamage(this->getDefaultAttackDamage());
 	std::cout << "ScavTrap default constructor called" << std::endl;
 }
 
 ScavTrap::ScavTrap( std::string name ) : ClapTrap(name), _isInGateKeeperMode(false)
 {
-	this->setHitPoints(100);
-	this->setEnergyPoints(50);
-	this->setAttackDamage(20);
+	this->setHitPoints(this->getDefaultHitPoints());
+	this->setEnergyPoints(this->getDefaultEnergyPoints());
+	this->setAttackDamage(this->getDefaultAttackDamage());
 	std::cout << "ScavTrap parameterized constructor called" << std::endl;
 }
 
@@ -80,23 +97,4 @@ void ScavTrap::attack(const std::string &target)
 			<< " points of damage!"
 			<< std::endl;
 	this->setEnergyPoints(this->getEnergyPoints() - 1);
-}
-
-const int	ScavTrap::_defaultHitPoints = 100;
-const int	ScavTrap::_defaultEnergyPoints = 50;
-const int	ScavTrap::_defaultAttackDamage = 20;
-
-const int&	ScavTrap::getDefaultHitPoints()
-{
-	return ScavTrap::_defaultHitPoints;
-}
-
-const int&	ScavTrap::getDefaultEnergyPoints()
-{
-	return ScavTrap::_defaultEnergyPoints;
-}
-
-const int&	ScavTrap::getDefaultAttackDamage()
-{
-	return ScavTrap::_defaultAttackDamage;
 }

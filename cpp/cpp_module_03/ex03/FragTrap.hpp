@@ -6,9 +6,9 @@
 class FragTrap : virtual public ClapTrap
 {
 	private:
-		static const int	_defaultHitPoints;
-		static const int	_defaultEnergyPoints;
-		static const int	_defaultAttackDamage;
+		static const unsigned int	_defaultHitPoints;
+		static const unsigned int	_defaultEnergyPoints;
+		static const unsigned int	_defaultAttackDamage;
 	public:
 		FragTrap();
 		~FragTrap();
@@ -19,9 +19,9 @@ class FragTrap : virtual public ClapTrap
 
 		void	highFivesGuys( void );
 
-		static const int&	getDefaultHitPoints();
-		static const int&	getDefaultEnergyPoints();
-		static const int&	getDefaultAttackDamage();
+		static const unsigned int&	getDefaultHitPoints();
+		static const unsigned int&	getDefaultEnergyPoints();
+		static const unsigned int&	getDefaultAttackDamage();
 };
 
 #endif

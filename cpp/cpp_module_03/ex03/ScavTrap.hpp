@@ -6,10 +6,10 @@
 class ScavTrap : virtual public ClapTrap
 {
 	private:
-		bool	_isInGateKeeperMode;
-		static const int	_defaultHitPoints;
-		static const int	_defaultEnergyPoints;
-		static const int	_defaultAttackDamage;
+		bool						_isInGateKeeperMode;
+		static const unsigned int	_defaultHitPoints;
+		static const unsigned int	_defaultEnergyPoints;
+		static const unsigned int	_defaultAttackDamage;
 	public:
 		ScavTrap();
 		~ScavTrap();
@@ -21,9 +21,9 @@ class ScavTrap : virtual public ClapTrap
 		void	attack( const std::string & target );
 		void	guardGate();
 
-		static const int&	getDefaultHitPoints();
-		static const int&	getDefaultEnergyPoints();
-		static const int&	getDefaultAttackDamage();
+		static const unsigned int&	getDefaultHitPoints();
+		static const unsigned int&	getDefaultEnergyPoints();
+		static const unsigned int&	getDefaultAttackDamage();
 };
 
 #endif
