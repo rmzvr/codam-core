@@ -16,12 +16,17 @@ class MateriaSource : public IMateriaSource
 {
 	private:
 		AMateria*		_materias[MAX_MATERIAS_AMOUNT];
+		AMateria*		_clonedMaterias[MAX_MATERIAS_AMOUNT];
 		unsigned int	_materiasAmount;
+		unsigned int	_clonedMateriasAmount;
 	public:
 		MateriaSource();
+		MateriaSource(const MateriaSource& other);
+		MateriaSource& operator=(const MateriaSource& other);
 		~MateriaSource();
-		void learnMateria(AMateria*);
-		AMateria* createMateria(std::string const & type);
+
+		void		learnMateria(AMateria*);
+		AMateria*	createMateria(std::string const & type);
 };
 
 #endif

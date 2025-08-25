@@ -2,7 +2,6 @@
 # define CHARACTER_HPP
 
 # include <iostream>
-// # include "AMateria.hpp"
 
 # define MAX_MATERIAS_AMOUNT 4
 
@@ -25,9 +24,14 @@ class Character : public ICharacter
 		AMateria*		_materias[MAX_MATERIAS_AMOUNT];
 		unsigned int	_materiasAmount;
 	public:
+		Character();
 		Character( std::string const & name );
+		Character( Character const &other );
+		Character&	operator=( Character const & other );
 		~Character();
+
 		std::string const & getName() const;
+
 		void equip(AMateria* m);
 		void unequip(int idx);
 		void use(int idx, ICharacter& target);

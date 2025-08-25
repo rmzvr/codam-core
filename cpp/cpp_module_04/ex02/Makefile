@@ -1,21 +1,34 @@
 NAME := ex02
 
-SOURCES := Animal.cpp Cat.cpp Dog.cpp WrongAnimal.cpp WrongCat.cpp Brain.cpp main.cpp
-OBJECTS := $(SOURCES:.cpp=.o)
+SOURCES_DIRECTORY := ./sources
+OBJECTS_DIRECTORY := ./objects
+INCLUDES_DIRECTORY := ./includes
 
-CPPV := -std=c++20
-CPPFLAGS := -Wall -Wextra -Werror
+SOURCES := Animal.cpp Cat.cpp Dog.cpp WrongAnimal.cpp WrongCat.cpp Brain.cpp main.cpp
+
+SOURCE_FILES := $(addprefix $(SOURCES_DIRECTORY)/, $(SOURCES))
+OBJECT_FILES := $(addprefix $(OBJECTS_DIRECTORY)/, $(SOURCES:.cpp=.o))
+DEPENDENCE_FILES := $(addprefix $(OBJECTS_DIRECTORY)/, $(SOURCES:.cpp=.d))
+
+CPP := c++
+CPPVERSION := -std=c++20
+CPPFLAGS := -Wall -Wextra -Werror -MMD -MP -I$(INCLUDES_DIRECTORY)
 
 all: $(NAME)
 
-$(NAME): $(OBJECTS)
-	c++ $(CPPFLAGS) $(CPPV) $(OBJECTS) -o $@
+$(NAME): $(OBJECT_FILES)
+	$(CPP) $(CPPFLAGS) $(CPPVERSION) $(OBJECT_FILES) -o $@
 
-%.o: %.cpp
-	c++ $(CPPFLAGS) $(CPPV) -c $< -o $@
+-include $(DEPENDENCE_FILES)
+
+$(OBJECTS_DIRECTORY)/%.o: $(SOURCES_DIRECTORY)/%.cpp | $(OBJECTS_DIRECTORY)
+	$(CPP) $(CPPFLAGS) $(CPPVERSION) -c $< -o $@
+
+$(OBJECTS_DIRECTORY):
+	mkdir -p $@
 
 clean:
-	rm -rf $(OBJECTS)
+	rm -rf $(OBJECTS_DIRECTORY)
 
 fclean: clean
 	rm -rf $(NAME)
