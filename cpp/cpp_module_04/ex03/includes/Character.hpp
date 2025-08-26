@@ -23,6 +23,9 @@ class Character : public ICharacter
 		std::string		_name;
 		AMateria*		_materias[MAX_MATERIAS_AMOUNT];
 		unsigned int	_materiasAmount;
+		AMateria**		_unequipedMaterias;
+		unsigned int	_unequipedMateriasAmount;
+		unsigned int	_unequipedMateriasMaxAmount;
 	public:
 		Character();
 		Character( std::string const & name );

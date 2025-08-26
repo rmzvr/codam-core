@@ -23,11 +23,15 @@ AMateria::AMateria(const AMateria &other)
 	*this = other;
 }
 
-AMateria &AMateria::operator=(const AMateria &)
+AMateria &AMateria::operator=(const AMateria &other)
 {
 	#ifdef DEBUG
 		std::cout << "AMateria copy assignment operator called" << std::endl;
 	#endif
+	if (this != &other)
+	{
+		this->_type = other._type;
+	}
 	return (*this);
 }
 

@@ -23,15 +23,11 @@ Ice::Ice(Ice const &other) : AMateria(other)
 	*this = other;
 }
 
-Ice &Ice::operator=(const Ice &other)
+Ice &Ice::operator=(const Ice &)
 {
 	#ifdef DEBUG
 		std::cout << "Ice copy assignment operator called" << std::endl;
 	#endif
-	if (this != &other)
-	{
-		this->_type = other._type;
-	}
 	return (*this);
 }
 

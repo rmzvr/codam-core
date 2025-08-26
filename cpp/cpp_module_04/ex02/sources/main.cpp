@@ -4,12 +4,10 @@
 #include "WrongAnimal.hpp"
 #include "WrongCat.hpp"
 
-#define ANIMALS_AMOUNT 2
-
 int main()
 {
 	{
-		std::cout << "Check deep copying with copy constructor\n------------------------------------" << std::endl;
+		std::cout << "\nCheck deep copying with copy constructor\n------------------------------------" << std::endl;
 		Cat*	cat1 = new Cat();
 		Cat*	cat2 = new Cat(*cat1);
 		std::cout << cat1->getBrain() << std::endl;
@@ -17,8 +15,9 @@ int main()
 		delete cat1;
 		delete cat2;
 	}
+
 	{
-		std::cout << "Check deep copying with assignment operator\n------------------------------------" << std::endl;
+		std::cout << "\nCheck deep copying with assignment operator\n------------------------------------" << std::endl;
 		Cat*	cat1 = new Cat();
 		Cat*	cat2 = new Cat();
 		std::cout << cat1->getBrain() << std::endl;

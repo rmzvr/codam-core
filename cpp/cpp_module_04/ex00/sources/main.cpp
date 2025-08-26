@@ -7,7 +7,7 @@
 int main()
 {
 	{
-		std::cout << "Should override based methods with derived ones.\n------------------------------------" << std::endl;
+		std::cout << "\nShould override based methods with derived ones.\n------------------------------------" << std::endl;
 		const Animal* meta = new Animal();
 		const Animal* j = new Dog();
 		const Animal* i = new Cat();
@@ -17,13 +17,12 @@ int main()
 		i->makeSound();
 		j->makeSound();
 		meta->makeSound();
-		std::cout << std::endl;
 		delete meta;
 		delete i;
 		delete j;
 	}
 	{
-		std::cout << "Shouldn't override based method makeSound() with derived one.\n------------------------------------" << std::endl;
+		std::cout << "\nShouldn't override based method makeSound() with derived one.\n------------------------------------" << std::endl;
 		const WrongAnimal* meta = new WrongAnimal();
 		const WrongAnimal* i = new WrongCat();
 		std::cout << meta->getType() << " " << std::endl;

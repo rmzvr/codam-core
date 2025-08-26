@@ -16,9 +16,10 @@ class MateriaSource : public IMateriaSource
 {
 	private:
 		AMateria*		_materias[MAX_MATERIAS_AMOUNT];
-		AMateria*		_clonedMaterias[MAX_MATERIAS_AMOUNT];
+		AMateria**		_clonedMaterias;
 		unsigned int	_materiasAmount;
 		unsigned int	_clonedMateriasAmount;
+		unsigned int	_clonedMateriasMaxAmount;
 	public:
 		MateriaSource();
 		MateriaSource(const MateriaSource& other);

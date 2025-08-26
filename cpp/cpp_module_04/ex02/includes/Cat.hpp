@@ -9,8 +9,6 @@ class Cat : public AAnimal
 {
 	private:
 		Brain*		_brain;
-	protected:
-		std::string type;
 	public:
 		Cat();
 		Cat( Cat const &other );
