@@ -8,7 +8,7 @@ MateriaSource::MateriaSource()
 	_clonedMaterias(nullptr),
 	_materiasAmount(0),
 	_clonedMateriasAmount(0),
-	_clonedMateriasMaxAmount(4)
+	_clonedMateriasMaxAmount(MAX_MATERIAS_AMOUNT)
 {
 	#ifdef DEBUG
 		std::cout << "MateriaSource default constructor called" << std::endl;
@@ -34,6 +34,10 @@ MateriaSource::MateriaSource(const MateriaSource &other)
 	#ifdef DEBUG
 		std::cout << "MateriaSource copy constructor called" << std::endl;
 	#endif
+	for (size_t i = 0; i < MAX_MATERIAS_AMOUNT; i++)
+	{
+		this->_materias[i] = nullptr;
+	}
 	*this = other;
 }
 
@@ -42,6 +46,13 @@ MateriaSource &MateriaSource::operator=(const MateriaSource &other)
 	#ifdef DEBUG
 		std::cout << "MateriaSource copy assignment operator called" << std::endl;
 	#endif
+	// if (this == &other)
+	// 	return *this;
+
+	this->_materiasAmount = other._materiasAmount;
+	this->_clonedMateriasAmount = other._clonedMateriasAmount;
+	this->_clonedMateriasMaxAmount = other._clonedMateriasMaxAmount;
+
 	for (size_t i = 0; i < MAX_MATERIAS_AMOUNT; i++)
 	{
 		if (this->_materias[i] != nullptr)
@@ -50,23 +61,27 @@ MateriaSource &MateriaSource::operator=(const MateriaSource &other)
 			this->_materias[i] = nullptr;
 		}
 	}
-	if (this->_clonedMaterias)
+
+	if (this->_clonedMaterias != nullptr)
 	{
 		for (size_t i = 0; i < this->_clonedMateriasAmount; i++)
-			delete this->_clonedMaterias[i];
+		{
+			if (this->_clonedMaterias[i] != nullptr)
+			{
+				delete this->_clonedMaterias[i];
+				this->_clonedMaterias[i] = nullptr;
+			}
+		}
 		delete [] this->_clonedMaterias;
 		this->_clonedMaterias = nullptr;
 	}
-
-	this->_materiasAmount = other._materiasAmount;
-	this->_clonedMateriasAmount = other._clonedMateriasAmount;
-	this->_clonedMateriasMaxAmount = other._clonedMateriasMaxAmount;
 
 	this->_clonedMaterias = new AMateria*[this->_clonedMateriasMaxAmount];
 	for (size_t i = 0; i < this->_clonedMateriasMaxAmount; i++)
 	{
 		this->_clonedMaterias[i] = nullptr;
 	}
+
 	if (this != &other)
 	{
 		for (size_t i = 0; i < MAX_MATERIAS_AMOUNT; i++)
@@ -77,10 +92,13 @@ MateriaSource &MateriaSource::operator=(const MateriaSource &other)
 			}
 		}
 	}
+
 	for (size_t i = 0; i < this->_clonedMateriasAmount; i++)
 	{
-		this->_clonedMaterias[i] = other._clonedMaterias[i];
+		if (other._clonedMaterias[i] != nullptr)
+			this->_clonedMaterias[i] = other._clonedMaterias[i];
 	}
+
 	return (*this);
 }
 
@@ -97,6 +115,7 @@ MateriaSource::~MateriaSource()
 			this->_materias[i] = nullptr;
 		}
 	}
+
 	if (this->_clonedMaterias != nullptr)
 	{
 		for (size_t i = 0; i < this->_clonedMateriasAmount; i++)
@@ -108,7 +127,6 @@ MateriaSource::~MateriaSource()
 			}
 		}
 		delete [] this->_clonedMaterias;
-		this->_clonedMaterias = nullptr;
 	}
 }
 
@@ -126,21 +144,19 @@ AMateria *MateriaSource::createMateria(std::string const &type)
 	if (this->_clonedMateriasAmount >= this->_clonedMateriasMaxAmount)
 	{
 		this->_clonedMateriasMaxAmount *= 2;
+
 		AMateria**	resizedClonedMaterias = new AMateria*[this->_clonedMateriasMaxAmount];
 		for (size_t i = 0; i < this->_clonedMateriasMaxAmount; i++)
 		{
 			if (i < this->_clonedMateriasAmount)
-			{
 				resizedClonedMaterias[i] = this->_clonedMaterias[i];
-			}
 			else
-			{
 				resizedClonedMaterias[i] = nullptr;
-			}
 		}
 		delete [] this->_clonedMaterias;
 		this->_clonedMaterias = resizedClonedMaterias;
 	}
+
 	for (size_t i = 0; i < MAX_MATERIAS_AMOUNT; i++)
 	{
 		if (this->_materias[i] != nullptr && this->_materias[i]->getType() == type)

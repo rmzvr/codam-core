@@ -259,23 +259,40 @@ int main()
 	// {
 	// 	MateriaSource* materiaSource1 = new MateriaSource();
 	// 	materiaSource1->learnMateria(new Ice());
-	// 	materiaSource1->learnMateria(new Ice());
-	// 	materiaSource1->learnMateria(new Ice());
-	// 	materiaSource1->learnMateria(new Ice());
+	// 	materiaSource1->learnMateria(new Cure());
 	// 	MateriaSource* materiaSource2 = new MateriaSource();
+	// 	materiaSource2->learnMateria(new Cure());
+	// 	materiaSource2->learnMateria(new Ice());
 	// 	*materiaSource2 = *materiaSource1;
+	// 	delete materiaSource1;
+	// 	delete materiaSource2;
+	// }
+
+	// {
+	// 	MateriaSource* materiaSource1 = new MateriaSource();
+	// 	materiaSource1->learnMateria(new Ice());
+	// 	materiaSource1->learnMateria(new Cure());
+	// 	MateriaSource* materiaSource2 = new MateriaSource(*materiaSource1);
 	// 	delete materiaSource1;
 	// 	delete materiaSource2;
 	// }
 
 	{
 		MateriaSource* materiaSource1 = new MateriaSource();
-		materiaSource1->learnMateria(new Ice());
-		materiaSource1->learnMateria(new Cure());
-		MateriaSource* materiaSource2 = new MateriaSource(*materiaSource1);
+		// materiaSource1->learnMateria(new Ice());
+		// materiaSource1->learnMateria(new Cure());
+		materiaSource1 = new MateriaSource(*materiaSource1);
 		delete materiaSource1;
-		delete materiaSource2;
 	}
+
+	// {
+	// 	MateriaSource* materiaSource1 = new MateriaSource();
+	// 	materiaSource1->learnMateria(new Ice());
+	// 	materiaSource1->learnMateria(new Cure());
+	// 	MateriaSource* materiaSource2 = new MateriaSource(*materiaSource1);
+	// 	delete materiaSource1;
+	// 	delete materiaSource2;
+	// }
 
 	// {
 	// 	IMateriaSource* src = new MateriaSource();
