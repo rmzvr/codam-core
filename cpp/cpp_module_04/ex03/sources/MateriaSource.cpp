@@ -46,8 +46,8 @@ MateriaSource &MateriaSource::operator=(const MateriaSource &other)
 	#ifdef DEBUG
 		std::cout << "MateriaSource copy assignment operator called" << std::endl;
 	#endif
-	// if (this == &other)
-	// 	return *this;
+	if (this == &other)
+		return *this;
 
 	this->_materiasAmount = other._materiasAmount;
 	this->_clonedMateriasAmount = other._clonedMateriasAmount;
@@ -82,14 +82,11 @@ MateriaSource &MateriaSource::operator=(const MateriaSource &other)
 		this->_clonedMaterias[i] = nullptr;
 	}
 
-	if (this != &other)
+	for (size_t i = 0; i < MAX_MATERIAS_AMOUNT; i++)
 	{
-		for (size_t i = 0; i < MAX_MATERIAS_AMOUNT; i++)
+		if (other._materias[i] != nullptr)
 		{
-			if (other._materias[i] != nullptr)
-			{
-				this->_materias[i] = other._materias[i]->clone();
-			}
+			this->_materias[i] = other._materias[i]->clone();
 		}
 	}
 

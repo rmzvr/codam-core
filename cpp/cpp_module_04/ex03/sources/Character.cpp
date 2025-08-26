@@ -47,6 +47,10 @@ Character::Character(Character const &other)
 	#ifdef DEBUG
 		std::cout << "Character copy constructor called" << std::endl;
 	#endif
+	for (size_t i = 0; i < MAX_MATERIAS_AMOUNT; i++)
+	{
+		this->_materias[i] = nullptr;
+	}
 	*this = other;
 }
 
@@ -55,6 +59,8 @@ Character &Character::operator=(const Character & other)
 	#ifdef DEBUG
 		std::cout << "Character copy assignment operator called" << std::endl;
 	#endif
+	if (this == &other)
+		return *this;
 	this->_name = other._name;
 	this->_materiasAmount = other._materiasAmount;
 	this->_unequipedMateriasAmount = other._unequipedMateriasAmount;
@@ -70,18 +76,15 @@ Character &Character::operator=(const Character & other)
 	{
 		this->_unequipedMaterias[i] = nullptr;
 	}
-	if (this != &other)
+	for (size_t i = 0; i < MAX_MATERIAS_AMOUNT; i++)
 	{
-		for (size_t i = 0; i < MAX_MATERIAS_AMOUNT; i++)
-		{
-			if (other._materias[i] != nullptr)
-				this->_materias[i] = other._materias[i]->clone();
-		}
-		for (size_t i = 0; i < this->_unequipedMateriasAmount; i++)
-		{
-			if (other._unequipedMaterias[i] != nullptr)
-				this->_unequipedMaterias[i] = other._unequipedMaterias[i]->clone();
-		}
+		if (other._materias[i] != nullptr)
+			this->_materias[i] = other._materias[i]->clone();
+	}
+	for (size_t i = 0; i < this->_unequipedMateriasAmount; i++)
+	{
+		if (other._unequipedMaterias[i] != nullptr)
+			this->_unequipedMaterias[i] = other._unequipedMaterias[i]->clone();
 	}
 	return (*this);
 }
@@ -123,10 +126,14 @@ void Character::equip(AMateria *m)
 {
 	if (m != nullptr)
 	{
-		if (this->_materiasAmount < MAX_MATERIAS_AMOUNT)
+		for (size_t i = 0; i < MAX_MATERIAS_AMOUNT; i++)
 		{
-			this->_materias[this->_materiasAmount] = m->clone();
-			this->_materiasAmount++;
+			if (this->_materias[i] == nullptr)
+			{
+				this->_materias[i] = m->clone();
+				this->_materiasAmount++;
+				break;
+			}
 		}
 	}
 }
@@ -154,6 +161,7 @@ void Character::unequip(int idx)
 	}
 	this->_unequipedMaterias[this->_unequipedMateriasAmount] = this->_materias[idx];
 	this->_unequipedMateriasAmount++;
+	this->_materiasAmount--;
 	this->_materias[idx] = nullptr;
 }
 

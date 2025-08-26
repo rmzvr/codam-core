@@ -12,7 +12,7 @@ DEPENDENCE_FILES := $(addprefix $(OBJECTS_DIRECTORY)/, $(SOURCES:.cpp=.d))
 
 CPP := c++
 CPPVERSION := -std=c++20
-CPPFLAGS := -Wall -Wextra -Werror -MMD -MP -I$(INCLUDES_DIRECTORY) -DDEBUG -g -O0
+CPPFLAGS := -Wall -Wextra -Werror -MMD -MP -I$(INCLUDES_DIRECTORY)
 
 all: $(NAME)
 
